@@ -1,5 +1,6 @@
 package sed.sky;
 
+import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
@@ -12,7 +13,10 @@ public class SkyBoxTexture extends TextureCubeMap {
 	
 	private static final int TexSize = 256;
 	
-	public SkyBoxTexture() {
+	private SkyGradient sg;
+	
+	public SkyBoxTexture(SkyGradient sg) {
+		this.sg = sg;
 		ArrayList<ByteBuffer> faces = new ArrayList<ByteBuffer>();
 		// +x
 		faces.add(newFace());
@@ -44,6 +48,11 @@ public class SkyBoxTexture extends TextureCubeMap {
 	
 	public void update() {
 		updatePosX();
+		updateNegX();
+		updatePosZ();
+		updateNegZ();
+		updatePosY();
+		updateNegY();
 	}
 	
 	private void updatePosX() {
@@ -70,8 +79,8 @@ public class SkyBoxTexture extends TextureCubeMap {
             int vonUnten = (TexSize-1-i)*TexSize*3;
             float z = +1f;
             for(int j = 0; j < TexSize*3; j+=3) { // z
-//            	getSkycolor(colors, 1f, y, z);
-            	ColorRGBA.randomColor().toArray(colors);
+            	sg.getSkycolor(colors, 1f, y, z);
+//            	ColorRGBA.randomColor().toArray(colors);
             	putBGR(bb, vonOben+j, colors);
             	putBGR(bb, vonUnten+j, colors);
                 z -= zInc;
@@ -81,6 +90,132 @@ public class SkyBoxTexture extends TextureCubeMap {
         getImage().setData(num, bb);
 	}
 	
+    private void updateNegX() {
+		final int num = 1;
+		ByteBuffer bb = getImage().getData(num);
+		bb.rewind();
+		float[] colors = new float[3];
+        float yInc = (1f-(-1f))/TexSize;
+        float zInc = (1f-(-1f))/TexSize;
+        float[] pixMap = new float[TexSize*TexSize*3];
+        float y = +1f;
+        for(int i = 0; i < TexSize/2; i++) { // y
+            int vonOben = i*TexSize*3;
+            int vonUnten = (TexSize-1-i)*TexSize*3;
+            float z = -1f;
+            for(int j = 0; j < TexSize*3; j+=3) { // z
+                sg.getSkycolor(colors, -1f, y, z);
+                putBGR(bb, vonOben+j, colors);
+            	putBGR(bb, vonUnten+j, colors);
+                z += zInc;
+            }
+            y -= yInc;
+        }
+        getImage().setData(num, bb);
+    }
+    
+    private void updatePosZ() {
+    	final int num = 4;
+		ByteBuffer bb = getImage().getData(num);
+		bb.rewind();
+        float[] colors = new float[3];
+        float yInc = (1f-(-1f))/TexSize;
+        float xInc = (1f-(-1f))/TexSize;
+        float[] pixMap = new float[TexSize*TexSize*3];
+        float y = +1f;
+        for(int i = 0; i < TexSize/2; i++) { // y
+            int vonOben = i*TexSize*3;
+            int vonUnten = (TexSize-1-i)*TexSize*3;
+            float x = -1f;
+            for(int j = 0; j < TexSize*3; j+=3) { // x
+                sg.getSkycolor(colors, x, y, +1f);
+                putBGR(bb, vonOben+j, colors);
+            	putBGR(bb, vonUnten+j, colors);
+                x += xInc;
+            }
+            y -= yInc;
+        }
+        getImage().setData(num, bb);
+    }
+    
+    private void updateNegZ() {
+    	final int num = 5;
+		ByteBuffer bb = getImage().getData(num);
+		bb.rewind();
+        float[] colors = new float[3];
+        float yInc = (1f-(-1f))/TexSize;
+        float xInc = (1f-(-1f))/TexSize;
+        float[] pixMap = new float[TexSize*TexSize*3];
+        float y = +1f;
+        for(int i = 0; i < TexSize/2; i++) { // y
+            int vonOben = i*TexSize*3;
+            int vonUnten = (TexSize-1-i)*TexSize*3;
+            float x = +1f;
+            for(int j = 0; j < TexSize*3; j+=3) { // x
+                sg.getSkycolor(colors, x, y, -1f);
+                putBGR(bb, vonOben+j, colors);
+            	putBGR(bb, vonUnten+j, colors);
+                x -= xInc;
+            }
+            y -= yInc;
+        }
+        getImage().setData(num, bb);
+    }
+    
+    private void updatePosY() {
+    	final int num = 3;
+		ByteBuffer bb = getImage().getData(num);
+		bb.rewind();
+        float[] colors = new float[3];
+        float zInc = (1f-(-1f))/TexSize;
+        float xInc = (1f-(-1f))/TexSize;
+        float[] pixMap = new float[TexSize*TexSize*3];
+        float z = +1f;
+        //for(int i = 0; i < TexSize/2; i++) { // z
+        for(int i = 0; i < TexSize; i++) { // z
+            int vonOben = i*TexSize*3;
+            //int vonUnten = (TexSize-1-i)*TexSize*3;
+            float x = -1f;
+            for(int j = 0; j < TexSize*3; j+=3) { // x
+                sg.getSkycolor(colors, x, +1f, z);
+                putBGR(bb, vonOben+j, colors);
+                //pixMap[vonUnten+j+0] = colors[0]*255;
+                //pixMap[vonUnten+j+1] = colors[1]*255;
+                //pixMap[vonUnten+j+2] = colors[2]*255;
+                x += xInc;
+            }
+            z -= zInc;
+        }
+        getImage().setData(num, bb);
+    }
+
+    private void updateNegY() {
+    	final int num = 2;
+		ByteBuffer bb = getImage().getData(num);
+		bb.rewind();
+        float[] colors = new float[3];
+        float zInc = (1f-(-1f))/TexSize;
+        float xInc = (1f-(-1f))/TexSize;
+        float[] pixMap = new float[TexSize*TexSize*3];
+        float z = -1f;
+        //for(int i = 0; i < TexSize/2; i++) { // z
+        for(int i = 0; i < TexSize; i++) { // z
+            int vonOben = i*TexSize*3;
+            //int vonUnten = (TexSize-1-i)*TexSize*3;
+            float x = -1f;
+            for(int j = 0; j < TexSize*3; j+=3) { // x
+                sg.getSkycolor(colors, x, -1f, z);
+                putBGR(bb, vonOben+j, colors);
+                //pixMap[vonUnten+j+0] = colors[0]*255;
+                //pixMap[vonUnten+j+1] = colors[1]*255;
+                //pixMap[vonUnten+j+2] = colors[2]*255;
+                x += xInc;
+            }
+            z += zInc;
+        }
+        getImage().setData(num, bb);
+    }
+    
 	private static final void putBGR(ByteBuffer bb, int offset, float[] colorRGBA) {
 		// do not copy A from colorRGBA[3]
 		bb.put(offset,   (byte) (colorRGBA[2]*255)); // B

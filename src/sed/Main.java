@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import sed.sky.SkyBoxTexture;
 import sed.sky.SkyDome;
+import sed.sky.SkyGradient;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
@@ -43,13 +44,17 @@ public class Main extends SimpleApplication {
 		geom.setMaterial(mat);
 //		rootNode.attachChild(geom);
 		
-//		SkyDome s = new SkyDome();
-		Box s = new Box(Vector3f.ZERO, 1, 1, 1);
+		SkyDome s = new SkyDome();
+//		Box s = new Box(Vector3f.ZERO, 1, 1, 1);
 		Geometry s_geom = new Geometry("SkyDome", s);
 		s_mat = new Material(assetManager, "Shaders/Sky.j3md");
 //		s_mat.getAdditionalRenderState().setWireframe(true);
 		s_mat.setColor("Color", ColorRGBA.Gray);
-		sky_box_texture = new SkyBoxTexture();
+		SkyGradient sg = new SkyGradient();
+		sg.setTurbidity(2f);
+		sg.updateSunPosition(12.00f, 180, 36.4f, (int)(11.8f/15f), 11.8f);
+		sky_box_texture = new SkyBoxTexture(sg);
+		sky_box_texture.update();
 		s_mat.setTexture("SkyBox", sky_box_texture);
 		s_geom.setMaterial(s_mat);
 		rootNode.attachChild(s_geom);
@@ -61,7 +66,7 @@ public class Main extends SimpleApplication {
 	@Override
 	public void simpleUpdate(float tpf) {		
 		if(time_sky > 2) {
-			sky_box_texture.update();
+//			sky_box_texture.update();
 //			s_mat.setTexture("SkyBox", SkyBoxTexture.genRandomSkyBox(ColorRGBA.randomColor()));
 			time_sky = 0;
 		}
