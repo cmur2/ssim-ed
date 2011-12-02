@@ -2,7 +2,7 @@ MaterialDef MySky {
     //This is the complete list of user defined uniforms to be used in the
     //shaders
     MaterialParameters {
-        Vector4 Color
+        //Vector4 Color
         TextureCubeMap SkyBox
     }
     Technique {

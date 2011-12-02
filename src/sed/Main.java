@@ -1,16 +1,12 @@
 package sed;
 
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
-
 import sed.sky.SkyBoxTexture;
 import sed.sky.SkyDome;
 import sed.sky.SkyGradient;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -34,7 +30,7 @@ public class Main extends SimpleApplication {
 	
 	@Override
 	public void simpleInitApp() {
-		flyCam.setMoveSpeed(10 * 5);
+		flyCam.setMoveSpeed(10 * 6);
 //		flyCam.setDragToRotate(true);
 		
 		Box b = new Box(Vector3f.ZERO, 1, 1, 1);
@@ -49,7 +45,8 @@ public class Main extends SimpleApplication {
 		Geometry s_geom = new Geometry("SkyDome", s);
 		s_mat = new Material(assetManager, "Shaders/Sky.j3md");
 //		s_mat.getAdditionalRenderState().setWireframe(true);
-		s_mat.setColor("Color", ColorRGBA.Gray);
+		s_mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
+//		s_mat.setColor("Color", ColorRGBA.Gray);
 		SkyGradient sg = new SkyGradient();
 		sg.setTurbidity(2f);
 		sg.updateSunPosition(12.00f, 180, 36.4f, (int)(11.8f/15f), 11.8f);
