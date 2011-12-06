@@ -35,7 +35,7 @@ public class SkyAppState extends AbstractAppState {
         
         geom = new Geometry("SkyDome");
         
-        Material mat = new Material(app.getAssetManager(), "Shaders/Sky.j3md");
+        Material mat = new Material(app.getAssetManager(), "shaders_tmp/Sky.j3md");
         //mat.getAdditionalRenderState().setWireframe(true);
         mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
         
@@ -58,7 +58,7 @@ public class SkyAppState extends AbstractAppState {
         super.update(tpf);
         
         float timeOfDay = app.clock.hourTime();
-        //skyGradient.updateSunPosition(timeOfDay, julianDay, latitude, standardMeridian, longitude)
+        // TODO: skyGradient.updateSunPosition(timeOfDay, julianDay, latitude, standardMeridian, longitude)
         
         time += tpf;
     }
