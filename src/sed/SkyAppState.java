@@ -35,7 +35,7 @@ public class SkyAppState extends AbstractAppState {
         
         geom = new Geometry("SkyDome");
         
-        Material mat = new Material(app.getAssetManager(), "shaders_tmp/Sky.j3md");
+        Material mat = new Material(app.getAssetManager(), "shaders/Sky.j3md");
         //mat.getAdditionalRenderState().setWireframe(true);
         mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
         
