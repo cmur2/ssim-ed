@@ -21,6 +21,7 @@ public class Main extends SimpleApplication {
     }
     
     // TODO: Key z -> y
+    // TODO: java.util.logging to Log4J bridge
     
     private float time = 0;
     public SimClock clock;

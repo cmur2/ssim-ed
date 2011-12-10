@@ -1,4 +1,4 @@
 syntax: glob
 bin
-src/ssim
 *.dll
+*.jnilib
