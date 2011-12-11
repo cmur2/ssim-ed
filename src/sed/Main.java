@@ -1,11 +1,10 @@
 package sed;
 
-import java.io.IOException;
-import java.io.InputStream;
-
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 import org.jdom.Element;
 
-import sed.weather.BasicWeatherController;
 import sed.weather.StaticWeatherController;
 import sed.weather.WeatherController;
 import ssim.sim.SimClock;
@@ -22,19 +21,26 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.shape.Box;
 
-/**
- * ÄÖÜ
- */
+import de.altimos.util.logger.JLFBridge;
+
 public class Main extends SimpleApplication {
     
+    private static final Logger logger = Logger.getLogger(Main.class);
+    
     public static void main(String[] args) {
+        //BasicConfigurator.configure();
+        {
+            Logger root = Logger.getRootLogger();
+            root.addAppender(new ConsoleAppender(new PatternLayout("%-3r [%t] %-5p %c: %m%n")));
+        }
+        JLFBridge.installBridge();
+        
         Main main = new Main();
         main.setShowSettings(false);
         main.start();
     }
     
     // TODO: Key z -> y
-    // TODO: java.util.logging to Log4J bridge
     
     private float time = 0;
     
