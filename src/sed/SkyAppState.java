@@ -15,23 +15,24 @@ import com.jme3.scene.Node;
 public class SkyAppState extends AbstractAppState {
     
     private float time = 0;
-    private SkyGradient skyGradient;
     
     // exists only while AppState is living
     private Main app;
+    private SkyGradient skyGradient;
     private Geometry geom;
     private SkyBoxTexture skyBoxTexture;
     
     public SkyAppState() {
-        skyGradient = new SkyGradient();
-        skyGradient.setTurbidity(2f);
-        skyGradient.updateSunPosition(11.00f, 180, 36.4f, (int) (11.8f / 15f), 11.8f);
     }
     
     @Override
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         app = (Main) baseApp;
+        
+        skyGradient = new SkyGradient();
+        skyGradient.setTurbidity(app.weatherController.getFloat("sky.turbidity"));
+        skyGradient.updateSunPosition(11.00f, 180, 36.4f, (int) (11.8f / 15f), 11.8f);
         
         geom = new Geometry("SkyDome");
         
@@ -71,6 +72,7 @@ public class SkyAppState extends AbstractAppState {
         skyNode.detachChild(geom);
         
         app = null;
+        skyGradient = null;
         geom = null;
         skyBoxTexture = null;
     }

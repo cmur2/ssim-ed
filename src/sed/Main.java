@@ -1,8 +1,18 @@
 package sed;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.jdom.Element;
+
+import sed.weather.BasicWeatherController;
+import sed.weather.StaticWeatherController;
+import sed.weather.WeatherController;
 import ssim.sim.SimClock;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.asset.AssetKey;
+import com.jme3.asset.AssetLoader;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -12,6 +22,9 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.shape.Box;
 
+/**
+ * ÄÖÜ
+ */
 public class Main extends SimpleApplication {
     
     public static void main(String[] args) {
@@ -24,12 +37,18 @@ public class Main extends SimpleApplication {
     // TODO: java.util.logging to Log4J bridge
     
     private float time = 0;
+    
     public SimClock clock;
+    public WeatherController weatherController; 
     
     @Override
     public void simpleInitApp() {
+        assetManager.registerLoader(XMLLoader.class, "xml");
+        
         clock = SimClock.createClock(11.00f);
         assert clock != null : "SimClock init failed - wrong parameters!";
+        
+        initWeather();
         
         flyCam.setMoveSpeed(10 * 6);
         //flyCam.setDragToRotate(true);
@@ -50,14 +69,31 @@ public class Main extends SimpleApplication {
         printSceneGraph(rootNode);
     }
     
+    private void initWeather() {
+//        Element root = assetManager.loadAsset(new AssetKey<Element>("weather/default.xml"));
+        weatherController = new StaticWeatherController();
+        weatherController.registerProperty("sky.turbidity", 2f, Float.class);
+    }
+    
+    private String getTextByPropName(Element root, String key) {
+        Element cur = root;
+        String[] parts = key.split("\\.");
+        for(int i = 0; i < parts.length; i++) {
+//            System.out.println(childreen[i]);
+            cur = cur.getChild(parts[i]);
+            if(cur == null) return null;
+        }
+        return cur.getText();
+    }
+    
     @Override
-    public void simpleUpdate(float tpf) {
+    public void simpleUpdate(float dt) {
         if(time > 2) {
             time = 0;
         }
         
-        time += tpf;
-        clock.step(tpf);
+        time += dt;
+        clock.step(dt);
     }
     
     private static void printSceneGraph(Node root) {
