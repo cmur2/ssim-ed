@@ -10,10 +10,10 @@ public abstract class BasicWeatherController implements ChangeableWeather,
     
     // TODO: TriggerWeatherController -> trigger subsystem
     
-    private HashMap<String, Entry> entries = new HashMap<String, Entry>();
-    private HashMap<Class, WeatherInterpolator> classInterpolators =
+    private Map<String, Entry> entries = new HashMap<String, Entry>();
+    private Map<Class, WeatherInterpolator> classInterpolators =
         new HashMap<Class, WeatherInterpolator>();
-    private HashMap<String, WeatherInterpolator> entryInterpolators =
+    private Map<String, WeatherInterpolator> entryInterpolators =
         new HashMap<String, WeatherInterpolator>();
 
     public BasicWeatherController() {
