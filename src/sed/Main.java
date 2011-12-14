@@ -32,8 +32,7 @@ public class Main extends SimpleApplication {
             Logger root = Logger.getRootLogger();
             root.addAppender(new ConsoleAppender(new PatternLayout("%-3r [%t] %-5p %c: %m%n")));
         }
-        // TODO: does not forward throwables correctly to log4j
-//        JLFBridge.installBridge();
+        JLFBridge.installBridge();
         
         Main main = new Main();
         main.setShowSettings(false);

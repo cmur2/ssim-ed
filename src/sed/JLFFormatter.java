@@ -5,7 +5,7 @@ import java.io.StringWriter;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
-public class MyFormatter extends Formatter {
+public class JLFFormatter extends Formatter {
     
     private static final String lineSep = System.getProperty("line.separator");
     
