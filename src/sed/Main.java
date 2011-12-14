@@ -4,7 +4,6 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
-import sed.weather.PropertySetBuilder;
 import sed.weather.StaticWeatherController;
 import sed.weather.WeatherController;
 import ssim.sim.SimClock;
@@ -77,7 +76,7 @@ public class Main extends SimpleApplication {
     }
     
     private void initWeather() {
-        PropertySetBuilder builder = new PropertySetBuilder(assetManager, "default");
+        XMLPropertySetBuilder builder = new XMLPropertySetBuilder(assetManager, "default");
         builder.put("sky.turbidity", Float.class);
         builder.put("cloud.cover", Integer.class);
         builder.put("wind", Vector3f.class);

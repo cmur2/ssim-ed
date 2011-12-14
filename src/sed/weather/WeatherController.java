@@ -1,5 +1,12 @@
 package sed.weather;
 
+/**
+ * A {@link WeatherController} has to provide {@link ChangeableWeather}
+ * and additionally should allow to register properties and interpolators
+ * and be updatable.
+ * 
+ * @author cn
+ */
 public interface WeatherController extends ChangeableWeather {
     
     /**

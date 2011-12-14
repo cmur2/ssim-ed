@@ -4,6 +4,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Encloses an {@link Iterable} set of properties (stored as {@link Entry})
+ * each comprised of an identifying name, a value and a {@link Class}
+ * representing the value's type. PropertySets are read-only.
+ * 
+ * @author cn
+ */
 public class PropertySet implements Iterable<PropertySet.Entry> {
     
     private String name;

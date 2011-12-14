@@ -1,15 +1,24 @@
-package sed.weather;
+package sed;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jdom.Element;
 
+import sed.weather.PropertySet;
+
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 
-public class PropertySetBuilder {
+/**
+ * Builder for a {@link PropertySet} that accept it's specification via
+ * {@link XMLPropertySetBuilder#put(String, Class)} an reads the concrete values
+ * from a XML structure given by a root {@link org.jdom.Element}.
+ * 
+ * @author cn
+ */
+public class XMLPropertySetBuilder {
     
     // TODO: how to test jME dependent classes?
     
@@ -19,7 +28,7 @@ public class PropertySetBuilder {
     private Element weatherXml;
     private PropertySet result;
     
-    public PropertySetBuilder(AssetManager mgr, String name) {
+    public XMLPropertySetBuilder(AssetManager mgr, String name) {
         weatherXml = mgr.loadAsset(new AssetKey<Element>(String.format("weather/%s.xml", name)));
         result = new PropertySet(name);
     }

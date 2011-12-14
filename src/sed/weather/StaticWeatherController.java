@@ -1,5 +1,11 @@
 package sed.weather;
 
+/**
+ * The simplest {@link WeatherController} controller possible. It just
+ * accepts an initial state and applies it, nothing more.
+ * 
+ * @author cn
+ */
 public class StaticWeatherController extends BasicWeatherController {
 
     @SuppressWarnings("unchecked")

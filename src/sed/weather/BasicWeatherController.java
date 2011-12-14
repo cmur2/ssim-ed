@@ -11,10 +11,10 @@ public abstract class BasicWeatherController implements ChangeableWeather,
     // TODO: TriggerWeatherController -> trigger subsystem
     
     private Map<String, Entry> entries = new HashMap<String, Entry>();
-    private Map<Class, WeatherInterpolator> classInterpolators =
-        new HashMap<Class, WeatherInterpolator>();
-    private Map<String, WeatherInterpolator> entryInterpolators =
-        new HashMap<String, WeatherInterpolator>();
+    private Map<Class<?>, WeatherInterpolator<?>> classInterpolators =
+        new HashMap<Class<?>, WeatherInterpolator<?>>();
+    private Map<String, WeatherInterpolator<?>> entryInterpolators =
+        new HashMap<String, WeatherInterpolator<?>>();
 
     public BasicWeatherController() {
     }
@@ -102,7 +102,7 @@ public abstract class BasicWeatherController implements ChangeableWeather,
      * @param key used to find the value
      * @return a responsible {@link WeatherInterpolator} or {@code null}
      */
-    protected WeatherInterpolator getInterpolator(String key) {
+    protected WeatherInterpolator<?> getInterpolator(String key) {
         if(entryInterpolators.containsKey(key)) {
             return entryInterpolators.get(key);
         }
