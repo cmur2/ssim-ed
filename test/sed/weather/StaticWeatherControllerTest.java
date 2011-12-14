@@ -6,8 +6,8 @@ public class StaticWeatherControllerTest extends WeatherControllerTestBase {
     }
     
     @Override
-    protected WeatherController create() {
-        return new StaticWeatherController();
+    protected WeatherController create(PropertySet init) {
+        return new StaticWeatherController(init);
     }
     
 }

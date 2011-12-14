@@ -3,8 +3,8 @@ package sed;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.jdom.Element;
 
+import sed.weather.PropertySetBuilder;
 import sed.weather.StaticWeatherController;
 import sed.weather.WeatherController;
 import ssim.sim.SimClock;
@@ -33,7 +33,8 @@ public class Main extends SimpleApplication {
             Logger root = Logger.getRootLogger();
             root.addAppender(new ConsoleAppender(new PatternLayout("%-3r [%t] %-5p %c: %m%n")));
         }
-        JLFBridge.installBridge();
+        // TODO: does not forward throwables correctly to log4j
+//        JLFBridge.installBridge();
         
         Main main = new Main();
         main.setShowSettings(false);
@@ -76,20 +77,16 @@ public class Main extends SimpleApplication {
     }
     
     private void initWeather() {
-//        Element root = assetManager.loadAsset(new AssetKey<Element>("weather/default.xml"));
-        weatherController = new StaticWeatherController();
-        weatherController.registerProperty("sky.turbidity", 2f, Float.class);
-    }
-    
-    private String getTextByPropName(Element root, String key) {
-        Element cur = root;
-        String[] parts = key.split("\\.");
-        for(int i = 0; i < parts.length; i++) {
-//            System.out.println(childreen[i]);
-            cur = cur.getChild(parts[i]);
-            if(cur == null) return null;
-        }
-        return cur.getText();
+        PropertySetBuilder builder = new PropertySetBuilder(assetManager, "default");
+        builder.put("sky.turbidity", Float.class);
+        builder.put("cloud.cover", Integer.class);
+        builder.put("wind", Vector3f.class);
+        builder.put("prime", Integer[].class);
+        
+        weatherController = new StaticWeatherController(builder.getResult());
+        
+        System.out.println(weatherController.getVec3("wind"));
+        System.out.println(java.util.Arrays.toString(weatherController.getIntArray("prime")));
     }
     
     @Override
