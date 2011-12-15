@@ -88,7 +88,9 @@ public class Main extends SimpleApplication {
     }
     
     @Override
-    public void simpleUpdate(float dt) {
+    public void simpleUpdate(float tpf) {
+        float dt = tpf;
+        
         if(time > 2) {
             time = 0;
         }
