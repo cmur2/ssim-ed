@@ -13,8 +13,8 @@ import com.jme3.math.Vector3f;
 
 /**
  * Builder for a {@link PropertySet} that accept it's specification via
- * {@link XMLPropertySetBuilder#put(String, Class)} an reads the concrete values
- * from a XML structure given by a root {@link org.jdom.Element}.
+ * {@link XMLPropertySetBuilder#putFloat(String)} etc and reads the concrete values
+ * from (optionally multiple) asset XML file(s) given by file name.
  * 
  * @author cn
  */
@@ -22,82 +22,107 @@ public class XMLPropertySetBuilder {
     
     // TODO: how to test jME dependent classes?
     
-    private static final Pattern patVec3 = Pattern.compile("^\\((.+), (.+), (.+)\\)$");
+    private static final Pattern patVec3 = Pattern.compile("^\\((.+),(.+),(.+)\\)$");
     private static final Pattern patIntArray = Pattern.compile("^\\[(.*)\\]$");
     
-    private Element weatherXml;
-    private PropertySet result;
+    private Element[] weatherXml;
+    private PropertySet[] result;
     
-    public XMLPropertySetBuilder(AssetManager mgr, String name) {
-        weatherXml = mgr.loadAsset(new AssetKey<Element>(String.format("weather/%s.xml", name)));
-        result = new PropertySet(name);
+    public XMLPropertySetBuilder(AssetManager mgr, String... names) {
+        weatherXml = new Element[names.length];
+        result = new PropertySet[names.length];
+        for(int i = 0; i < names.length; i++) {
+            weatherXml[i] = mgr.loadAsset(new AssetKey<Element>(String.format("weather/%s.xml", names[i])));
+            result[i] = new PropertySet(names[i]);
+        }
     }
     
-    public void put(String key, Class<?> clazz) {
-        String data = getText(key);
-        if(data == null) {
-            throw new ParseException(String.format("Property %s: no XML data not found!", key));
+    public void putFloat(String key) {
+        for(int i = 0; i < weatherXml.length; i++) {
+            String data = getXMLText(i, key).trim();
+            try {
+                result[i].put(key, (Float) Float.valueOf(data), Float.class);
+            } catch(NumberFormatException ex) {
+                throw new ParseException(String.format("Property %s: parsing failed", key), ex); 
+            }
         }
-        boolean success;
-        try {
-            success = parse(key, data, clazz);
-        } catch(Exception ex) {
-            throw new ParseException(String.format("Property %s: parsing failed", key), ex); 
+    }
+    
+    public void putVec3(String key) {
+        for(int i = 0; i < weatherXml.length; i++) {
+            String data = getXMLText(i, key).trim();
+            Matcher m = patVec3.matcher(data);
+            if(m.matches()) {
+                result[i].put(key, new Vector3f(
+                    Float.parseFloat(m.group(1).trim()),
+                    Float.parseFloat(m.group(2).trim()),
+                    Float.parseFloat(m.group(3).trim())), Vector3f.class);
+            } else {
+                throw new ParseException("Not a Vector3f: "+data);
+            }
         }
-        if(!success) {
-            throw new ParseException(String.format(
-                "Property %s: no method known for data of type %s!", key,
-                clazz.getSimpleName()));
+    }
+    
+    public void putInt(String key) {
+        for(int i = 0; i < weatherXml.length; i++) {
+            String data = getXMLText(i, key).trim();
+            try {
+                result[i].put(key, (Integer) Integer.valueOf(data, 10), Integer.class);
+            } catch(NumberFormatException ex) {
+                throw new ParseException(String.format("Property %s: parsing failed", key), ex); 
+            }
+        }
+    }
+    
+    public void putIntArray(String key) {
+        for(int i = 0; i < weatherXml.length; i++) {
+            String data = getXMLText(i, key).trim();
+            Matcher m = patIntArray.matcher(data);
+            if(m.matches()) {
+                String[] array = m.group(1).split(",");
+                Integer[] intArray = new Integer[array.length];
+                for(int j = 0; j < array.length; j++) {
+                    intArray[j] = Integer.parseInt(array[j].trim(), 10);
+                }
+                result[i].put(key, intArray, Integer[].class);
+            } else {
+                throw new NumberFormatException("Not an Integer[]: "+data);
+            }
+        }
+    }
+    
+    public void putBool(String key) {
+        for(int i = 0; i < weatherXml.length; i++) {
+            String data = getXMLText(i, key).trim();
+            try {
+                result[i].put(key, (Boolean) Boolean.valueOf(data), Boolean.class);
+            } catch(NumberFormatException ex) {
+                throw new ParseException(String.format("Property %s: parsing failed", key), ex); 
+            }
         }
     }
     
     public PropertySet getResult() {
+        return result.length == 0 ? result[0] : null;
+    }
+    
+    public PropertySet getResult(int idx) {
+        return result[idx];
+    }
+    
+    public PropertySet[] getResults() {
         return result;
     }
     
-    private boolean parse(String key, String data, Class<?> clazz) {
-        boolean found = true;
-        if(clazz == Float.class) {
-            result.put(key, (Float) Float.valueOf(data), Float.class);
-        } else if(clazz == Vector3f.class) {
-            Matcher m = patVec3.matcher(data);
-            if(m.matches()) {
-                result.put(key, new Vector3f(
-                    Float.parseFloat(m.group(1)),
-                    Float.parseFloat(m.group(2)),
-                    Float.parseFloat(m.group(3))), Vector3f.class);
-            } else {
-                throw new NumberFormatException("Not a Vector3f: "+data);
-            }
-        } else if(clazz == Integer.class) {
-            result.put(key, (Integer) Integer.valueOf(data, 10), Integer.class);
-        } else if(clazz == Integer[].class) {
-            Matcher m = patIntArray.matcher(data);
-            if(m.matches()) {
-                String[] array = m.group(1).split(", ");
-                Integer[] intArray = new Integer[array.length];
-                for(int i = 0; i < array.length; i++) {
-                    intArray[i] = Integer.parseInt(array[i].trim(), 10);
-                }
-                result.put(key, intArray, Integer[].class);
-            } else {
-                throw new NumberFormatException("Not an Integer[]: "+data);
-            }
-        } else if(clazz == Boolean.class) {
-            result.put(key, (Boolean) Boolean.valueOf(data), Boolean.class);
-        } else {
-            found = false;
-        }
-        return found;
-    }
-    
-    private String getText(String key) {
-        Element cur = weatherXml;
+    private String getXMLText(int idx, String key) {
+        Element cur = weatherXml[idx];
         String[] parts = key.split("\\.");
         for(int i = 0; i < parts.length; i++) {
 //            System.out.println(childreen[i]);
             cur = cur.getChild(parts[i]);
-            if(cur == null) return null;
+            if(cur == null) {
+                throw new ParseException(String.format("Property %s: no XML data not found!", key));
+            }
         }
         return cur.getText();
     }
