@@ -103,7 +103,7 @@ public class XMLPropertySetBuilder {
     }
     
     public PropertySet getResult() {
-        return result.length == 0 ? result[0] : null;
+        return result.length == 0 ? null : result[0];
     }
     
     public PropertySet getResult(int idx) {
