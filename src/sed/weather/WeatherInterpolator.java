@@ -1,13 +1,17 @@
 package sed.weather;
 
-public interface WeatherInterpolator<T> {
+public interface WeatherInterpolator {
     
     /**
-     * Request the {@link WeatherInterpolator} to update the given property.
+     * Request the {@link WeatherInterpolator} to update the given property
+     * for the given time ratio passed.
      * 
-     * @param weather
-     * @param key
+     * @param valueA the "old" value
+     * @param valueB the "new" value
+     * @param ratio interpolation factor in [0.0, 1.0]
+     * @return valueA if ratio equals 0.0, valueB if ratio equals 1.0,
+     *         or a value in [valueA, valueB] for any other ratio
      */
-    public void update(ChangeableWeather weather, String key);
+    public Object interpolate(Object valueA, Object valueB, float ratio);
     
 }

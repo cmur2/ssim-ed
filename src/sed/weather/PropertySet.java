@@ -29,6 +29,14 @@ public class PropertySet implements Iterable<PropertySet.Entry> {
         entries.put(key, new Entry(key, value, clazz));
     }
     
+    public Object get(String key) {
+        Entry e = entries.get(key);
+        if(e == null) {
+            return null;
+        }
+        return e.getValue();
+    }
+    
     @Override
     public Iterator<Entry> iterator() {
         return entries.values().iterator();

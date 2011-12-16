@@ -5,16 +5,15 @@ import java.util.Map;
 
 import com.jme3.math.Vector3f;
 
-public abstract class BasicWeatherController implements ChangeableWeather,
-        WeatherController {
+public abstract class BasicWeatherController implements WeatherController {
     
     // TODO: TriggerWeatherController -> trigger subsystem
     
     private Map<String, Entry> entries = new HashMap<String, Entry>();
-    private Map<Class<?>, WeatherInterpolator<?>> classInterpolators =
-        new HashMap<Class<?>, WeatherInterpolator<?>>();
-    private Map<String, WeatherInterpolator<?>> entryInterpolators =
-        new HashMap<String, WeatherInterpolator<?>>();
+    private Map<Class<?>, WeatherInterpolator> classInterpolators =
+        new HashMap<Class<?>, WeatherInterpolator>();
+    private Map<String, WeatherInterpolator> entryInterpolators =
+        new HashMap<String, WeatherInterpolator>();
 
     public BasicWeatherController() {
     }
@@ -50,31 +49,6 @@ public abstract class BasicWeatherController implements ChangeableWeather,
     }
     
     /** {@inheritDoc} */
-    @SuppressWarnings("unchecked")
-    private <T> T getProp(String key, Class<T> clazz) {
-        Entry e = entries.get(key);
-        if(e == null) {
-            return null;
-        }
-        if(e.clazz != clazz) {
-            throw new IllegalArgumentException(String.format(
-                    "Property %s is not a %s!", key, clazz.getSimpleName()));
-        }
-        return (T) e.getValue();
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void setProperty(String key, Object value) {
-        Entry e = entries.get(key);
-        if(e == null) {
-            throw new UnsupportedOperationException(String.format(
-                    "Property %s does not exist!", key));
-        }
-        e.setValue(value);
-    }
-    
-    /** {@inheritDoc} */
     @Override
     public <T> void registerProperty(String key, T value, Class<T> clazz) {
         entries.put(key, new Entry(key, value, clazz));
@@ -82,14 +56,14 @@ public abstract class BasicWeatherController implements ChangeableWeather,
     
     /** {@inheritDoc} */
     @Override
-    public <T> void registerInterpolator(WeatherInterpolator<T> interpolator,
+    public <T> void registerInterpolator(WeatherInterpolator interpolator,
             Class<T> clazz) {
         classInterpolators.put(clazz, interpolator);
     }
     
     /** {@inheritDoc} */
     @Override
-    public <T> void registerInterpolator(WeatherInterpolator<T> interpolator,
+    public void registerInterpolator(WeatherInterpolator interpolator,
             String key) {
         entryInterpolators.put(key, interpolator);
     }
@@ -102,11 +76,51 @@ public abstract class BasicWeatherController implements ChangeableWeather,
      * @param key used to find the value
      * @return a responsible {@link WeatherInterpolator} or {@code null}
      */
-    protected WeatherInterpolator<?> getInterpolator(String key) {
+    protected WeatherInterpolator getInterpolator(String key) {
         if(entryInterpolators.containsKey(key)) {
             return entryInterpolators.get(key);
         }
         return classInterpolators.get(entries.get(key).getClazz());
+    }
+
+    /**
+     * Sets the raw value of a given property to the given data.
+     * 
+     * @param key used to find the value
+     * @param value new value
+     */
+    protected void setProperty(String key, Object value) {
+        Entry e = entries.get(key);
+        if(e != null) {
+            e.setValue(value);
+        }
+    }
+    
+    /**
+     * Retrieves the raw value of a given property.
+     * 
+     * @param key used to find the value
+     * @return the value
+     */
+    protected Object getProperty(String key) {
+        Entry e = entries.get(key);
+        if(e == null) {
+            return null;
+        }
+        return e.getValue();
+    }
+    
+    @SuppressWarnings("unchecked")
+    private <T> T getProp(String key, Class<T> clazz) {
+        Entry e = entries.get(key);
+        if(e == null) {
+            return null;
+        }
+        if(e.clazz != clazz) {
+            throw new IllegalArgumentException(String.format(
+                    "Property %s is not a %s!", key, clazz.getSimpleName()));
+        }
+        return (T) e.getValue();
     }
     
     @SuppressWarnings("rawtypes")

@@ -53,18 +53,4 @@ public abstract class WeatherControllerTestBase {
         WeatherController wc = create(ps);
         wc.getInt("ocean.temp");
     }
-    
-    @Test
-    public void testSetProp() {
-        PropertySet ps = new PropertySet("test");
-        ps.put("ocean.temp", 20.5f, Float.class);
-        WeatherController wc = create(ps);
-        wc.setProperty("ocean.temp", 21.0f);
-    }
-    
-    @Test(expected=UnsupportedOperationException.class)
-    public void testSetMissingProp() {
-        WeatherController wc = create(new PropertySet("test"));
-        wc.setProperty("foo", "hehe");
-    }
 }
