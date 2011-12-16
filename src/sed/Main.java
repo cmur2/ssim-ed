@@ -4,6 +4,9 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
+import sed.weather.Interpolators;
+import sed.weather.PropertySet;
+import sed.weather.RandomWeatherController;
 import sed.weather.StaticWeatherController;
 import sed.weather.WeatherController;
 import ssim.sim.SimClock;
@@ -13,6 +16,7 @@ import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetLoader;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -27,7 +31,7 @@ public class Main extends SimpleApplication {
     private static final Logger logger = Logger.getLogger(Main.class);
     
     public static void main(String[] args) {
-        //BasicConfigurator.configure();
+        //org.apache.log4j.BasicConfigurator.configure();
         {
             Logger root = Logger.getRootLogger();
             root.addAppender(new ConsoleAppender(new PatternLayout("%-3r [%t] %-5p %c: %m%n")));
@@ -75,25 +79,29 @@ public class Main extends SimpleApplication {
     }
     
     private void initWeather() {
-        XMLPropertySetBuilder builder = new XMLPropertySetBuilder(assetManager, "default");
-        builder.put("sky.turbidity", Float.class);
-        builder.put("cloud.cover", Integer.class);
-        builder.put("wind", Vector3f.class);
-        builder.put("prime", Integer[].class);
+        XMLPropertySetBuilder builder = new XMLPropertySetBuilder(assetManager, "default", "test");
+        builder.putFloat("sky.turbidity");
+//        builder.putInt("cloud.cover");
+//        builder.putVec3("wind");
+//        builder.putIntArray("prime");
         
-        weatherController = new StaticWeatherController(builder.getResult());
+        weatherController = new RandomWeatherController(10f, builder.getResults());
+        weatherController.registerInterpolator(new Interpolators.FloatInterpolator(), Float.class);
         
-        System.out.println(weatherController.getVec3("wind"));
-        System.out.println(java.util.Arrays.toString(weatherController.getIntArray("prime")));
+//        System.out.println(weatherController.getVec3("wind"));
+//        System.out.println(java.util.Arrays.toString(weatherController.getIntArray("prime")));
     }
     
     @Override
     public void simpleUpdate(float tpf) {
         float dt = tpf;
         
-        if(time > 2) {
+        if(time > 3) {
             time = 0;
+            System.out.println(weatherController.getFloat("sky.turbidity"));
         }
+        
+        weatherController.update(dt);
         
         time += dt;
         clock.step(dt);

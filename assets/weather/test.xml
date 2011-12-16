@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weather name="default">
+    <sky>
+        <turbidity>10.0</turbidity>
+    </sky>
+    <sun>
+        <lensflare>0.95</lensflare>
+    </sun>
+    <ocean>
+    </ocean>
+    <cloud>
+        <cover>50</cover>
+        <sharpness>0.96</sharpness>
+    </cloud>
+    <!-- north east -->
+    <wind>(1.0, 0, 1.0)</wind>
+    <prime>[2, 3, 5, 7, 11, 23]</prime>
+</weather>
