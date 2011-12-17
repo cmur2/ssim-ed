@@ -33,7 +33,8 @@ public class XMLPropertySetBuilder {
         result = new PropertySet[names.length];
         for(int i = 0; i < names.length; i++) {
             weatherXml[i] = mgr.loadAsset(new AssetKey<Element>(String.format("weather/%s.xml", names[i])));
-            result[i] = new PropertySet(names[i]);
+            String name = weatherXml[i].getAttribute("name").getValue();
+            result[i] = new PropertySet(name);
         }
     }
     
