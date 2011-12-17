@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<weather name="default">
+<weather name="clear">
     <sky>
         <turbidity>2.0</turbidity>
     </sky>

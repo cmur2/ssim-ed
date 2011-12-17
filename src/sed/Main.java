@@ -57,6 +57,8 @@ public class Main extends SimpleApplication {
         clock = SimClock.createClock(11.00f);
         assert clock != null : "SimClock init failed - wrong parameters!";
         
+        speed = 10f;
+        
         initWeather();
         
         flyCam.setMoveSpeed(10 * 6);
@@ -79,13 +81,13 @@ public class Main extends SimpleApplication {
     }
     
     private void initWeather() {
-        XMLPropertySetBuilder builder = new XMLPropertySetBuilder(assetManager, "default", "test");
+        XMLPropertySetBuilder builder = new XMLPropertySetBuilder(assetManager, "clear", "snowy");
         builder.putFloat("sky.turbidity");
 //        builder.putInt("cloud.cover");
 //        builder.putVec3("wind");
 //        builder.putIntArray("prime");
         
-        weatherController = new RandomWeatherController(10f, builder.getResults());
+        weatherController = new RandomWeatherController(5*60f, builder.getResults());
         weatherController.registerInterpolator(new Interpolators.FloatInterpolator(), Float.class);
         
 //        System.out.println(weatherController.getVec3("wind"));
@@ -93,10 +95,8 @@ public class Main extends SimpleApplication {
     }
     
     @Override
-    public void simpleUpdate(float tpf) {
-        float dt = tpf;
-        
-        if(time > 3) {
+    public void simpleUpdate(float dt) {
+        if(time > 10f) {
             time = 0;
             System.out.println(weatherController.getFloat("sky.turbidity"));
         }

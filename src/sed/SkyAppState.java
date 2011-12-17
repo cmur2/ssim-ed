@@ -1,5 +1,7 @@
 package sed;
 
+import org.apache.log4j.Logger;
+
 import sed.sky.SkyBoxTexture;
 import sed.sky.SkyDome;
 import sed.sky.SkyGradient;
@@ -13,6 +15,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
 public class SkyAppState extends AbstractAppState {
+    
+    private static final Logger logger = Logger.getLogger(SkyAppState.class);
     
     private float time = 0;
     
@@ -55,13 +59,19 @@ public class SkyAppState extends AbstractAppState {
     }
     
     @Override
-    public void update(float tpf) {
-        super.update(tpf);
-        
+    public void update(float dt) {
         float timeOfDay = app.clock.hourTime();
-        // TODO: skyGradient.updateSunPosition(timeOfDay, julianDay, latitude, standardMeridian, longitude)
         
-        time += tpf;
+        if(time > 30f) {
+            time = 0;
+            logger.debug("Redraw sky");
+
+            skyGradient.setTurbidity(app.weatherController.getFloat("sky.turbidity"));
+            skyGradient.updateSunPosition(11.00f, 180, 36.4f, (int) (11.8f / 15f), 11.8f);
+            skyBoxTexture.update();
+        }
+        
+        time += dt;
     }
     
     @Override
