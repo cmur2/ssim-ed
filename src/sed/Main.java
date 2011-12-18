@@ -14,6 +14,8 @@ import ssim.sim.SimClock;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetLoader;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -43,8 +45,6 @@ public class Main extends SimpleApplication {
         main.start();
     }
     
-    // TODO: Key z -> y
-    
     private float time = 0;
     
     public SimClock clock;
@@ -53,6 +53,8 @@ public class Main extends SimpleApplication {
     @Override
     public void simpleInitApp() {
         assetManager.registerLoader(XMLLoader.class, "xml");
+        inputManager.deleteTrigger("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Z));
+        inputManager.addMapping("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Y));
         
         clock = SimClock.createClock(11.00f);
         assert clock != null : "SimClock init failed - wrong parameters!";
