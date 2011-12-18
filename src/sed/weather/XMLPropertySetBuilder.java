@@ -1,11 +1,9 @@
-package sed;
+package sed.weather;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jdom.Element;
-
-import sed.weather.PropertySet;
 
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;

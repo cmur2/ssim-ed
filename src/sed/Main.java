@@ -5,15 +5,13 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
 import sed.weather.Interpolators;
-import sed.weather.PropertySet;
 import sed.weather.RandomWeatherController;
 import sed.weather.StaticWeatherController;
 import sed.weather.WeatherController;
+import sed.weather.XMLPropertySetBuilder;
 import ssim.sim.SimClock;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.asset.AssetKey;
-import com.jme3.asset.AssetLoader;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
