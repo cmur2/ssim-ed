@@ -21,11 +21,11 @@ package ssim.sim;
 import org.apache.log4j.Logger;
 
 /**
- * This is independent component managing a simulations time
+ * This is an independent component managing a simulations time
  * and it's elapse with (fractional!) millisecond precision.
  * The time scale raises up to number of elapsed hours.
  * <br/>
- * Creating  a {@link SimClock} is possible by calling factory methods
+ * Creating a {@link SimClock} is possible by calling factory methods
  * like {@link #createClock(double)} or {@link #createClock(int, int)}.
  *
  * @author Ch. Nicolai
@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 public class SimClock {
     
     private static final Logger logger = Logger.getLogger(SimClock.class);
-
+    
     private int hours = 0;
     private int minutes = 0;
     private int seconds = 0;
@@ -63,8 +63,9 @@ public class SimClock {
      */
     public void step(double stepInSeconds) {
         if(stepInSeconds < 0) {
-        	logger.warn("SimClock encountered back tick ("+
-                stepInSeconds+"s)! Tick ignored.");
+            logger.warn(String.format(
+                "SimClock encountered back tick (%s s)! Tick ignored.",
+                stepInSeconds));
             return;
         }
         assert stepInSeconds >= 0;
@@ -73,41 +74,41 @@ public class SimClock {
         long newmillis = millis % 1000;
         seconds += (millis-newmillis)/1000;
         millis = newmillis;
-
+        
         int newseconds = seconds % 60;
         minutes += (seconds-newseconds)/60;
         seconds = newseconds;
-
+        
         int newminutes = minutes % 60;
         hours += (minutes-newminutes)/60;
         minutes = newminutes;
-
+        
         int newhours = hours % 24;
         // ignore days
         hours = newhours;
     }
-
+    
     /**
      * @return hours since midnight
      */
     public int getHours() {
         return hours;
     }
-
+    
     /**
      * @return minutes since last full hour
      */
     public int getMinutes() {
         return minutes;
     }
-
+    
     /**
      * @return seconds since last full minute
      */
     public int getSeconds() {
         return seconds;
     }
-
+    
     /**
      * @return milliseconds since last full second
      */
@@ -135,7 +136,7 @@ public class SimClock {
     public float hourTime() {
         return hours+minutes/60f;
     }
-
+    
     /**
      * This routine is an in-place formatter for minimizing
      * {@link SimClock}s dependencies. It allows to fetch the internal time
@@ -168,7 +169,7 @@ public class SimClock {
     }
     
     // === Static Section ===
-
+    
     public static String minuteTimeToMixedTime(int minuteTime) {
         StringBuilder sb = new StringBuilder();
         int hours = minuteTime/60;
@@ -183,7 +184,7 @@ public class SimClock {
         sb.append(minutes);
         return sb.toString();
     }
-
+    
     /**
      * Creates a new {@link SimClock} instance with given hour and minutes.
      *
@@ -199,11 +200,11 @@ public class SimClock {
             return null;
         }
         SimClock c = new SimClock(hours, minutes);
-        logger.info("Internal start time directly given is "+
-                        c.mixedTime(false));
+        logger.info(String.format("Internal start time directly given is %s",
+            c.mixedTime(false)));
         return c;
     }
-
+    
     /**
      * Creates a new {@link SimClock} instance with given time of day.
      *
@@ -221,8 +222,9 @@ public class SimClock {
         int hours = (int)timeOfDay;
         int minutes = (int)((timeOfDay-hours)*60d);
         SimClock c = new SimClock(hours, minutes);
-        logger.info("Internal start time parsed from timeOfDay '"+
-                        timeOfDay+"' is "+c.mixedTime(false));
+        logger.info(String.format(
+            "Internal start time parsed from timeOfDay '%s' is %s",
+            timeOfDay, c.mixedTime(false)));
         return c;
     }
 }
