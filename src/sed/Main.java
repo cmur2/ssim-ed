@@ -9,6 +9,7 @@ import sed.mission.MissionParser;
 import sed.weather.Interpolators;
 import sed.weather.RandomWeatherController;
 import sed.weather.StaticWeatherController;
+import sed.weather.Weather;
 import sed.weather.WeatherController;
 import sed.weather.XMLPropertySetBuilder;
 import ssim.sim.SimClock;
@@ -47,9 +48,9 @@ public class Main extends SimpleApplication {
     
     private float time = 0;
     
-    public Mission mission;
-    public SimClock clock;
-    public WeatherController weatherController; 
+    private Mission mission;
+    private SimClock simClock;
+    private WeatherController weatherController; 
     
     @Override
     public void simpleInitApp() {
@@ -59,8 +60,8 @@ public class Main extends SimpleApplication {
         
         initMission();
         
-        clock = SimClock.createClock(11.00f);
-        assert clock != null : "SimClock init failed - wrong parameters!";
+        simClock = SimClock.createClock(getMission().getTimeOfDay());
+        assert simClock != null : "SimClock init failed - wrong parameters!";
         
         speed = 10f;
         
@@ -107,13 +108,25 @@ public class Main extends SimpleApplication {
     public void simpleUpdate(float dt) {
         if(time > 10f) {
             time = 0;
-            System.out.println(weatherController.getFloat("sky.turbidity"));
+            System.out.println(getWeather().getFloat("sky.turbidity"));
         }
         
         weatherController.update(dt);
         
         time += dt;
-        clock.step(dt);
+        simClock.step(dt);
+    }
+    
+    public Mission getMission() {
+        return mission;
+    }
+    
+    public SimClock getSimClock() {
+        return simClock;
+    }
+    
+    public Weather getWeather() {
+        return weatherController;
     }
     
     private static void printSceneGraph(Node root) {

@@ -34,9 +34,15 @@ public class SkyAppState extends AbstractAppState {
         super.initialize(stateManager, baseApp);
         app = (Main) baseApp;
         
+        float timeOfDay = app.getSimClock().hourTime();
+        
         skyGradient = new SkyGradient();
-        skyGradient.setTurbidity(app.weatherController.getFloat("sky.turbidity"));
-        skyGradient.updateSunPosition(11.00f, 180, 36.4f, (int) (11.8f / 15f), 11.8f);
+        skyGradient.setTurbidity(app.getWeather().getFloat("sky.turbidity"));
+        skyGradient.updateSunPosition(timeOfDay,
+            app.getMission().getDayOfYear(),
+            app.getMission().getLatitude(),
+            (int) (app.getMission().getLongitude() / 15f),
+            app.getMission().getLongitude());
         
         geom = new Geometry("SkyDome");
         
@@ -60,14 +66,18 @@ public class SkyAppState extends AbstractAppState {
     
     @Override
     public void update(float dt) {
-        float timeOfDay = app.clock.hourTime();
+        float timeOfDay = app.getSimClock().hourTime();
         
         if(time > 30f) {
             time = 0;
             logger.debug("Redraw sky");
 
-            skyGradient.setTurbidity(app.weatherController.getFloat("sky.turbidity"));
-            skyGradient.updateSunPosition(11.00f, 180, 36.4f, (int) (11.8f / 15f), 11.8f);
+            skyGradient.setTurbidity(app.getWeather().getFloat("sky.turbidity"));
+            skyGradient.updateSunPosition(timeOfDay,
+                app.getMission().getDayOfYear(),
+                app.getMission().getLatitude(),
+                (int) (app.getMission().getLongitude() / 15f),
+                app.getMission().getLongitude());
             skyBoxTexture.update();
         }
         

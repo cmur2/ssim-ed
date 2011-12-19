@@ -9,11 +9,8 @@ public class BasicMission implements Mission {
     private float latitude;
     private float longitude;
     
-    public BasicMission(String mapFile, float latitude, float longitude) {
-        this.mapFile = mapFile;
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
+    private int dayOfYear;
+    private float timeOfDay;
     
     public BasicMission() {
     }
@@ -43,5 +40,23 @@ public class BasicMission implements Mission {
     
     public void setLongitude(float longitude) {
         this.longitude = longitude;
+    }
+    
+    @Override
+    public int getDayOfYear() {
+        return dayOfYear;
+    }
+    
+    public void setDayOfYear(int dayOfYear) {
+        this.dayOfYear = dayOfYear;
+    }
+    
+    @Override
+    public float getTimeOfDay() {
+        return timeOfDay;
+    }
+    
+    public void setTimeOfDay(float timeOfDay) {
+        this.timeOfDay = timeOfDay;
     }
 }

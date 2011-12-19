@@ -21,8 +21,11 @@ public class MissionParser {
         try {
             m.setLatitude(missionXml.getChild("location").getAttribute("latitude").getFloatValue());
             m.setLongitude(missionXml.getChild("location").getAttribute("longitude").getFloatValue());
+            m.setDayOfYear(missionXml.getChild("date").getAttribute("dayOfYear").getIntValue());
+            m.setTimeOfDay(missionXml.getChild("time").getAttribute("timeOfDay").getFloatValue());
         } catch(DataConversionException ex) {
             ex.printStackTrace();
+            return null;
         }
         
         return m;
