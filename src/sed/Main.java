@@ -4,6 +4,8 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
+import sed.mission.Mission;
+import sed.mission.MissionParser;
 import sed.weather.Interpolators;
 import sed.weather.RandomWeatherController;
 import sed.weather.StaticWeatherController;
@@ -45,6 +47,7 @@ public class Main extends SimpleApplication {
     
     private float time = 0;
     
+    public Mission mission;
     public SimClock clock;
     public WeatherController weatherController; 
     
@@ -53,6 +56,8 @@ public class Main extends SimpleApplication {
         assetManager.registerLoader(XMLLoader.class, "xml");
         inputManager.deleteTrigger("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Z));
         inputManager.addMapping("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Y));
+        
+        initMission();
         
         clock = SimClock.createClock(11.00f);
         assert clock != null : "SimClock init failed - wrong parameters!";
@@ -78,6 +83,10 @@ public class Main extends SimpleApplication {
         //rootNode.attachChild(geom);
         
         printSceneGraph(rootNode);
+    }
+    
+    private void initMission() {
+        mission = MissionParser.load(assetManager, "missions/mission_01.xml");
     }
     
     private void initWeather() {

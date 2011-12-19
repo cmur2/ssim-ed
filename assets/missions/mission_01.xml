@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mission name="" blub="">
+    <description>
+        Hallo!
+    </description>
+    <location latitude="36.4" longitude="11.8" />
+    <date dayOfYear="180" />
+    <time timeOfDay="11.00" />
+    <map file="Florida+Kuba.map"/>
+    <win>
+        <Const value="false" />
+    </win>
+    <lose>
+        <Not>
+            <ExistsSimobjWithId value="0" />
+        </Not>
+    </lose>
+</mission>
