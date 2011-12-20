@@ -8,7 +8,6 @@ import sed.mission.Mission;
 import sed.mission.MissionParser;
 import sed.weather.Interpolators;
 import sed.weather.RandomWeatherController;
-import sed.weather.StaticWeatherController;
 import sed.weather.Weather;
 import sed.weather.WeatherController;
 import sed.weather.XMLPropertySetBuilder;
@@ -19,7 +18,6 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -74,14 +72,15 @@ public class Main extends SimpleApplication {
         skyNode.setCullHint(CullHint.Never);
         rootNode.attachChild(skyNode);
         
-        stateManager.attach(new SkyAppState());
+//        stateManager.attach(new SkyAppState());
+//        stateManager.attach(new SunAppState());
         
-        Box b = new Box(Vector3f.ZERO, 1, 1, 1);
-        Geometry geom = new Geometry("Box", b);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Blue);
-        geom.setMaterial(mat);
-        //rootNode.attachChild(geom);
+        Box boxBox = new Box(Vector3f.ZERO, 1, 1, 1);
+        Geometry boxGeom = new Geometry("Box", boxBox);
+        Material boxMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        boxMat.setColor("Color", ColorRGBA.Blue);
+        boxGeom.setMaterial(boxMat);
+        //rootNode.attachChild(boxGeom);
         
         printSceneGraph(rootNode);
     }
