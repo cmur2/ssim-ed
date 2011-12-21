@@ -1,6 +1,5 @@
 package sed.sky;
 
-import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 
 import ssim.util.MathExt;

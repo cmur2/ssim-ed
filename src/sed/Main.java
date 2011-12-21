@@ -48,7 +48,8 @@ public class Main extends SimpleApplication {
     
     private Mission mission;
     private SimClock simClock;
-    private WeatherController weatherController; 
+    private WeatherController weatherController;
+    private Node skyNode;
     
     @Override
     public void simpleInitApp() {
@@ -68,12 +69,12 @@ public class Main extends SimpleApplication {
         flyCam.setMoveSpeed(10 * 6);
         //flyCam.setDragToRotate(true);
         
-        Node skyNode = new Node("SkyNode");
+        skyNode = new Node("SkyNode");
         skyNode.setCullHint(CullHint.Never);
         rootNode.attachChild(skyNode);
         
 //        stateManager.attach(new SkyAppState());
-//        stateManager.attach(new SunAppState());
+        stateManager.attach(new SunAppState());
         
         Box boxBox = new Box(Vector3f.ZERO, 1, 1, 1);
         Geometry boxGeom = new Geometry("Box", boxBox);
@@ -116,6 +117,8 @@ public class Main extends SimpleApplication {
         simClock.step(dt);
     }
     
+    // simple getters
+    
     public Mission getMission() {
         return mission;
     }
@@ -127,6 +130,12 @@ public class Main extends SimpleApplication {
     public Weather getWeather() {
         return weatherController;
     }
+    
+    public Node getSkyNode() {
+        return skyNode;
+    }
+    
+    // helpers
     
     private static void printSceneGraph(Node root) {
         printSceneGraph(root, 0);

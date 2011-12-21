@@ -22,6 +22,7 @@ public class SunAppState extends AbstractAppState {
     // exists only while AppState is living
     private Main app;
     private Geometry geom;
+    private SunTexture sunTexture;
     
     public SunAppState() {
     }
@@ -34,7 +35,10 @@ public class SunAppState extends AbstractAppState {
         Quad sunQuad = new Quad(2f, 2f);
         geom = new Geometry("Sun", sunQuad);
         Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setTexture("ColorMap", new SunTexture(0.95f));
+        
+        sunTexture = new SunTexture(0.95f);
+        mat.setTexture("ColorMap", sunTexture);
+        
         mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         geom.setMaterial(mat);
         geom.setQueueBucket(Bucket.Transparent);
@@ -43,16 +47,19 @@ public class SunAppState extends AbstractAppState {
         bbControl.setAlignment(BillboardControl.Alignment.Screen);
         geom.addControl(bbControl);
         
-        Node skyNode = (Node) app.getRootNode().getChild("SkyNode");
-        skyNode.attachChild(geom);
+        app.getSkyNode().attachChild(geom);
+    }
+    
+    @Override
+    public void update(float dt) {
+        // TODO: update
     }
     
     @Override
     public void cleanup() {
         super.cleanup();
         
-        Node skyNode = (Node) app.getRootNode().getChild("SkyNode");
-        skyNode.detachChild(geom);
+        app.getSkyNode().detachChild(geom);
         
         app = null;
         geom = null;

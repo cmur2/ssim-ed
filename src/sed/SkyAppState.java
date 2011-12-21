@@ -60,8 +60,7 @@ public class SkyAppState extends AbstractAppState {
         SkyDome s = new SkyDome();
         geom.setMesh(s);
         
-        Node skyNode = (Node) app.getRootNode().getChild("SkyNode");
-        skyNode.attachChild(geom);
+        app.getSkyNode().attachChild(geom);
     }
     
     @Override
@@ -88,8 +87,7 @@ public class SkyAppState extends AbstractAppState {
     public void cleanup() {
         super.cleanup();
         
-        Node skyNode = (Node) app.getRootNode().getChild("SkyNode");
-        skyNode.detachChild(geom);
+        app.getSkyNode().detachChild(geom);
         
         app = null;
         skyGradient = null;
