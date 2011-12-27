@@ -14,6 +14,10 @@ import com.jme3.scene.Geometry;
 
 public class SkyAppState extends AbstractAppState {
     
+    // TODO: realize SkyDome and Sun as background geometry in jme?
+    
+    public static final float HemisphereRadius = 100f;
+    
     private static final Logger logger = Logger.getLogger(SkyAppState.class);
     
     private float time = 0;
@@ -46,7 +50,7 @@ public class SkyAppState extends AbstractAppState {
         geom.setMaterial(mat);
         
         //Box s = new Box(Vector3f.ZERO, 1, 1, 1);
-        SkyDome s = new SkyDome();
+        SkyDome s = new SkyDome(HemisphereRadius, 2f, 2f);
         geom.setMesh(s);
         
         app.getSkyNode().attachChild(geom);

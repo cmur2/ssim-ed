@@ -90,7 +90,7 @@ public class SunAppState extends AbstractAppState {
     
     private void updateSunTranslation() {
         sunTranslation = app.getSun().getSunPosition(sunTranslation);
-        sunTranslation.multLocal(95); // TODO: need skydome size
+        sunTranslation.multLocal(0.9f*SkyAppState.HemisphereRadius);
         sunTranslationNode.setLocalTranslation(sunTranslation);
     }
 }

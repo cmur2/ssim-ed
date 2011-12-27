@@ -10,10 +10,8 @@ import com.jme3.util.BufferUtils;
 
 public class SkyDome extends Mesh {
     
-    public SkyDome() {
-        float dtheta = 2;
-        float dphi = 2;
-        Vector3f[] p = genDome(100f, dtheta, dphi);
+    public SkyDome(float radius, float dphi, float dtheta) {
+        Vector3f[] p = genDome(radius, dtheta, dphi);
         int[] indices = genDomeIndices(dtheta, dphi);
         
         setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(p));
