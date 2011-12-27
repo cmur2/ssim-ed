@@ -42,7 +42,8 @@ public class XMLPropertySetBuilder {
             try {
                 result[i].put(key, (Float) Float.valueOf(data), Float.class);
             } catch(NumberFormatException ex) {
-                throw new ParseException(String.format("Property %s: parsing failed", key), ex); 
+                throw new ParseException(String.format(
+                    "Property %s in %s: parsing failed", key, result[i].getName()), ex); 
             }
         }
     }
@@ -57,7 +58,8 @@ public class XMLPropertySetBuilder {
                     Float.parseFloat(m.group(2).trim()),
                     Float.parseFloat(m.group(3).trim())), Vector3f.class);
             } else {
-                throw new ParseException("Not a Vector3f: "+data);
+                throw new ParseException(String.format(
+                    "Property %s in %s: not a Vector3f", key, result[i].getName()));
             }
         }
     }
@@ -68,7 +70,8 @@ public class XMLPropertySetBuilder {
             try {
                 result[i].put(key, (Integer) Integer.valueOf(data, 10), Integer.class);
             } catch(NumberFormatException ex) {
-                throw new ParseException(String.format("Property %s: parsing failed", key), ex); 
+                throw new ParseException(String.format(
+                    "Property %s in %s: parsing failed", key, result[i].getName()), ex);
             }
         }
     }
@@ -85,7 +88,8 @@ public class XMLPropertySetBuilder {
                 }
                 result[i].put(key, intArray, Integer[].class);
             } else {
-                throw new NumberFormatException("Not an Integer[]: "+data);
+                throw new ParseException(String.format(
+                    "Property %s in %s: not an Integer[]", key, result[i].getName()));
             }
         }
     }
@@ -96,7 +100,8 @@ public class XMLPropertySetBuilder {
             try {
                 result[i].put(key, (Boolean) Boolean.valueOf(data), Boolean.class);
             } catch(NumberFormatException ex) {
-                throw new ParseException(String.format("Property %s: parsing failed", key), ex); 
+                throw new ParseException(String.format(
+                    "Property %s in %s: parsing failed", key, result[i].getName()), ex); 
             }
         }
     }
@@ -120,7 +125,8 @@ public class XMLPropertySetBuilder {
 //            System.out.println(childreen[i]);
             cur = cur.getChild(parts[i]);
             if(cur == null) {
-                throw new ParseException(String.format("Property %s: no XML data not found!", key));
+                throw new ParseException(String.format(
+                    "Property %s in %s: no XML data not found!", key, result[i].getName()));
             }
         }
         return cur.getText();
