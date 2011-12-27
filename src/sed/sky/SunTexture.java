@@ -2,13 +2,18 @@ package sed.sky;
 
 import java.nio.ByteBuffer;
 
+import org.apache.log4j.Logger;
+
 import ssim.util.MathExt;
 
+import com.jme3.math.Vector2f;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture2D;
 import com.jme3.util.BufferUtils;
 
 public class SunTexture extends Texture2D {
+    
+    private static final Logger logger = Logger.getLogger(SunTexture.class);
     
     private static final int TexSize = 256;
     
@@ -19,30 +24,125 @@ public class SunTexture extends Texture2D {
     private static final int NumRays = 6;
     private static final float RayWidth = 1.0f;
     
-    private float lensflareShininess;
+    // theta ranges
+    private static final float SunLensflareThetaMax = 55f;
+    private static final float SunNormalThetaMax = 75f;
     
-    public SunTexture(float lensflareShininess) {
-        this.lensflareShininess = lensflareShininess;
-//        Image img = new Image(Image.Format.ABGR8, TexSize, TexSize, generateSimple());
-        Image img = new Image(Image.Format.ABGR8, TexSize, TexSize, generateLensflare());
+    private float lensflareShininess;
+    private boolean lensflareEnabled;
+    /**
+     * when set forces rerendering of lensflare image
+     */
+    private boolean dirty;
+    
+    /**
+     * x: sunPhiAngle, y: sunThetaAngle
+     */
+    private Vector2f sunAngles;
+    private Sun sun;
+    
+    /**
+     * cache and lazy init images, see {@link #dirty}
+     */
+    private ByteBuffer emptyImage;
+    private ByteBuffer simpleImage;
+    private ByteBuffer lensflareImage;
+    
+    public SunTexture(Sun sun) {
+        this.sun = sun;
+        Image img = new Image(Image.Format.ABGR8, TexSize, TexSize, getEmptyImage());
         setImage(img);
     }
     
-    private ByteBuffer generateSimple() {
-        float[][] alphas = new float[TexSize][TexSize];
-        
-        generateGlow(alphas);
-        
-        return generateByteBuffer(alphas);
+    public void setLensflareShininess(float lensflareShininess) {
+        if(lensflareShininess == this.lensflareShininess) {
+            return;
+        }
+        dirty = true;
+        this.lensflareShininess = lensflareShininess;
     }
     
-    private ByteBuffer generateLensflare() {
-        float[][] alphas = new float[TexSize][TexSize];
-        
-        generateGlow(alphas);
-        generateFlares(alphas);
-        
-        return generateByteBuffer(alphas);
+    public float getLensflareShininess() {
+        return lensflareShininess;
+    }
+    
+    public void setLensflareEnabled(boolean lensflareEnabled) {
+        if(lensflareEnabled == this.lensflareEnabled) {
+            return;
+        }
+        dirty = true;
+        this.lensflareEnabled = lensflareEnabled;
+    }
+    
+    public boolean getLensflareEnabled() {
+        return lensflareEnabled;
+    }
+    
+    public void update() {
+        sunAngles = sun.getSunAngles(sunAngles);
+        float sunThetaDeg = (float) Math.toDegrees(sunAngles.y);
+        // theta=0 -> zenith
+        // theta=90 deg -> horizon
+        if(sunThetaDeg < SunLensflareThetaMax) {
+            getImage().setData(getLensflareImage());
+        } else if(sunThetaDeg < SunNormalThetaMax) {
+            getImage().setData(getSimpleImage());
+        } else {
+            getImage().setData(getEmptyImage());
+        }
+    }
+    
+    private ByteBuffer getEmptyImage() {
+        if(emptyImage == null) {
+            logger.debug("Generating empty sun texture");
+            emptyImage = BufferUtils.createByteBuffer(TexSize * TexSize * 4);
+            for(int i = 0; i < emptyImage.capacity()/4; i++) {
+                emptyImage.put((byte) 10); // A
+                emptyImage.put((byte) 255); // B
+                emptyImage.put((byte) 255); // G
+                emptyImage.put((byte) 255); // R
+            }
+        }
+        return emptyImage;
+    }
+    
+    private ByteBuffer getSimpleImage() {
+        if(simpleImage == null) {
+            logger.debug("Generating simple sun texture");
+            float[][] alphas = new float[TexSize][TexSize];
+            generateGlow(alphas);
+            simpleImage = generateByteBuffer(alphas);
+        }
+        return simpleImage;
+    }
+    
+    private ByteBuffer getLensflareImage() {
+        if(lensflareImage == null || dirty) {
+            logger.debug("Generating lensflare sun texture");
+            float[][] alphas = new float[TexSize][TexSize];
+            generateGlow(alphas);
+            if(lensflareEnabled) { 
+                generateFlares(alphas);
+            }
+            lensflareImage = generateByteBuffer(alphas);
+            dirty = false;
+        }
+        return lensflareImage;
+    }
+    
+    private ByteBuffer generateByteBuffer(float[][] alphas) {
+        ByteBuffer bb = BufferUtils.createByteBuffer(TexSize * TexSize * 4);
+        for(int column = 0; column < TexSize; column++) {
+            for(int row = 0; row < TexSize; row++) {
+                int index = (row*TexSize + column) * 4;
+                float alpha = MathExt.clamp(alphas[column][row], 0, 255);
+                bb.put(index+0, (byte) (alpha)); // A
+                bb.put(index+1, (byte) (255)); // B
+                bb.put(index+2, (byte) (255)); // G
+                bb.put(index+3, (byte) (255)); // R
+            }
+        }
+        return bb;
     }
     
     private void generateGlow(float[][] alphas) {
@@ -73,10 +173,13 @@ public class SunTexture extends Texture2D {
     }
     
     private void generateFlares(float[][] alphas) {
-        float beginGrad = (float)Math.random()*(180/NumRays);
+        // TODO: without random
+        float beginGrad = (float) Math.random()*(180/NumRays);
         for(int i = 0; i < NumRays; i++) {
-            float angle = beginGrad + 180/NumRays*i + 180/NumRays/2; //beginGrad+(180/maxStrahlen*i)+(float)Math.random()*(180/maxStrahlen);
-            float exp = lensflareShininess; //0.92f+(float)Math.random()*0.05f;
+            float angle = beginGrad + 180/NumRays*i + 180/NumRays/2;
+            //float angle = beginGrad+(180/maxStrahlen*i)+(float)Math.random()*(180/maxStrahlen);
+            float exp = lensflareShininess;
+            // TODO: parameterize this:
             exp += (Math.random()-0.5)*0.03f;
             for(int column = 0; column < TexSize; column++) {
                 for(int row = 0; row < TexSize; row++) {
@@ -84,16 +187,16 @@ public class SunTexture extends Texture2D {
                     int xdiff = column-TexSize/2;
                     int ydiff = row-TexSize/2;
                     if(xdiff == 0 && ydiff == 0) {
-                        // Mittelpixel nicht beachten!
+                        // ignore center pixel
                         continue;
                     }
-                    float dist = (float)Math.sqrt(xdiff*xdiff+ydiff*ydiff);
+                    float dist = (float) Math.sqrt(xdiff*xdiff+ydiff*ydiff);
                     if(dist < SunRadius) {
-                        // Sonne ueberdeckt diesen Bereich bereits vollstaendig
+                        // skip since sun is located here
                         continue;
                     }
-                    // Winkel zw. 12-Uhr und aktueller Strahlrichtung
-                    float phi = (float)MathExt.normDeg(Math.toDegrees(Math.asin(xdiff/dist)));
+                    // angle between 12 o'clock and current ray direction
+                    float phi = (float) MathExt.normDeg(Math.toDegrees(Math.asin(xdiff/dist)));
                     
                     if(ydiff > 0) {
                         // 4. Sektor behandeln (90 < phi < 180)
@@ -112,7 +215,7 @@ public class SunTexture extends Texture2D {
                         else { alpha = (float)Math.pow(exp, dist-SunRadius)*255f; }*/
                         //color *= (RayWidth-Math.abs(breite))/RayWidth;
                         // Ausblenden der Laenge nach:
-                        float alpha = (float)Math.pow(exp, dist-SunRadius)*255f;
+                        float alpha = (float) Math.pow(exp, dist-SunRadius)*255f;
                         // Ausblenden in der Breite:
                         alpha *= 1f-(Math.abs(abstandBreite)/RayWidth);
                         alphas[column][row] += alpha;
@@ -120,20 +223,5 @@ public class SunTexture extends Texture2D {
                 }
             }
         }
-    }
-    
-    private ByteBuffer generateByteBuffer(float[][] alphas) {
-        ByteBuffer bb = BufferUtils.createByteBuffer(TexSize * TexSize * 4);
-        for(int column = 0; column < TexSize; column++) {
-            for(int row = 0; row < TexSize; row++) {
-                int index = (row*TexSize + column) * 4;
-                float alpha = MathExt.clamp(alphas[column][row], 0, 255);
-                bb.put(index+0, (byte) (alpha)); // A
-                bb.put(index+1, (byte) (255)); // B
-                bb.put(index+2, (byte) (255)); // G
-                bb.put(index+3, (byte) (255)); // R
-            }
-        }
-        return bb;
     }
 }

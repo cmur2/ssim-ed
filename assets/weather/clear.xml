@@ -4,7 +4,8 @@
         <turbidity>2.0</turbidity>
     </sky>
     <sun>
-        <lensflare>0.95</lensflare>
+        <lensflare-enabled>true</lensflare-enabled>
+        <lensflare-shininess>0.95</lensflare-shininess>
     </sun>
     <ocean>
     </ocean>

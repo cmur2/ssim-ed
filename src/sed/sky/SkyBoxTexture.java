@@ -12,10 +12,10 @@ public class SkyBoxTexture extends TextureCubeMap {
     
     private static final int TexSize = 256;
     
-    private SkyGradient sg;
+    private SkyGradient skyGradient;
     
-    public SkyBoxTexture(SkyGradient sg) {
-        this.sg = sg;
+    public SkyBoxTexture(SkyGradient skyGradient) {
+        this.skyGradient = skyGradient;
         ArrayList<ByteBuffer> faces = new ArrayList<ByteBuffer>();
         // +x
         faces.add(newFace());
@@ -70,7 +70,7 @@ public class SkyBoxTexture extends TextureCubeMap {
             int vonUnten = (TexSize - 1 - i) * TexSize * 3;
             float z = zInit;
             for(int j = 0; j < TexSize * 3; j += 3) { // z
-                sg.getSkycolor(colors, x, y, z);
+                skyGradient.getSkycolor(colors, x, y, z);
                 //ColorRGBA.randomColor().toArray(colors);
                 putBGR(buf, vonOben + j, colors);
                 putBGR(buf, vonUnten + j, colors);
@@ -95,7 +95,7 @@ public class SkyBoxTexture extends TextureCubeMap {
             int vonUnten = (TexSize - 1 - i) * TexSize * 3;
             float x = xInit;
             for(int j = 0; j < TexSize * 3; j += 3) { // x
-                sg.getSkycolor(colors, x, y, z);
+                skyGradient.getSkycolor(colors, x, y, z);
                 putBGR(buf, vonOben + j, colors);
                 putBGR(buf, vonUnten + j, colors);
                 x += xInc;
@@ -119,7 +119,7 @@ public class SkyBoxTexture extends TextureCubeMap {
             //int vonUnten = (TexSize-1-i)*TexSize*3;
             float x = -1f;
             for(int j = 0; j < TexSize * 3; j += 3) { // x
-                sg.getSkycolor(colors, x, y, z);
+                skyGradient.getSkycolor(colors, x, y, z);
                 putBGR(buf, vonOben + j, colors);
                 //putBGR(buf, vonUnten+j, colors);
                 x += xInc;

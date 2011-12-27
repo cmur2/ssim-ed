@@ -6,6 +6,8 @@ import org.apache.log4j.PatternLayout;
 
 import sed.mission.Mission;
 import sed.mission.MissionParser;
+import sed.sky.SkyGradient;
+import sed.sky.Sun;
 import sed.weather.Interpolators;
 import sed.weather.RandomWeatherController;
 import sed.weather.Weather;
@@ -50,6 +52,8 @@ public class Main extends SimpleApplication {
     private SimClock simClock;
     private WeatherController weatherController;
     private Node skyNode;
+    private Sun sun;
+    private SkyGradient skyGradient;
     
     @Override
     public void simpleInitApp() {
@@ -68,12 +72,19 @@ public class Main extends SimpleApplication {
         
         flyCam.setMoveSpeed(10 * 6);
         //flyCam.setDragToRotate(true);
+        cam.setLocation(Vector3f.ZERO);
         
         skyNode = new Node("SkyNode");
         skyNode.setCullHint(CullHint.Never);
         rootNode.attachChild(skyNode);
         
-//        stateManager.attach(new SkyAppState());
+        sun = new Sun(this);
+        sun.update();
+        skyGradient = new SkyGradient(this);
+        skyGradient.setTurbidity(getWeather().getFloat("sky.turbidity"));
+        skyGradient.update();
+        
+        stateManager.attach(new SkyAppState());
         stateManager.attach(new SunAppState());
         
         Box boxBox = new Box(Vector3f.ZERO, 1, 1, 1);
@@ -91,14 +102,19 @@ public class Main extends SimpleApplication {
     }
     
     private void initWeather() {
-        XMLPropertySetBuilder builder = new XMLPropertySetBuilder(assetManager, "clear", "snowy");
+//        String[] sets = {"clear", "snowy"};
+        String[] sets = {"clear"};
+        XMLPropertySetBuilder builder = new XMLPropertySetBuilder(assetManager, sets);
         builder.putFloat("sky.turbidity");
+        builder.putBool("sun.lensflare-enabled");
+        builder.putFloat("sun.lensflare-shininess");
 //        builder.putInt("cloud.cover");
 //        builder.putVec3("wind");
 //        builder.putIntArray("prime");
         
         weatherController = new RandomWeatherController(5*60f, builder.getResults());
         weatherController.registerInterpolator(new Interpolators.FloatInterpolator(), Float.class);
+        weatherController.registerInterpolator(new Interpolators.BoolInterpolator(), Boolean.class);
         
 //        System.out.println(weatherController.getVec3("wind"));
 //        System.out.println(java.util.Arrays.toString(weatherController.getIntArray("prime")));
@@ -108,10 +124,13 @@ public class Main extends SimpleApplication {
     public void simpleUpdate(float dt) {
         if(time > 10f) {
             time = 0;
-            System.out.println(getWeather().getFloat("sky.turbidity"));
+            //System.out.println(getWeather().getFloat("sky.turbidity"));
         }
         
+        skyGradient.setTurbidity(getWeather().getFloat("sky.turbidity"));
+        skyGradient.update();
         weatherController.update(dt);
+        sun.update();
         
         time += dt;
         simClock.step(dt);
@@ -133,6 +152,14 @@ public class Main extends SimpleApplication {
     
     public Node getSkyNode() {
         return skyNode;
+    }
+    
+    public Sun getSun() {
+        return sun;
+    }
+    
+    public SkyGradient getSkyGradient() {
+        return skyGradient;
     }
     
     // helpers

@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 
 import sed.sky.SkyBoxTexture;
 import sed.sky.SkyDome;
-import sed.sky.SkyGradient;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
@@ -12,7 +11,6 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 
 public class SkyAppState extends AbstractAppState {
     
@@ -22,7 +20,6 @@ public class SkyAppState extends AbstractAppState {
     
     // exists only while AppState is living
     private Main app;
-    private SkyGradient skyGradient;
     private Geometry geom;
     private SkyBoxTexture skyBoxTexture;
     
@@ -36,21 +33,13 @@ public class SkyAppState extends AbstractAppState {
         
         float timeOfDay = app.getSimClock().hourTime();
         
-        skyGradient = new SkyGradient();
-        skyGradient.setTurbidity(app.getWeather().getFloat("sky.turbidity"));
-        skyGradient.updateSunPosition(timeOfDay,
-            app.getMission().getDayOfYear(),
-            app.getMission().getLatitude(),
-            (int) (app.getMission().getLongitude() / 15f),
-            app.getMission().getLongitude());
-        
         geom = new Geometry("SkyDome");
         
         Material mat = new Material(app.getAssetManager(), "shaders/Sky.j3md");
         //mat.getAdditionalRenderState().setWireframe(true);
         mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
         
-        skyBoxTexture = new SkyBoxTexture(skyGradient);
+        skyBoxTexture = new SkyBoxTexture(app.getSkyGradient());
         skyBoxTexture.update();
         mat.setTexture("SkyBox", skyBoxTexture);
         
@@ -65,21 +54,12 @@ public class SkyAppState extends AbstractAppState {
     
     @Override
     public void update(float dt) {
-        float timeOfDay = app.getSimClock().hourTime();
-        
         if(time > 30f) {
             time = 0;
             logger.debug("Redraw sky");
 
-            skyGradient.setTurbidity(app.getWeather().getFloat("sky.turbidity"));
-            skyGradient.updateSunPosition(timeOfDay,
-                app.getMission().getDayOfYear(),
-                app.getMission().getLatitude(),
-                (int) (app.getMission().getLongitude() / 15f),
-                app.getMission().getLongitude());
             skyBoxTexture.update();
         }
-        
         time += dt;
     }
     
@@ -90,7 +70,6 @@ public class SkyAppState extends AbstractAppState {
         app.getSkyNode().detachChild(geom);
         
         app = null;
-        skyGradient = null;
         geom = null;
         skyBoxTexture = null;
     }
