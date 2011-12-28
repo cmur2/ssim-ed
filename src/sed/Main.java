@@ -26,6 +26,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Sphere;
 
 import de.altimos.util.logger.JLFBridge;
 
@@ -66,13 +67,13 @@ public class Main extends SimpleApplication {
         simClock = SimClock.createClock(getMission().getTimeOfDay());
         assert simClock != null : "SimClock init failed - wrong parameters!";
         
-        speed = 10f;
+        speed = 1f;
         
         initWeather();
         
         flyCam.setMoveSpeed(10 * 6);
         //flyCam.setDragToRotate(true);
-        cam.setLocation(Vector3f.ZERO);
+        //cam.setLocation(Vector3f.ZERO);
         
         skyNode = new Node("SkyNode");
         skyNode.setCullHint(CullHint.Never);
@@ -86,15 +87,32 @@ public class Main extends SimpleApplication {
         
         stateManager.attach(new SkyAppState());
         stateManager.attach(new SunAppState());
+        stateManager.attach(new LightingAppState());
         
-        Box boxBox = new Box(Vector3f.ZERO, 1, 1, 1);
-        Geometry boxGeom = new Geometry("Box", boxBox);
-        Material boxMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        boxMat.setColor("Color", ColorRGBA.Blue);
-        boxGeom.setMaterial(boxMat);
-        //rootNode.attachChild(boxGeom);
+        {
+            Box boxBox = new Box(Vector3f.ZERO, 1, 1, 1);
+            Geometry boxGeom = new Geometry("Box", boxBox);
+            Material boxMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+            boxMat.setColor("Color", ColorRGBA.Blue);
+            boxGeom.setMaterial(boxMat);
+            //rootNode.attachChild(boxGeom);
+        }
         
-        printSceneGraph(rootNode);
+        {
+            Sphere rockSphere = new Sphere(32,32, 2f);
+            Geometry rockGeom = new Geometry("Shiny rock", rockSphere);
+            rockSphere.setTextureMode(Sphere.TextureMode.Projected);
+            com.jme3.util.TangentBinormalGenerator.generate(rockSphere);
+            Material rockMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+            rockMat.setTexture("DiffuseMap", assetManager.loadTexture("Textures/Terrain/Pond/Pond.jpg"));
+            rockMat.setTexture("NormalMap", assetManager.loadTexture("Textures/Terrain/Pond/Pond_normal.png"));
+            rockMat.setFloat("Shininess", 5f); // [1,128]
+            rockGeom.setMaterial(rockMat);
+            rockGeom.rotate(1.6f, 0, 0);
+            rootNode.attachChild(rockGeom);
+        }
+        
+        //printSceneGraph(rootNode);
     }
     
     private void initMission() {

@@ -21,8 +21,6 @@ public class SkyGradient {
     private static final float NightThetaMax = NightThetaMin + NightThetaRange; // in degrees
     
     private static final Color3f NightSkyColor = new Color3f(0f, 0f, 0.08f);
-    // NightSun is the moon actually
-    private static final Color3f NightSunColor = new Color3f(0.1f, 0.1f, 0.1f);
     
     private Main app;
     
@@ -130,6 +128,7 @@ public class SkyGradient {
      * @param pointy point's y coordinate (j3d coords)
      * @param pointz point's z coordinate (j3d coords)
      */
+    // TODO: to store pattern!
     public void getSkycolor(float[] colors,
         double pointx, double pointy, double pointz)
     {
