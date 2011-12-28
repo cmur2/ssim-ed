@@ -10,44 +10,32 @@ import com.jme3.util.BufferUtils;
 
 public class SkyDome extends Mesh {
     
+    private float radius;
+    private float dphi;
+    private float dtheta;
+    
     public SkyDome(float radius, float dphi, float dtheta) {
+        this.radius = radius;
+        this.dphi = dphi;
+        this.dtheta = dtheta;
+        initGeometry();
+    }
+    
+    private void initGeometry() {
         Vector3f[] p = genDome(radius, dtheta, dphi);
         int[] indices = genDomeIndices(dtheta, dphi);
-        
         setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(p));
         setBuffer(Type.Index, 1, BufferUtils.createIntBuffer(indices));
         updateBound();
-        
-        //setMode(Mode.Points);
     }
     
-    private static Vector3f[] genDome1(float radius, float dtheta, float dphi) {
-        // 360/dphi * 90/dtheta quads
-        // 360/dphi * 90/dtheta * 2 triangles
-        // 360/dphi * 90/dtheta * 2 * 3 vertices
-        Vector3f[] vs = new Vector3f[(int) ((360d / dphi) * (90d / dtheta) * 6d)];
-        int n = 0;
-        for(double phi = 0; phi <= 360 - dphi; phi += dphi) {
-            float sindphi = (float) Math.sin((phi + dphi) * FastMath.DEG_TO_RAD);
-            float cosdphi = (float) Math.cos((phi + dphi) * FastMath.DEG_TO_RAD);
-            float sinphi = (float) Math.sin(phi * FastMath.DEG_TO_RAD);
-            float cosphi = (float) Math.cos(phi * FastMath.DEG_TO_RAD);
-            for(double theta = 0; theta <= 90 - dtheta; theta += dtheta) {
-                float sindtheta = radius * (float) Math.sin((theta + dtheta) * FastMath.DEG_TO_RAD);
-                float cosdtheta = radius * (float) Math.cos((theta + dtheta) * FastMath.DEG_TO_RAD);
-                float sintheta = radius * (float) Math.sin(theta * FastMath.DEG_TO_RAD);
-                float costheta = radius * (float) Math.cos(theta * FastMath.DEG_TO_RAD);
-                vs[n++] = new Vector3f(sindtheta * cosphi, cosdtheta, -sindtheta * sinphi); // lu
-                vs[n++] = new Vector3f(sintheta * cosphi, costheta, -sintheta * sinphi); // lo
-                vs[n++] = new Vector3f(sintheta * cosdphi, costheta, -sintheta * sindphi); // ro
-                
-                vs[n++] = new Vector3f(sindtheta * cosdphi, cosdtheta, -sindtheta * sindphi); // ru
-                vs[n++] = new Vector3f(sindtheta * cosphi, cosdtheta, -sindtheta * sinphi); // lu
-                vs[n++] = new Vector3f(sintheta * cosdphi, costheta, -sintheta * sindphi); // ro
-            }
-        }
-        return vs;
+    private void initGeometry2() {
+        Vector3f[] p = genDome2(radius, dtheta, dphi);
+        setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(p));
+        updateBound();
     }
+    
+    // Generate indexed geometry data for sky dome (triangles)
     
     private static Vector3f[] genDome(float radius, float dtheta, float dphi) {
         // 360/dphi * (90/dtheta+1) vertices // +1 is last/bottom row
@@ -91,5 +79,35 @@ public class SkyDome extends Mesh {
             }
         }
         return is;
+    }
+    
+    // Generate simply every necessary triangle on it's own (redundant data)
+    
+    private static Vector3f[] genDome2(float radius, float dtheta, float dphi) {
+        // 360/dphi * 90/dtheta quads
+        // 360/dphi * 90/dtheta * 2 triangles
+        // 360/dphi * 90/dtheta * 2 * 3 vertices
+        Vector3f[] vs = new Vector3f[(int) ((360d / dphi) * (90d / dtheta) * 6d)];
+        int n = 0;
+        for(double phi = 0; phi <= 360 - dphi; phi += dphi) {
+            float sindphi = (float) Math.sin((phi + dphi) * FastMath.DEG_TO_RAD);
+            float cosdphi = (float) Math.cos((phi + dphi) * FastMath.DEG_TO_RAD);
+            float sinphi = (float) Math.sin(phi * FastMath.DEG_TO_RAD);
+            float cosphi = (float) Math.cos(phi * FastMath.DEG_TO_RAD);
+            for(double theta = 0; theta <= 90 - dtheta; theta += dtheta) {
+                float sindtheta = radius * (float) Math.sin((theta + dtheta) * FastMath.DEG_TO_RAD);
+                float cosdtheta = radius * (float) Math.cos((theta + dtheta) * FastMath.DEG_TO_RAD);
+                float sintheta = radius * (float) Math.sin(theta * FastMath.DEG_TO_RAD);
+                float costheta = radius * (float) Math.cos(theta * FastMath.DEG_TO_RAD);
+                vs[n++] = new Vector3f(sindtheta * cosphi, cosdtheta, -sindtheta * sinphi); // lu
+                vs[n++] = new Vector3f(sintheta * cosphi, costheta, -sintheta * sinphi); // lo
+                vs[n++] = new Vector3f(sintheta * cosdphi, costheta, -sintheta * sindphi); // ro
+                
+                vs[n++] = new Vector3f(sindtheta * cosdphi, cosdtheta, -sindtheta * sindphi); // ru
+                vs[n++] = new Vector3f(sindtheta * cosphi, cosdtheta, -sindtheta * sinphi); // lu
+                vs[n++] = new Vector3f(sintheta * cosdphi, costheta, -sintheta * sindphi); // ro
+            }
+        }
+        return vs;
     }
 }
