@@ -44,6 +44,7 @@ public class SunAppState extends AbstractAppState {
         sunTexture = new SunTexture(app.getSun());
         sunTexture.setLensflareEnabled(app.getWeather().getBool("sun.lensflare-enabled"));
         sunTexture.setLensflareShininess(app.getWeather().getFloat("sun.lensflare-shininess"));
+        sunTexture.update();
         mat.setTexture("ColorMap", sunTexture);
         
         mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
