@@ -19,6 +19,7 @@ public class SkyAppState extends AbstractAppState {
     public static final float HemisphereRadius = 100f;
     
     private static final Logger logger = Logger.getLogger(SkyAppState.class);
+    private static final float UpdateInterval = 30f; // in seconds
     
     private float time = 0;
     
@@ -58,7 +59,7 @@ public class SkyAppState extends AbstractAppState {
     
     @Override
     public void update(float dt) {
-        if(time > 30f) {
+        if(time > UpdateInterval) {
             time = 0;
             logger.debug("Redraw sky");
 

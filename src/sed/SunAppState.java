@@ -19,6 +19,7 @@ import com.jme3.scene.control.BillboardControl;
 public class SunAppState extends AbstractAppState {
     
     private static final Logger logger = Logger.getLogger(SunAppState.class);
+    private static final float UpdateInterval = 30f; // in seconds
     
     private float time = 0;
     
@@ -64,7 +65,7 @@ public class SunAppState extends AbstractAppState {
     
     @Override
     public void update(float dt) {
-        if(time > 30f) {
+        if(time > UpdateInterval) {
             time = 0;
             updateSunTranslation();
             sunTexture.setLensflareEnabled(app.getWeather().getBool("sun.lensflare-enabled"));

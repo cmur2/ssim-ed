@@ -11,6 +11,8 @@ import com.jme3.math.Vector3f;
 
 public class LightingAppState extends AbstractAppState {
     
+    private static final float UpdateInterval = 30f; // in seconds
+    
     // since the sun is below the horizon it should actually be black
     private static final ColorRGBA NightSunColor = ColorRGBA.Black;
     
@@ -50,7 +52,7 @@ public class LightingAppState extends AbstractAppState {
     
     @Override
     public void update(float dt) {
-        if(time > 30f) {
+        if(time > UpdateInterval) {
             time = 0;
             updateSunLight();
             updateEnvLight();
@@ -67,6 +69,7 @@ public class LightingAppState extends AbstractAppState {
         
         app = null;
         sunLight = null;
+        envLight = null;
     }
     
     private void updateSunLight() {
