@@ -25,6 +25,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.CullHint;
+import com.jme3.scene.control.CameraControl;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 
@@ -111,6 +112,8 @@ public class Main extends SimpleApplication {
             rockGeom.rotate(1.6f, 0, 0);
             rootNode.attachChild(rockGeom);
         }
+        
+        skyNode.addControl(new SurfaceCameraControl(cam));
         
         //printSceneGraph(rootNode);
     }
