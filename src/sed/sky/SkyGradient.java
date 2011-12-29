@@ -1,12 +1,11 @@
 package sed.sky;
 
-import javax.vecmath.Color3f;
-import javax.vecmath.Vector3f;
-
 import sed.Main;
 
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 
 public class SkyGradient {
 
@@ -20,7 +19,7 @@ public class SkyGradient {
     private static final float NightThetaMin = 100f; // in degrees
     private static final float NightThetaMax = NightThetaMin + NightThetaRange; // in degrees
     
-    private static final Color3f NightSkyColor = new Color3f(0f, 0f, 0.08f);
+    private static final ColorRGBA NightSkyColor = new ColorRGBA(0f, 0f, 0.08f, 1f);
     
     private Main app;
     
@@ -42,7 +41,7 @@ public class SkyGradient {
     private float zenithx, zenithy, zenithY; // the values at the suns position
     private float[] perezx, perezy, perezY;
     
-    private Vector3f gammaCorrection = new Vector3f(1, 0, 1);
+    private Vector3f gammaCorrection = new Vector3f(1f, 0f, 1f);
     
     public SkyGradient(Main app) {
         this.app = app;
@@ -117,6 +116,35 @@ public class SkyGradient {
         // @formatter:on
     }
     
+    /**
+     * Adapter to {@link #getSkycolor(float[], double, double, double)}.
+     * 
+     * @param p point (j3d coords)
+     * @param store a float[] to store the result
+     * @return the sky color at the given point as RGBA in float[]
+     */
+    public float[] getSkyColor(Vector3f p, float[] store) {
+        return getSkyColor(p.x, p.y, p.z, store);
+    }
+    
+    /**
+     * Adapter to {@link #getSkycolor(float[], double, double, double)}.
+     * 
+     * @param px point's x coordinate (j3d coords)
+     * @param py point's y coordinate (j3d coords)
+     * @param pz point's z coordinate (j3d coords)
+     * @param store a float[] to store the result
+     * @return the sky color at the given point as RGBA in float[]
+     */
+    public float[] getSkyColor(float px, float py, float pz, float[] store) {
+        if(store == null) {
+            store = new float[4];
+        }
+        getSkycolor(store, px, py, pz);
+        store[3] = 1f;
+        return store;
+    }
+    
     // TODO: deal with that sky to j3d coordinate conversions
     
     /**
@@ -128,14 +156,13 @@ public class SkyGradient {
      * @param pointy point's y coordinate (j3d coords)
      * @param pointz point's z coordinate (j3d coords)
      */
-    // TODO: to store pattern!
     public void getSkycolor(float[] colors,
         double pointx, double pointy, double pointz)
     {
         if(linearNightBlendFactor >= 1f) {
-            colors[0] = NightSkyColor.x;
-            colors[1] = NightSkyColor.y;
-            colors[2] = NightSkyColor.z;
+            colors[0] = NightSkyColor.r;
+            colors[1] = NightSkyColor.g;
+            colors[2] = NightSkyColor.b;
             return;
         }
         // calculate direction vector onto hemisphere
@@ -170,9 +197,9 @@ public class SkyGradient {
         //XYZtoRGBMatrix.transform(lum);
         //colors[0] = lum.x; colors[1] = lum.y; colors[2] = lum.z;
         // mix in the night sky color, if necessary
-        colors[0] = (float) FastMath.interpolateLinear(linearNightBlendFactor, colors[0], NightSkyColor.x);
-        colors[1] = (float) FastMath.interpolateLinear(linearNightBlendFactor, colors[1], NightSkyColor.y);
-        colors[2] = (float) FastMath.interpolateLinear(linearNightBlendFactor, colors[2], NightSkyColor.z);
+        colors[0] = (float) FastMath.interpolateLinear(linearNightBlendFactor, colors[0], NightSkyColor.r);
+        colors[1] = (float) FastMath.interpolateLinear(linearNightBlendFactor, colors[1], NightSkyColor.g);
+        colors[2] = (float) FastMath.interpolateLinear(linearNightBlendFactor, colors[2], NightSkyColor.b);
         // apply exposure control
         colors[0] = 1f - (float) Math.exp(-exposureExponent*colors[0]);
         colors[1] = 1f - (float) Math.exp(-exposureExponent*colors[1]);

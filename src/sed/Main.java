@@ -124,6 +124,7 @@ public class Main extends SimpleApplication {
         String[] sets = {"clear"};
         XMLPropertySetBuilder builder = new XMLPropertySetBuilder(assetManager, sets);
         builder.putFloat("sky.turbidity");
+        builder.putVec3("sky.light");
         builder.putBool("sun.lensflare-enabled");
         builder.putFloat("sun.lensflare-shininess");
 //        builder.putInt("cloud.cover");
@@ -133,6 +134,7 @@ public class Main extends SimpleApplication {
         weatherController = new RandomWeatherController(5*60f, builder.getResults());
         weatherController.registerInterpolator(new Interpolators.FloatInterpolator(), Float.class);
         weatherController.registerInterpolator(new Interpolators.BoolInterpolator(), Boolean.class);
+        weatherController.registerInterpolator(new Interpolators.Vec3Interpolator(), Vector3f.class);
         
 //        System.out.println(weatherController.getVec3("wind"));
 //        System.out.println(java.util.Arrays.toString(weatherController.getIntArray("prime")));

@@ -2,6 +2,7 @@
 <weather name="clear">
     <sky>
         <turbidity>2.0</turbidity>
+        <light>(0.2, 0.2, 0.2)</light>
     </sky>
     <sun>
         <lensflare-enabled>true</lensflare-enabled>

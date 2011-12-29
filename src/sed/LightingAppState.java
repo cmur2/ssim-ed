@@ -3,6 +3,7 @@ package sed;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
@@ -21,10 +22,14 @@ public class LightingAppState extends AbstractAppState {
     // exists only while AppState is living
     private Main app;
     private DirectionalLight sunLight;
+    private AmbientLight envLight;
+    
     private Vector2f sunAngles;
     private Vector3f sunPosition;
     private float[] sunColorArray;
     private ColorRGBA sunColor;
+    
+    private ColorRGBA envColor;
     
     public LightingAppState() {
     }
@@ -37,6 +42,10 @@ public class LightingAppState extends AbstractAppState {
         sunLight = new DirectionalLight();
         updateSunLight();
         app.getRootNode().addLight(sunLight);
+        
+        envLight = new AmbientLight();
+        updateEnvLight();
+        app.getRootNode().addLight(envLight);
     }
     
     @Override
@@ -44,6 +53,7 @@ public class LightingAppState extends AbstractAppState {
         if(time > 30f) {
             time = 0;
             updateSunLight();
+            updateEnvLight();
         }
         time += dt;
     }
@@ -53,6 +63,7 @@ public class LightingAppState extends AbstractAppState {
         super.cleanup();
         
         app.getRootNode().removeLight(sunLight);
+        app.getRootNode().removeLight(envLight);
         
         app = null;
         sunLight = null;
@@ -66,18 +77,24 @@ public class LightingAppState extends AbstractAppState {
         if(thetaDeg > NightThetaMax) {
             sunLight.setColor(NightSunColor);
         } else {
-            if(sunColorArray == null) {
-                sunColorArray = new float[3];
-            }
             if(sunColor == null) {
                 sunColor = new ColorRGBA();
             }
-            app.getSkyGradient().getSkycolor(sunColorArray, sunPosition.x, sunPosition.y, sunPosition.z);
-            sunColor.set(sunColorArray[0], sunColorArray[1], sunColorArray[2], 1f);
+            sunColorArray = app.getSkyGradient().getSkyColor(sunPosition, sunColorArray);
+            Util.setTo(sunColor, sunColorArray);
             sunLight.setColor(sunColor);
         }
         
         sunPosition.negateLocal();
         sunLight.setDirection(sunPosition);
+    }
+    
+    private void updateEnvLight() {
+        Vector3f v = app.getWeather().getVec3("sky.light");
+        if(envColor == null) {
+            envColor = new ColorRGBA();
+        }
+        Util.setTo(envColor, v, 1f);
+        envLight.setColor(envColor);
     }
 }
