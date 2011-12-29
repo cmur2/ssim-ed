@@ -11,11 +11,11 @@ import com.jme3.math.Vector3f;
 
 public class LightingAppState extends AbstractAppState {
     
-    // NightSun is the moon actually
-    private static final ColorRGBA NightSunColor = new ColorRGBA(0.1f, 0.1f, 0.1f, 1f);
+    // since the sun is below the horizon it should actually be black
+    private static final ColorRGBA NightSunColor = ColorRGBA.Black;
     
     // TODO: sync with SkyGradient
-    private static final float NightThetaMax = 100f;
+    private static final float NightThetaMax = 106f;
     
     private float time = 0;
     

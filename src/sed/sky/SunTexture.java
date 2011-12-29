@@ -97,7 +97,7 @@ public class SunTexture extends Texture2D {
             logger.debug("Generating empty sun texture");
             emptyImage = BufferUtils.createByteBuffer(TexSize * TexSize * 4);
             for(int i = 0; i < emptyImage.capacity()/4; i++) {
-                emptyImage.put((byte) 10); // A
+                emptyImage.put((byte) 0); // A
                 emptyImage.put((byte) 255); // B
                 emptyImage.put((byte) 255); // G
                 emptyImage.put((byte) 255); // R
