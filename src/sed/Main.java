@@ -74,7 +74,7 @@ public class Main extends SimpleApplication {
         
         flyCam.setMoveSpeed(10 * 6);
         //flyCam.setDragToRotate(true);
-        //cam.setLocation(Vector3f.ZERO);
+        cam.setLocation(new Vector3f(0, -200f, 0));
         
         skyNode = new Node("SkyNode");
         skyNode.setCullHint(CullHint.Never);
@@ -89,6 +89,7 @@ public class Main extends SimpleApplication {
         stateManager.attach(new SkyAppState());
         stateManager.attach(new SunAppState());
         stateManager.attach(new LightingAppState());
+        stateManager.attach(new StarAppState());
         
         {
             Box boxBox = new Box(Vector3f.ZERO, 1, 1, 1);
