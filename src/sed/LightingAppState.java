@@ -16,7 +16,7 @@ public class LightingAppState extends AbstractAppState {
     // since the sun is below the horizon it should actually be black
     private static final ColorRGBA NightSunColor = ColorRGBA.Black;
     
-    // TODO: sync with SkyGradient
+    // TODO: sync with SkyGradient - central (sky) constant storage
     private static final float NightThetaMax = 106f;
     
     private float time = 0;

@@ -14,7 +14,7 @@ import com.jme3.scene.Geometry;
 
 public class SkyAppState extends AbstractAppState {
     
-    // TODO: realize SkyDome and Sun as background geometry in jme?
+    // TODO: realize SkyDome and Sun as background geometry in jme? Bucket.Sky
     
     public static final float HemisphereRadius = 100f;
     

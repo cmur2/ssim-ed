@@ -23,6 +23,7 @@ public class SunTexture extends Texture2D {
     // lensflare
     private static final int NumRays = 6;
     private static final float RayWidth = 1.0f;
+    private static final float LfShininessVariation = 0.015f;
     
     // theta ranges
     private static final float SunLensflareThetaMax = 55f;
@@ -173,14 +174,11 @@ public class SunTexture extends Texture2D {
     }
     
     private void generateFlares(float[][] alphas) {
-        // TODO: without random
-        float beginGrad = (float) Math.random()*(180/NumRays);
+        float beginGrad = (float) 0*(180/NumRays);
         for(int i = 0; i < NumRays; i++) {
             float angle = beginGrad + 180/NumRays*i + 180/NumRays/2;
-            //float angle = beginGrad+(180/maxStrahlen*i)+(float)Math.random()*(180/maxStrahlen);
             float exp = lensflareShininess;
-            // TODO: parameterize this:
-            exp += (Math.random()-0.5)*0.03f;
+            exp += 2*(Math.random()-0.5)*LfShininessVariation;
             for(int column = 0; column < TexSize; column++) {
                 for(int row = 0; row < TexSize; row++) {
                     int index = (row*TexSize + column) * 4;
