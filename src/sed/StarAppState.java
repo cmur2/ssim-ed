@@ -42,6 +42,8 @@ public class StarAppState extends AbstractAppState {
         geom.setMaterial(mat);
         
         app.getSkyNode().attachChild(geom);
+
+        updateStars();
     }
     
     @Override
@@ -67,14 +69,14 @@ public class StarAppState extends AbstractAppState {
         sunAngles = app.getSun().getSunAngles(sunAngles);
         float thetaDeg = (float) Math.toDegrees(sunAngles.y);
         if(thetaDeg > StarsThetaMin) {
-            if(app.getSkyNode().hasChild(geom)) {
-                logger.debug("Detach star field");
-                app.getSkyNode().detachChild(geom);
-            }
-        } else {
             if(!app.getSkyNode().hasChild(geom)) {
                 logger.debug("Attach star field");
                 app.getSkyNode().attachChild(geom);
+            }
+        } else {
+            if(app.getSkyNode().hasChild(geom)) {
+                logger.debug("Detach star field");
+                app.getSkyNode().detachChild(geom);
             }
         }
     }
