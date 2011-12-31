@@ -38,7 +38,7 @@ public class SunAppState extends AbstractAppState {
         super.initialize(stateManager, baseApp);
         app = (Main) baseApp;
         
-        SunQuad sunQuad = new SunQuad(15f);
+        SunQuad sunQuad = new SunQuad(100f);
         geom = new Geometry("Sun", sunQuad);
         Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         

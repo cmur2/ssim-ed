@@ -16,7 +16,7 @@ public class SkyAppState extends AbstractAppState {
     
     // TODO: realize SkyDome and Sun as background geometry in jme? Bucket.Sky
     
-    public static final float HemisphereRadius = 100f;
+    public static final float HemisphereRadius = 1000f;
     
     private static final Logger logger = Logger.getLogger(SkyAppState.class);
     private static final float UpdateInterval = 30f; // in seconds
