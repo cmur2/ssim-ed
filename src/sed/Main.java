@@ -90,6 +90,7 @@ public class Main extends SimpleApplication {
         stateManager.attach(new SunAppState());
         stateManager.attach(new LightingAppState());
         stateManager.attach(new StarAppState());
+        stateManager.attach(new CloudAppState());
         
         {
             Box boxBox = new Box(Vector3f.ZERO, 1, 1, 1);
