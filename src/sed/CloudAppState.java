@@ -8,6 +8,8 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.BlendMode;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
 
@@ -33,14 +35,15 @@ public class CloudAppState extends AbstractAppState {
         CloudProcessor cp = new CloudProcessor(app.getAssetManager());
         app.getViewPort().addProcessor(cp);
         
+        // TODO: CloudPlane
         Quad cloudQuad = new Quad(10, 10);
         geom = new Geometry("Clouds", cloudQuad);
         
         Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setTexture("ColorMap", cp.getTex());
-        //mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+        mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         geom.setMaterial(mat);
-        //geom.setQueueBucket(Bucket.Transparent);
+        geom.setQueueBucket(Bucket.Transparent);
                 
         //updateClouds();
         

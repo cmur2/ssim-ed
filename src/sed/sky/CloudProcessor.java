@@ -21,7 +21,7 @@ import com.jme3.ui.Picture;
  */
 public class CloudProcessor implements SceneProcessor {
 
-    private static final int TexSize = 256;
+    private static final int TexSize = 512;
     
     private boolean init = false;
     private float time = 0;
@@ -61,7 +61,7 @@ public class CloudProcessor implements SceneProcessor {
         
         // this shader does the real work... later
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Orange);
+        mat.setColor("Color", ColorRGBA.Orange.mult(new ColorRGBA(1f, 1f, 1f, 0.5f)));
         quad.setMaterial(mat);
         quad.updateGeometricState();
         
@@ -83,7 +83,7 @@ public class CloudProcessor implements SceneProcessor {
     public void preFrame(float tpf) {
         if(time > 1) {
             time = 0;
-            
+            renderManager.renderViewPort(tempVP, 0);
         }
         time += tpf;
     }
@@ -95,7 +95,7 @@ public class CloudProcessor implements SceneProcessor {
 
     @Override
     public void postFrame(FrameBuffer out) {
-        // nothing (maybe debug)
+        // nothing
     }
 
     @Override
@@ -106,7 +106,10 @@ public class CloudProcessor implements SceneProcessor {
     @Override
     public void cleanup() {
         // nothing
-        // TODO: cleanup CloudProcessor?
+        tempVP.clearScenes();
+        tempVP.setOutputFrameBuffer(null);
+        tempVP = null;
+        tex = null;
     }
     
     public Texture2D getTex() {
