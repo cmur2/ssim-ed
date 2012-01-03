@@ -60,6 +60,7 @@ public class Main extends SimpleApplication {
     @Override
     public void simpleInitApp() {
         assetManager.registerLoader(XMLLoader.class, "xml");
+        assetManager.registerLoader(MapLoader.class, "map");
         inputManager.deleteTrigger("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Z));
         inputManager.addMapping("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Y));
         
@@ -91,6 +92,7 @@ public class Main extends SimpleApplication {
         stateManager.attach(new LightingAppState());
         stateManager.attach(new StarAppState());
         stateManager.attach(new CloudAppState());
+        stateManager.attach(new TerrainAppState());
         
         {
             Box boxBox = new Box(Vector3f.ZERO, 1, 1, 1);
