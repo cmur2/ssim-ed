@@ -4,6 +4,8 @@ import org.apache.log4j.Logger;
 
 import sed.sky.CloudProcessor;
 
+import chlib.noise.NoiseUtil;
+
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -16,7 +18,7 @@ import com.jme3.scene.shape.Quad;
 public class CloudAppState extends AbstractAppState {
     
     private static final Logger logger = Logger.getLogger(CloudAppState.class);
-    private static final float UpdateInterval = 30f; // in seconds
+    private static final float UpdateInterval = 10f; // in seconds
     
     private float time = 0;
     
@@ -25,6 +27,8 @@ public class CloudAppState extends AbstractAppState {
     private Geometry geom;
     
     public CloudAppState() {
+        // TODO: initialize NoiseUtil more central, and with random seed
+        NoiseUtil.reinitialize(4569845);
     }
     
     @Override
@@ -40,7 +44,7 @@ public class CloudAppState extends AbstractAppState {
         geom = new Geometry("Clouds", cloudQuad);
         
         Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setTexture("ColorMap", cp.getTex());
+        mat.setTexture("ColorMap", cp.getCloudTex());
         mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         geom.setMaterial(mat);
         geom.setQueueBucket(Bucket.Transparent);
@@ -70,6 +74,6 @@ public class CloudAppState extends AbstractAppState {
     }
     
     private void updateClouds() {
-        
+        // TODO: some movement (wind)/change (permutation) should be done (aka cloud physics)
     }
 }
