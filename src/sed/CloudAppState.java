@@ -36,7 +36,7 @@ public class CloudAppState extends AbstractAppState {
         super.initialize(stateManager, baseApp);
         app = (Main) baseApp;
         
-        CloudProcessor cp = new CloudProcessor(app.getAssetManager());
+        CloudProcessor cp = new CloudProcessor(CloudProcessor.Mode.RenderGPU, app.getAssetManager());
         app.getViewPort().addProcessor(cp);
         
         // TODO: CloudPlane
@@ -53,7 +53,7 @@ public class CloudAppState extends AbstractAppState {
         
         app.getRootNode().attachChild(geom);
     }
-        
+    
     @Override
     public void update(float dt) {
         if(time > UpdateInterval) {

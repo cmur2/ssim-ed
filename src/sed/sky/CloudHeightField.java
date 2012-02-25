@@ -57,7 +57,7 @@ public class CloudHeightField {
         }
         for(int column = 0; column < size; column++) {
             for(int row = 0; row < size; row++) {
-                //float turbulance = NoiseUtil.turbulance2(column/no, row/no, zv, OCTAVES);
+                //float turbulance = NoiseUtil.turbulance2(column/zoom, row/zoom, shift, numOctaves);
                 float turbulance = NoiseUtil.fBm(column/zoom, row/zoom, shift, numOctaves, 2f, .5f);
                 float height = (turbulance*255f) - cloudCover;
                 if(height < 0) { height = 0; }

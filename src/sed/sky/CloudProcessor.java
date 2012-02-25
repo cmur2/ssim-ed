@@ -29,62 +29,100 @@ public class CloudProcessor implements SceneProcessor {
 
     private static final int TexSize = 256;
     
+    public enum Mode {
+        /**
+         * HeightField generation and rendering are done on CPU
+         * (slow, fall back)
+         */
+        AllCPU,
+        /**
+         * HeightField generation is done on CPU, but rendering will be GPU task
+         * (faster)
+         */
+        RenderGPU;
+    }
+    
+    // state
     private boolean init = false;
     private float time = 0;
+    private Mode mode;
     
+    // main part of final scene
     private AssetManager assetManager;
     private RenderManager renderManager;
-    private ViewPort viewPort;
+    private ViewPort mainViewPort;
     
-    private ViewPort tempVP;
+    // view ports
+    private ViewPort tempViewPort;
     
+    // textures
     private Texture2D heightFieldTex;
     private Texture2D cloudTex;
     
-    public CloudProcessor(AssetManager assetManager) {
+    // height field
+    private CloudHeightField cloudHeightField;
+    
+    public CloudProcessor(Mode mode, AssetManager assetManager) {
+        this.mode = mode;
         this.assetManager = assetManager;
         
         heightFieldTex = new Texture2D(TexSize, TexSize, Format.RGBA8);
         cloudTex = new Texture2D(TexSize, TexSize, Format.RGBA8);
+        
+        cloudHeightField = new CloudHeightField(TexSize, 8);
+        cloudHeightField.setZoom(48);
+        cloudHeightField.setShift(0);
+        cloudHeightField.setCloudCover(50);
     }
     
     // create heightfield (different algos: CPU GPU)
     // create pre-texture (different algos: CPU GPU [in mini scene with pre-appearance])
-    // create final appearance
+    // create final appearance -> done by user of this processor?
     
     @Override
     public void initialize(RenderManager rm, ViewPort vp) {
         renderManager = rm;
-        viewPort = vp;
+        mainViewPort = vp;
         
-        Camera cam = new Camera(TexSize, TexSize);
-        
-        tempVP = new ViewPort("blub", cam);
-        tempVP.setClearFlags(true, true, true);
-        tempVP.setBackgroundColor(ColorRGBA.Black);
-        
-        FrameBuffer fb = new FrameBuffer(TexSize, TexSize, 1);
-        fb.setColorTexture(cloudTex);
-        
-        // --- mini scene ---
-        Picture quad = new Picture("bluba");
-        quad.setPosition(0, 0);
-        quad.setWidth(TexSize);
-        quad.setHeight(TexSize);
-        
-        // this shader does the real work... later
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-//        mat.setColor("Color", ColorRGBA.Orange.mult(new ColorRGBA(1f, 1f, 1f, 0.5f)));
-        mat.setTexture("ColorMap", heightFieldTex);
-        quad.setMaterial(mat);
-        quad.updateGeometricState();
-        
-        tempVP.attachScene(quad);
-        tempVP.setOutputFrameBuffer(fb);
-        // --- end ---
+        if(mode == Mode.AllCPU) {
+            // nothing
+        } else {
+            Camera cam = new Camera(TexSize, TexSize);
+            
+            tempViewPort = new ViewPort("Cloud-Render-ViewPort", cam);
+            tempViewPort.setClearFlags(true, true, true);
+            tempViewPort.setBackgroundColor(ColorRGBA.Black);
+            
+            FrameBuffer fb = new FrameBuffer(TexSize, TexSize, 1);
+            fb.setColorTexture(cloudTex);
+            
+            // --- mini scene ---
+            Picture quad = new Picture("Cloud-Render-Target");
+            quad.setPosition(0, 0);
+            quad.setWidth(TexSize);
+            quad.setHeight(TexSize);
+            
+            // this shader does the real work... later
+            //Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+            //mat.setColor("Color", ColorRGBA.Orange.mult(new ColorRGBA(1f, 1f, 1f, 0.5f)));
+            //mat.setTexture("ColorMap", heightFieldTex);
+            Material mat = new Material(assetManager, "shaders/CloudRender.j3md");
+            mat.setFloat("ImageSize", TexSize);
+            mat.setFloat("CloudSharpness", 0.96f);
+            mat.setFloat("MaxSteps", 10);
+            mat.setVector3("SunPos", new Vector3f(TexSize/2, TexSize/2, 5000));
+            mat.setFloat("WayFactor", 0.0005f);
+            mat.setVector3("SunLightColor", new Vector3f(1.0f, 1.0f, 1.0f));
+            mat.setTexture("HeightField", heightFieldTex);
+            quad.setMaterial(mat);
+            quad.updateGeometricState();
+            
+            tempViewPort.attachScene(quad);
+            tempViewPort.setOutputFrameBuffer(fb);
+            // --- end ---
+        }
         
         updateAndRender();
-        
         init = true;
     }
 
@@ -120,9 +158,9 @@ public class CloudProcessor implements SceneProcessor {
     @Override
     public void cleanup() {
         // nothing
-        tempVP.clearScenes();
-        tempVP.setOutputFrameBuffer(null);
-        tempVP = null;
+        tempViewPort.clearScenes();
+        tempViewPort.setOutputFrameBuffer(null);
+        tempViewPort = null;
         cloudTex = null;
     }
     
@@ -131,17 +169,15 @@ public class CloudProcessor implements SceneProcessor {
     }
     
     private void updateAndRender() {
-        // This uses CPU-only algorithms for now, our FrameBuffer is unneeded atm
-        CloudHeightField chf = new CloudHeightField(TexSize, 8);
-        chf.setZoom(48);
-        chf.setShift(0);
-        chf.setCloudCover(50);
-        float[][] heightField = chf.generate();
+        // generate height field on CPU
+        float[][] heightField = cloudHeightField.generate();
         
-        //opCopyHeightField2Texture(heightField, heightFieldTex);
-        opRenderHeightField2Texture(heightField, cloudTex);
-        
-        //renderManager.renderViewPort(tempVP, 0);
+        if(mode == Mode.AllCPU) {
+            opRenderHeightField2Texture(heightField, cloudTex);
+        } else {
+            opCopyHeightField2Texture(heightField, heightFieldTex);
+            renderManager.renderViewPort(tempViewPort, 0);
+        }
     }
     
     /**
