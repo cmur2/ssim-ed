@@ -28,7 +28,8 @@ import com.jme3.util.BufferUtils;
 public class CloudProcessor implements SceneProcessor {
 
     private static final int TexSize = 256;
-    private static final int MaxSteps = 10;
+    private static final int MaxSteps = 30;
+    private static final int NumOctaves = 8;
     
     public enum Mode {
         /**
@@ -76,10 +77,10 @@ public class CloudProcessor implements SceneProcessor {
         heightFieldTex = new Texture2D(TexSize, TexSize, Format.RGBA8);
         cloudTex = new Texture2D(TexSize, TexSize, Format.RGBA8);
         
-        cloudHeightField = new CloudHeightField(TexSize, 8);
-        cloudHeightField.setZoom(48);
+        cloudHeightField = new CloudHeightField(TexSize, NumOctaves);
+        // TODO: better interface - zoom remains zoom, shift will be time, and then we need real shift (x,y)
+        cloudHeightField.setZoom(32);
         cloudHeightField.setShift(0);
-        cloudHeightField.setCloudCover(50);
     }
     
     // create heightfield (different algos: CPU GPU)
@@ -284,9 +285,11 @@ public class CloudProcessor implements SceneProcessor {
             heightFieldTexture.getImage().setData(BufferUtils.createByteBuffer(TexSize * TexSize * 4));
         }
         
-        Vector3f v = new Vector3f(), vadd = new Vector3f();
-        float z = 255;
-        boolean breakOnCloudExit = sunPosition.z < -z || sunPosition.z > z;
+        Vector3f v = new Vector3f();
+        Vector3f vdir = new Vector3f();
+        Vector3f vadd = new Vector3f();
+        //float z = 255;
+        //boolean breakOnCloudExit = sunPosition.z < -z || sunPosition.z > z;
         
         ByteBuffer buf = heightFieldTexture.getImage().getData(0);
         buf.rewind();
@@ -295,31 +298,43 @@ public class CloudProcessor implements SceneProcessor {
             for(int row = 0; row < TexSize; row++) {
                 // render one texel
                 float alpha = heightField[column][row];
-                if(alpha == 0) continue;
-                boolean lastWasInCloud = true;
-                float wayInClouds = 0;
+                if(alpha == 0) {
+                    int index = (row*TexSize + column)*4;
+                    buf.put(index+0, (byte) 0); // R
+                    buf.put(index+1, (byte) 0); // G
+                    buf.put(index+2, (byte) 0); // B
+                    buf.put(index+3, (byte) 0); // A
+                    continue;
+                }
                 v.set(column, row, -alpha);
                 vadd.set(sunPosition.x-v.x, sunPosition.y-v.y, sunPosition.z-v.z);
-                vadd.mult(1f/MaxSteps);
-                float length = vadd.length();
-                for(int k = 0; k < MaxSteps; k++, v.add(vadd)) {
-                    if(v.z < -z || v.z > z) break;
+                vadd.multLocal(1f/MaxSteps);
+                float len = vadd.length();
+                float wayInClouds = 0;
+                //boolean lastWasInCloud = true;
+                for(int k = 0; k < MaxSteps; k++, v.addLocal(vadd)) {
+                    //if(v.z < -z || v.z > z) break;
                     int clamped_vx = (int)(MathExt.clamp(v.x, 0, TexSize-1));
                     int clamped_vy = (int)(MathExt.clamp(v.y, 0, TexSize-1));
                     float talpha = heightField[clamped_vx][clamped_vy];
-                    if(v.z <= talpha) {
-                        wayInClouds += length;
-                        lastWasInCloud = true;
-                    } else {
-                        if(lastWasInCloud) {
-                            wayInClouds += Math.max(talpha - v.z + vadd.z, 0f);
+                    if(talpha != 0) {
+                        if(-talpha <= v.z && v.z <= talpha) {
+                            wayInClouds += len;
+                            //lastWasInCloud = true;
                         }
-                        lastWasInCloud = false;
-                        if(breakOnCloudExit) break;
+                        //else {
+                        //    if(lastWasInCloud) {
+                        //        wayInClouds += Math.max(talpha - v.z + vadd.z, 0f);
+                        //    }
+                        //    lastWasInCloud = false;
+                        //    if(breakOnCloudExit) break;
+                        //}
                     }
                 }
-                int color = 255 - (int) (wayInClouds * wayFactor * 255f);
+                //int color = 255 - (int) (wayInClouds * wayFactor * 255f);
+                int color = (int) (Math.exp(-wayFactor * wayInClouds) * 255f);
                 alpha = 1f - (float) Math.pow(cloudSharpness, alpha);
+                alpha *= heightField[column][row]/255f;
                 //alpha *= ALPHA_FACTOR;
                 if(alpha > 1f) alpha = 1f;
                 //float sdiff = 0.5f - (column/(float)size);
@@ -330,7 +345,7 @@ public class CloudProcessor implements SceneProcessor {
                 //if(alpha < 0) alpha = 0;
                 if(color > 255) color = 255;
                 //else if(color < MIN_COLOR*255) color = (int) (MIN_COLOR*255);
-                int index = column*TexSize*4 + row*4; // TODO:
+                int index = (row*TexSize + column)*4;
                 buf.put(index+0, (byte) color); // R
                 buf.put(index+1, (byte) color); // G
                 buf.put(index+2, (byte) color); // B
