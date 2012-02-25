@@ -38,7 +38,7 @@ public class CloudAppState extends AbstractAppState {
         super.initialize(stateManager, baseApp);
         app = (Main) baseApp;
         
-        cloudProcessor = new CloudProcessor(CloudProcessor.Mode.AllCPU, app.getAssetManager());
+        cloudProcessor = new CloudProcessor(CloudProcessor.Mode.RenderGPU, app.getAssetManager());
         app.getViewPort().addProcessor(cloudProcessor);
         
         // TODO: CloudPlane
@@ -78,10 +78,10 @@ public class CloudAppState extends AbstractAppState {
     }
     
     private void updateClouds() {
-        cloudProcessor.setCloudCover(50);
+        cloudProcessor.setCloudCover(0);
         cloudProcessor.setCloudSharpness(0.96f);
-        cloudProcessor.setWayFactor(0.0005f);
-        cloudProcessor.setSunPosition(new Vector3f(256/2, 256/2, 5000));
+        cloudProcessor.setWayFactor(0.003f);
+        cloudProcessor.setSunPosition(new Vector3f(-100, 256/2, 3000));
         cloudProcessor.setSunLightColor(new Vector3f(1.0f, 1.0f, 1.0f));
         // TODO: some movement (wind)/change (permutation) should be done (aka cloud physics)
     }
