@@ -3,10 +3,10 @@ MaterialDef CloudRender {
     // to be used in the shaders
     MaterialParameters {
         Float ImageSize
-        Float CloudSharpness
         Float MaxSteps
-        Vector3 SunPos
+        Float CloudSharpness
         Float WayFactor
+        Vector3 SunPosition
         Vector3 SunLightColor
         Texture2D HeightField
     }

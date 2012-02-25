@@ -1,9 +1,9 @@
 
 uniform float m_ImageSize;
-uniform float m_CloudSharpness; // unneeded here, since alpha is outsourced
 uniform float m_MaxSteps;
-uniform vec3  m_SunPos;
+uniform float m_CloudSharpness; // unneeded here, since alpha is outsourced
 uniform float m_WayFactor;
+uniform vec3  m_SunPosition;
 uniform vec3  m_SunLightColor;
 
 //uniform float m_Compression;
@@ -21,12 +21,6 @@ float texLookup(vec2 texCoord) {
 }
 
 void main() {
-    //float malpha = texture2D(m_HeightField, varTexVoxelCoord.xy).b; 
-    //gl_FragColor = vec4(malpha,malpha,malpha, 1.0);
-    //return;
-    //gl_FragColor = vec4(1.0,1.0,1.0, 1.0);
-    //return;
-    
     float alpha = texLookup(varTexVoxelCoord.xy);
     if(alpha == 0.0) {
         // early exit if no cloud at current texel
@@ -36,10 +30,10 @@ void main() {
     }
     vec4 v = vec4(varTexVoxelCoord.zw, -alpha, 0.0);
     float zdiff = 255.0 - v.z;
-    vec3 vdir = normalize(m_SunPos - v.xyz);
+    vec3 vdir = normalize(m_SunPosition - v.xyz);
     float numUnitVdirs = zdiff / vdir.z;
     vdir *= numUnitVdirs;
-    //vec4 vadd =vec4(m_SunPos-v.xyz, 1.0);
+    //vec4 vadd = vec4(m_SunPosition-v.xyz, 1.0);
     vec4 vadd = vec4(vdir, 1.0);
     vadd.xyz /= m_MaxSteps;
     float len = length(vadd.xyz);
