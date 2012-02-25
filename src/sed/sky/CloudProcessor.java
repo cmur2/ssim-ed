@@ -28,6 +28,7 @@ import com.jme3.util.BufferUtils;
 public class CloudProcessor implements SceneProcessor {
 
     private static final int TexSize = 256;
+    private static final int MaxSteps = 10;
     
     public enum Mode {
         /**
@@ -61,6 +62,12 @@ public class CloudProcessor implements SceneProcessor {
     
     // height field
     private CloudHeightField cloudHeightField;
+    
+    // (weather) variables
+    private float cloudSharpness;
+    private float wayFactor;
+    private Vector3f sunPosition;
+    private Vector3f sunLightColor;
     
     public CloudProcessor(Mode mode, AssetManager assetManager) {
         this.mode = mode;
@@ -108,11 +115,11 @@ public class CloudProcessor implements SceneProcessor {
             //mat.setTexture("ColorMap", heightFieldTex);
             Material mat = new Material(assetManager, "shaders/CloudRender.j3md");
             mat.setFloat("ImageSize", TexSize);
-            mat.setFloat("CloudSharpness", 0.96f);
-            mat.setFloat("MaxSteps", 10);
-            mat.setVector3("SunPos", new Vector3f(TexSize/2, TexSize/2, 5000));
-            mat.setFloat("WayFactor", 0.0005f);
-            mat.setVector3("SunLightColor", new Vector3f(1.0f, 1.0f, 1.0f));
+            mat.setFloat("MaxSteps", MaxSteps);
+            mat.setFloat("CloudSharpness", cloudSharpness);
+            mat.setFloat("WayFactor", wayFactor);
+            mat.setVector3("SunPosition", sunPosition);
+            mat.setVector3("SunLightColor", sunLightColor);
             mat.setTexture("HeightField", heightFieldTex);
             quad.setMaterial(mat);
             quad.updateGeometricState();
@@ -164,6 +171,46 @@ public class CloudProcessor implements SceneProcessor {
         cloudTex = null;
     }
     
+    public float getCloudCover() {
+        return cloudHeightField.getCloudCover();
+    }
+
+    public void setCloudCover(float cloudCover) {
+        cloudHeightField.setCloudCover(cloudCover);
+    }
+
+    public float getCloudSharpness() {
+        return cloudSharpness;
+    }
+
+    public void setCloudSharpness(float cloudSharpness) {
+        this.cloudSharpness = cloudSharpness;
+    }
+
+    public float getWayFactor() {
+        return wayFactor;
+    }
+
+    public void setWayFactor(float wayFactor) {
+        this.wayFactor = wayFactor;
+    }
+
+    public Vector3f getSunPosition() {
+        return sunPosition;
+    }
+
+    public void setSunPosition(Vector3f sunPosition) {
+        this.sunPosition = sunPosition;
+    }
+
+    public Vector3f getSunLightColor() {
+        return sunLightColor;
+    }
+
+    public void setSunLightColor(Vector3f sunLightColor) {
+        this.sunLightColor = sunLightColor;
+    }
+
     public Texture2D getCloudTex() {
         return cloudTex;
     }
@@ -237,34 +284,28 @@ public class CloudProcessor implements SceneProcessor {
             heightFieldTexture.getImage().setData(BufferUtils.createByteBuffer(TexSize * TexSize * 4));
         }
         
-        final Vector3f sunPos = new Vector3f(TexSize/2, TexSize/2, 5000);
-        final int size = TexSize;
-        final int maxSteps = 10;
-        final float wayFactor = 0.0005f;
-        final float cloudSharpness = 0.96f;
-        
         Vector3f v = new Vector3f(), vadd = new Vector3f();
         float z = 255;
-        boolean breakOnCloudExit = sunPos.z < -z || sunPos.z > z;
+        boolean breakOnCloudExit = sunPosition.z < -z || sunPosition.z > z;
         
         ByteBuffer buf = heightFieldTexture.getImage().getData(0);
         buf.rewind();
         // render complete image
-        for(int column = 0; column < size; column++) {
-            for(int row = 0; row < size; row++) {
+        for(int column = 0; column < TexSize; column++) {
+            for(int row = 0; row < TexSize; row++) {
                 // render one texel
                 float alpha = heightField[column][row];
                 if(alpha == 0) continue;
                 boolean lastWasInCloud = true;
                 float wayInClouds = 0;
                 v.set(column, row, -alpha);
-                vadd.set(sunPos.x-v.x, sunPos.y-v.y, sunPos.z-v.z);
-                vadd.mult(1f/maxSteps);
+                vadd.set(sunPosition.x-v.x, sunPosition.y-v.y, sunPosition.z-v.z);
+                vadd.mult(1f/MaxSteps);
                 float length = vadd.length();
-                for(int k = 0; k < maxSteps; k++, v.add(vadd)) {
+                for(int k = 0; k < MaxSteps; k++, v.add(vadd)) {
                     if(v.z < -z || v.z > z) break;
-                    int clamped_vx = (int)(MathExt.clamp(v.x, 0, size-1));
-                    int clamped_vy = (int)(MathExt.clamp(v.y, 0, size-1));
+                    int clamped_vx = (int)(MathExt.clamp(v.x, 0, TexSize-1));
+                    int clamped_vy = (int)(MathExt.clamp(v.y, 0, TexSize-1));
                     float talpha = heightField[clamped_vx][clamped_vy];
                     if(v.z <= talpha) {
                         wayInClouds += length;
@@ -289,7 +330,7 @@ public class CloudProcessor implements SceneProcessor {
                 //if(alpha < 0) alpha = 0;
                 if(color > 255) color = 255;
                 //else if(color < MIN_COLOR*255) color = (int) (MIN_COLOR*255);
-                int index = column*size*4 + row*4;
+                int index = column*TexSize*4 + row*4; // TODO:
                 buf.put(index+0, (byte) color); // R
                 buf.put(index+1, (byte) color); // G
                 buf.put(index+2, (byte) color); // B

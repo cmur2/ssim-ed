@@ -11,6 +11,7 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
@@ -24,6 +25,7 @@ public class CloudAppState extends AbstractAppState {
     
     // exists only while AppState is living
     private Main app;
+    private CloudProcessor cloudProcessor;
     private Geometry geom;
     
     public CloudAppState() {
@@ -36,8 +38,8 @@ public class CloudAppState extends AbstractAppState {
         super.initialize(stateManager, baseApp);
         app = (Main) baseApp;
         
-        CloudProcessor cp = new CloudProcessor(CloudProcessor.Mode.RenderGPU, app.getAssetManager());
-        app.getViewPort().addProcessor(cp);
+        cloudProcessor = new CloudProcessor(CloudProcessor.Mode.AllCPU, app.getAssetManager());
+        app.getViewPort().addProcessor(cloudProcessor);
         
         // TODO: CloudPlane
         Quad cloudQuad = new Quad(10, 10);
@@ -45,12 +47,12 @@ public class CloudAppState extends AbstractAppState {
         
         Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         //Material mat = new Material(app.getAssetManager(), "shaders/CloudFinal.j3md");
-        mat.setTexture("ColorMap", cp.getCloudTex());
+        mat.setTexture("ColorMap", cloudProcessor.getCloudTex());
         mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         geom.setMaterial(mat);
         geom.setQueueBucket(Bucket.Transparent);
                 
-        //updateClouds();
+        updateClouds();
         
         app.getRootNode().attachChild(geom);
     }
@@ -71,10 +73,16 @@ public class CloudAppState extends AbstractAppState {
         app.getRootNode().detachChild(geom);
         
         app = null;
+        cloudProcessor = null;
         geom = null;
     }
     
     private void updateClouds() {
+        cloudProcessor.setCloudCover(50);
+        cloudProcessor.setCloudSharpness(0.96f);
+        cloudProcessor.setWayFactor(0.0005f);
+        cloudProcessor.setSunPosition(new Vector3f(256/2, 256/2, 5000));
+        cloudProcessor.setSunLightColor(new Vector3f(1.0f, 1.0f, 1.0f));
         // TODO: some movement (wind)/change (permutation) should be done (aka cloud physics)
     }
 }
