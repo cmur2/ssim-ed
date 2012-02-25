@@ -211,17 +211,17 @@ public class CloudProcessor implements SceneProcessor {
             for(int row = 0; row < TexSize; row++) {
                 float alpha = heightField[column][row];
                 int index = (row*TexSize + column)*4;
-//                int index = (row*TexSize + column)*4;
-                if((column == 23 && row == 0) || (column == 117 && row == 0) || (column == 42 && row == 42)) {
-                    buf.put(index+0, (byte) 255); // R
-                    buf.put(index+1, (byte) 128); // G
-                    buf.put(index+2, (byte) 0); // B
-                } else {
+//                if((column == 23 && row == 0) || (column == 117 && row == 0) || (column == 42 && row == 42)) {
+//                    buf.put(index+0, (byte) 255); // R
+//                    buf.put(index+1, (byte) 128); // G
+//                    buf.put(index+2, (byte)   0); // B
+//                    buf.put(index+3, (byte) 255); // A
+//                } else {
                     buf.put(index+0, (byte) alpha); // R
                     buf.put(index+1, (byte) alpha); // G
                     buf.put(index+2, (byte) alpha); // B
-                }
-                buf.put(index+3, (byte) 255); // A
+                    buf.put(index+3, (byte) 255); // A
+//                }
 //                buf.put((byte) alpha); // R
 //                buf.put((byte) alpha); // G
 //                buf.put((byte) alpha); // B

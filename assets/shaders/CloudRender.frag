@@ -28,7 +28,12 @@ void main() {
     //return;
     
     float alpha = texLookup(varTexVoxelCoord.xy);
-    //if(alpha == 0.0) discard;
+    if(alpha == 0.0) {
+        // early exit if no cloud at current texel
+        // render final texel full translucent
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+        return;
+    }
     vec4 v = vec4(varTexVoxelCoord.zw, -alpha, 0.0);
     float zdiff = 255.0 - v.z;
     vec3 vdir = normalize(m_SunPos - v.xyz);
@@ -80,7 +85,7 @@ void main() {
     // = determine the alpha (outsourced) =
     // ====================================
     alpha = 1.0 - pow(m_CloudSharpness, alpha);
-    alpha *= texture2D(m_HeightField, varTexVoxelCoord.xy).g; // use fading information
+    alpha *= texture2D(m_HeightField, varTexVoxelCoord.xy).r; // use fading information
 
     // ================
     // = final action =

@@ -44,6 +44,7 @@ public class CloudAppState extends AbstractAppState {
         geom = new Geometry("Clouds", cloudQuad);
         
         Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        //Material mat = new Material(app.getAssetManager(), "shaders/CloudFinal.j3md");
         mat.setTexture("ColorMap", cp.getCloudTex());
         mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         geom.setMaterial(mat);
