@@ -15,6 +15,8 @@ import sed.weather.WeatherController;
 import sed.weather.XMLPropertySetBuilder;
 import ssim.sim.SimClock;
 
+import chlib.noise.NoiseUtil;
+
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
@@ -34,6 +36,7 @@ import de.altimos.util.logger.JLFBridge;
 public class Main extends SimpleApplication {
     
     private static final Logger logger = Logger.getLogger(Main.class);
+    private static final long DebugSeed = 4569845;
     
     public static void main(String[] args) {
         //org.apache.log4j.BasicConfigurator.configure();
@@ -59,6 +62,9 @@ public class Main extends SimpleApplication {
     
     @Override
     public void simpleInitApp() {
+        // TODO: Initialize NoiseUtil with random seed
+        NoiseUtil.reinitialize(DebugSeed);
+        
         assetManager.registerLoader(XMLLoader.class, "xml");
         inputManager.deleteTrigger("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Z));
         inputManager.addMapping("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Y));

@@ -31,8 +31,6 @@ public class CloudAppState extends AbstractAppState {
     private Vector3f cloudShift;
     
     public CloudAppState() {
-        // TODO: initialize NoiseUtil more central, and with random seed
-        NoiseUtil.reinitialize(4569845);
     }
     
     @Override
@@ -77,6 +75,7 @@ public class CloudAppState extends AbstractAppState {
         app = null;
         cloudProcessor = null;
         geom = null;
+        cloudShift = null;
     }
     
     private void updateClouds() {
