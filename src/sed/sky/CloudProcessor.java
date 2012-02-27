@@ -78,9 +78,6 @@ public class CloudProcessor implements SceneProcessor {
         cloudTex = new Texture2D(TexSize, TexSize, Format.RGBA8);
         
         cloudHeightField = new CloudHeightField(TexSize, NumOctaves);
-        // TODO: better interface - zoom remains zoom, shift will be time, and then we need real shift (x,y)
-        cloudHeightField.setZoom(32);
-        cloudHeightField.setShift(0);
     }
     
     // create heightfield (different algos: CPU GPU)
@@ -179,6 +176,22 @@ public class CloudProcessor implements SceneProcessor {
     public void setCloudCover(float cloudCover) {
         cloudHeightField.setCloudCover(cloudCover);
     }
+    
+    public Vector3f getShift() {
+        return cloudHeightField.getShift();
+    }
+    
+    public void setShift(Vector3f shift) {
+        cloudHeightField.setShift(shift);
+    }
+    
+    public float getZoom() {
+        return cloudHeightField.getZoom();
+    }
+    
+    public void setZoom(float zoom) {
+        cloudHeightField.setZoom(zoom);
+    }
 
     public float getCloudSharpness() {
         return cloudSharpness;
@@ -212,6 +225,9 @@ public class CloudProcessor implements SceneProcessor {
         this.sunLightColor = sunLightColor;
     }
 
+    /**
+     * @return the final texture containing the rendered cloud image  
+     */
     public Texture2D getCloudTex() {
         return cloudTex;
     }

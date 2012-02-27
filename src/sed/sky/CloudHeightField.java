@@ -1,5 +1,7 @@
 package sed.sky;
 
+import com.jme3.math.Vector3f;
+
 import chlib.noise.NoiseUtil;
 
 public class CloudHeightField {
@@ -8,7 +10,7 @@ public class CloudHeightField {
     private int numOctaves;
     
     private float zoom;
-    private float shift;
+    private Vector3f shift;
     private float cloudCover;
     
     public CloudHeightField(int size, int numOctaves) {
@@ -24,11 +26,11 @@ public class CloudHeightField {
         this.zoom = zoom;
     }
     
-    public float getShift() {
+    public Vector3f getShift() {
         return shift;
     }
     
-    public void setShift(float shift) {
+    public void setShift(Vector3f shift) {
         this.shift = shift;
     }
     
@@ -57,8 +59,14 @@ public class CloudHeightField {
         }
         for(int column = 0; column < size; column++) {
             for(int row = 0; row < size; row++) {
-                //float turbulance = NoiseUtil.turbulance2(column/zoom, row/zoom, shift, numOctaves);
-                float turbulance = NoiseUtil.fBm(column/zoom, row/zoom, shift, numOctaves, 2f, .5f);
+                // alternative: NoiseUtil.turbulance2
+                float turbulance = NoiseUtil.fBm(
+                    (shift.x * size + column)/zoom,
+                    (shift.y * size + row)/zoom,
+                    shift.z,
+                    numOctaves,
+                    2f,
+                    .5f);
                 float height = (turbulance*255f) - cloudCover;
                 if(height < 0) { height = 0; }
                 store[column][row] = height;

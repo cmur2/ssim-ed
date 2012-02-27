@@ -81,8 +81,10 @@ public class CloudAppState extends AbstractAppState {
         cloudProcessor.setCloudCover(0);
         cloudProcessor.setCloudSharpness(0.96f);
         cloudProcessor.setWayFactor(0.003f);
-        cloudProcessor.setSunPosition(new Vector3f(-100, 256/2, 3000));
+        cloudProcessor.setSunPosition(new Vector3f(-500, 256/2, 3000));
         cloudProcessor.setSunLightColor(new Vector3f(1.0f, 1.0f, 1.0f));
+        cloudProcessor.setShift(Vector3f.ZERO);
+        cloudProcessor.setZoom(32);
         // TODO: some movement (wind)/change (permutation) should be done (aka cloud physics)
     }
 }
