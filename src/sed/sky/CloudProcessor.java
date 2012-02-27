@@ -143,8 +143,8 @@ public class CloudProcessor implements SceneProcessor {
 
     @Override
     public void preFrame(float tpf) {
-        if(time > UpdateInterval) {
-            time = 0;
+        if(time >= UpdateInterval) {
+            time -= UpdateInterval;
             updateAndRender();
         }
         time += tpf;

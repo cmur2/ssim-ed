@@ -65,8 +65,8 @@ public class SunAppState extends AbstractAppState {
     
     @Override
     public void update(float dt) {
-        if(time > UpdateInterval) {
-            time = 0;
+        if(time >= UpdateInterval) {
+            time -= UpdateInterval;
             updateSunTranslation();
             sunTexture.setLensflareEnabled(app.getWeather().getBool("sun.lensflare-enabled"));
             sunTexture.setLensflareShininess(app.getWeather().getFloat("sun.lensflare-shininess"));

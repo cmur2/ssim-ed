@@ -61,8 +61,8 @@ public class CloudAppState extends AbstractAppState {
     
     @Override
     public void update(float dt) {
-        if(time > UpdateInterval) {
-            time = 0;
+        if(time >= UpdateInterval) {
+            time -= UpdateInterval;
             updateClouds();
         }
         time += dt;

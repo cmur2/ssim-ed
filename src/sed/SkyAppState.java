@@ -59,8 +59,8 @@ public class SkyAppState extends AbstractAppState {
     
     @Override
     public void update(float dt) {
-        if(time > UpdateInterval) {
-            time = 0;
+        if(time >= UpdateInterval) {
+            time -= UpdateInterval;
             logger.debug("Redraw sky");
 
             skyBoxTexture.update();
