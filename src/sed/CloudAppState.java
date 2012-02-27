@@ -40,7 +40,7 @@ public class CloudAppState extends AbstractAppState {
         super.initialize(stateManager, baseApp);
         app = (Main) baseApp;
         
-        cloudProcessor = new CloudProcessor(CloudProcessor.Mode.RenderGPU, app.getAssetManager());
+        cloudProcessor = new CloudProcessor(app.getAssetManager(), CloudProcessor.Mode.RenderGPU, UpdateInterval);
         app.getViewPort().addProcessor(cloudProcessor);
         
         // TODO: CloudPlane

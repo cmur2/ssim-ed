@@ -30,7 +30,6 @@ import com.jme3.util.BufferUtils;
 public class CloudProcessor implements SceneProcessor {
 
     private static final Logger logger = Logger.getLogger(CloudProcessor.class);
-    private static final float UpdateInterval = 10f; // in seconds
     
     private static final int TexSize = 256;
     private static final int MaxSteps = 30;
@@ -53,6 +52,7 @@ public class CloudProcessor implements SceneProcessor {
     private boolean init = false;
     private float time = 0;
     private Mode mode;
+    private float updateInterval; // in seconds
     
     // main part of final scene
     private AssetManager assetManager;
@@ -75,9 +75,10 @@ public class CloudProcessor implements SceneProcessor {
     private Vector3f sunPosition;
     private Vector3f sunLightColor;
     
-    public CloudProcessor(Mode mode, AssetManager assetManager) {
-        this.mode = mode;
+    public CloudProcessor(AssetManager assetManager, Mode mode, float updateInterval) {
         this.assetManager = assetManager;
+        this.mode = mode;
+        this.updateInterval = updateInterval;
         
         heightFieldTex = new Texture2D(TexSize, TexSize, Format.RGBA8);
         cloudTex = new Texture2D(TexSize, TexSize, Format.RGBA8);
@@ -143,8 +144,8 @@ public class CloudProcessor implements SceneProcessor {
 
     @Override
     public void preFrame(float tpf) {
-        if(time >= UpdateInterval) {
-            time -= UpdateInterval;
+        if(time >= updateInterval) {
+            time -= updateInterval;
             updateAndRender();
         }
         time += tpf;
