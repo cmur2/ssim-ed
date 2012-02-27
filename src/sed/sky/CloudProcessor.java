@@ -2,6 +2,8 @@ package sed.sky;
 
 import java.nio.ByteBuffer;
 
+import org.apache.log4j.Logger;
+
 import ssim.util.MathExt;
 
 import com.jme3.asset.AssetManager;
@@ -27,6 +29,9 @@ import com.jme3.util.BufferUtils;
  */
 public class CloudProcessor implements SceneProcessor {
 
+    private static final Logger logger = Logger.getLogger(CloudProcessor.class);
+    private static final float UpdateInterval = 10f; // in seconds
+    
     private static final int TexSize = 256;
     private static final int MaxSteps = 30;
     private static final int NumOctaves = 8;
@@ -138,7 +143,7 @@ public class CloudProcessor implements SceneProcessor {
 
     @Override
     public void preFrame(float tpf) {
-        if(time > 10) {
+        if(time > UpdateInterval) {
             time = 0;
             updateAndRender();
         }

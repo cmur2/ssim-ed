@@ -28,6 +28,8 @@ public class CloudAppState extends AbstractAppState {
     private CloudProcessor cloudProcessor;
     private Geometry geom;
     
+    private Vector3f cloudShift;
+    
     public CloudAppState() {
         // TODO: initialize NoiseUtil more central, and with random seed
         NoiseUtil.reinitialize(4569845);
@@ -83,8 +85,14 @@ public class CloudAppState extends AbstractAppState {
         cloudProcessor.setWayFactor(0.003f);
         cloudProcessor.setSunPosition(new Vector3f(-500, 256/2, 3000));
         cloudProcessor.setSunLightColor(new Vector3f(1.0f, 1.0f, 1.0f));
-        cloudProcessor.setShift(Vector3f.ZERO);
         cloudProcessor.setZoom(32);
+        
+        if(cloudShift == null) {
+            cloudShift = new Vector3f(Vector3f.ZERO);
+        }
+        cloudProcessor.setShift(cloudShift);
+//        cloudShift.x += 0.025;
+        
         // TODO: some movement (wind)/change (permutation) should be done (aka cloud physics)
     }
 }
