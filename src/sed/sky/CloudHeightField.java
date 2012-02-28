@@ -1,5 +1,7 @@
 package sed.sky;
 
+import ssim.util.MathExt;
+
 import com.jme3.math.Vector3f;
 
 import chlib.noise.NoiseUtil;
@@ -64,11 +66,14 @@ public class CloudHeightField {
                     (shift.x * size + column)/zoom,
                     (shift.y * size + row)/zoom,
                     shift.z,
-                    numOctaves,
-                    2f,
-                    .5f);
+                    numOctaves, 2f, .5f);
+//                float turbulance = NoiseUtil.turbulance2(
+//                    (shift.x * size + column)/zoom,
+//                    (shift.y * size + row)/zoom,
+//                    shift.z,
+//                    numOctaves);
                 float height = (turbulance*255f) - cloudCover;
-                if(height < 0) { height = 0; }
+                height = MathExt.clamp(height, 0, 255);
                 store[column][row] = height;
             }
         }
