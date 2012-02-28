@@ -61,12 +61,14 @@ public class CloudHeightField {
         }
         for(int column = 0; column < size; column++) {
             for(int row = 0; row < size; row++) {
-                // alternative: NoiseUtil.turbulance2
                 float turbulance = NoiseUtil.fBm(
                     (shift.x * size + column)/zoom,
                     (shift.y * size + row)/zoom,
                     shift.z,
                     numOctaves, 2f, .5f);
+                // convert from -1..1 to 0..1
+                turbulance = (turbulance + 1f) * 0.5f;
+                // alternative is turbulance2
 //                float turbulance = NoiseUtil.turbulance2(
 //                    (shift.x * size + column)/zoom,
 //                    (shift.y * size + row)/zoom,
