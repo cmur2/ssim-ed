@@ -11,8 +11,10 @@
     <ocean>
     </ocean>
     <cloud>
-        <cover>50</cover>
+        <cover>0</cover>
         <sharpness>0.96</sharpness>
+        <way-factor>0.003</way-factor>
+        <zoom>32</zoom> <!-- static value -->
     </cloud>
     <!-- north east -->
     <wind>(1.0, 0, 1.0)</wind>

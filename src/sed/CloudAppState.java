@@ -27,7 +27,10 @@ public class CloudAppState extends AbstractAppState {
     private Main app;
     private CloudProcessor cloudProcessor;
     private Geometry geom;
-    
+
+    private Vector3f sunPosition;
+    private Vector3f sunColor;
+    private float[] sunColorArray;
     private Vector3f cloudShift;
     
     public CloudAppState() {
@@ -51,7 +54,9 @@ public class CloudAppState extends AbstractAppState {
         mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         geom.setMaterial(mat);
         geom.setQueueBucket(Bucket.Transparent);
-                
+        
+        // update before attaching since all SceneProcessors are initialized
+        // then (and the CP requires some variables set)
         updateClouds();
         
         app.getRootNode().attachChild(geom);
@@ -79,12 +84,24 @@ public class CloudAppState extends AbstractAppState {
     }
     
     private void updateClouds() {
-        cloudProcessor.setCloudCover(0);
-        cloudProcessor.setCloudSharpness(0.96f);
-        cloudProcessor.setWayFactor(0.003f);
+        cloudProcessor.setCloudCover(app.getWeather().getFloat("cloud.cover"));
+        cloudProcessor.setCloudSharpness(app.getWeather().getFloat("cloud.sharpness"));
+        cloudProcessor.setWayFactor(app.getWeather().getFloat("cloud.way-factor"));
+        cloudProcessor.setZoom(app.getWeather().getInt("cloud.zoom"));
+        
+        sunPosition = app.getSun().getSunPosition(sunPosition);
+        if(sunColor == null) {
+            sunColor = new Vector3f();
+        }
+        // TODO: Clouds lit by real suns color are too dark, maybe modify this color
+//        sunColorArray = app.getSkyGradient().getSkyColor(sunPosition, sunColorArray);
+//        sunColor.set(sunColorArray[0], sunColorArray[1], sunColorArray[2]);
+//        System.out.println(sunColor);
+        sunColor.set(1f, 1f, 1f);
+        
+        cloudProcessor.setSunLightColor(sunColor);
+
         cloudProcessor.setSunPosition(new Vector3f(-500, 256/2, 3000));
-        cloudProcessor.setSunLightColor(new Vector3f(1.0f, 1.0f, 1.0f));
-        cloudProcessor.setZoom(32);
         
         if(cloudShift == null) {
             cloudShift = new Vector3f(Vector3f.ZERO);

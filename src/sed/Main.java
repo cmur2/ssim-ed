@@ -138,7 +138,10 @@ public class Main extends SimpleApplication {
         builder.putVec3("sky.light");
         builder.putBool("sun.lensflare-enabled");
         builder.putFloat("sun.lensflare-shininess");
-//        builder.putInt("cloud.cover");
+        builder.putFloat("cloud.cover");
+        builder.putFloat("cloud.sharpness");
+        builder.putFloat("cloud.way-factor");
+        builder.putInt("cloud.zoom");
 //        builder.putVec3("wind");
 //        builder.putIntArray("prime");
         
@@ -146,6 +149,7 @@ public class Main extends SimpleApplication {
         weatherController.registerInterpolator(new Interpolators.FloatInterpolator(), Float.class);
         weatherController.registerInterpolator(new Interpolators.BoolInterpolator(), Boolean.class);
         weatherController.registerInterpolator(new Interpolators.Vec3Interpolator(), Vector3f.class);
+        weatherController.registerInterpolator(new Interpolators.IntInterpolator(), Integer.class);
         
 //        System.out.println(weatherController.getVec3("wind"));
 //        System.out.println(java.util.Arrays.toString(weatherController.getIntArray("prime")));
@@ -177,6 +181,11 @@ public class Main extends SimpleApplication {
         return simClock;
     }
     
+    /**
+     * @return only the {@link Weather} part of the applications
+     *         {@link WeatherController} since all other part should only
+     *         read weather information
+     */
     public Weather getWeather() {
         return weatherController;
     }
