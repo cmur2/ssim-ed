@@ -2,6 +2,11 @@ package sed.sky;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.texture.Image;
@@ -13,9 +18,13 @@ public class SkyBoxTexture extends TextureCubeMap {
     private static final int TexSize = 256;
     
     private SkyGradient skyGradient;
+    private ScheduledThreadPoolExecutor executor;
     
-    public SkyBoxTexture(SkyGradient skyGradient) {
+    private long updateTime;
+    
+    public SkyBoxTexture(SkyGradient skyGradient, ScheduledThreadPoolExecutor executor) {
         this.skyGradient = skyGradient;
+        this.executor = executor;
         ArrayList<ByteBuffer> faces = new ArrayList<ByteBuffer>();
         // +x
         faces.add(newFace());
@@ -37,7 +46,8 @@ public class SkyBoxTexture extends TextureCubeMap {
     
     private ByteBuffer newFace() {
         ByteBuffer bb = BufferUtils.createByteBuffer(TexSize * TexSize * 3);
-        for(int i = 0; i < bb.capacity() / 3; i++) {
+        int numElements = bb.capacity() / 3;
+        for(int i = 0; i < numElements; i++) {
             bb.put((byte) 100);
             bb.put((byte) 30);
             bb.put((byte) 10);
@@ -46,19 +56,23 @@ public class SkyBoxTexture extends TextureCubeMap {
     }
     
     public void update() {
-        updateX(true, 0);
-        updateX(false, 1);
-        updateY(true, 2);
-        updateY(false, 3);
-        updateZ(true, 4);
-        updateZ(false, 5);
+        long t0 = System.nanoTime();
+        try {
+            executor.invokeAll(Arrays.asList(
+                new FaceUpdater(0), new FaceUpdater(1), new FaceUpdater(2),
+                new FaceUpdater(3), new FaceUpdater(4), new FaceUpdater(5)
+            ));
+        } catch(InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        long t1 = System.nanoTime();
+        updateTime = t1-t0;
+//        System.out.println(updateTime);
     }
     
     private void updateX(boolean posX, final int imageNum) {
         ByteBuffer buf = getImage().getData(imageNum);
         buf.rewind();
-        // TODO: reallocation or not?
-        //ByteBuffer buf = BufferUtils.createByteBuffer(TexSize*TexSize*3);
         float[] colors = new float[3];
         final float yInc = (-1) * (1f - (-1f)) / TexSize;
         final float zInc = (posX ? -1 : 1) * (1f - (-1f)) / TexSize;
@@ -162,5 +176,27 @@ public class SkyBoxTexture extends TextureCubeMap {
         // final image: 1x1 (depth?? 1)
         Image img = new Image(Image.Format.BGR8, 1, 1, 1, faces);
         return new TextureCubeMap(img);
+    }
+    
+    private class FaceUpdater implements Callable<Void> {
+        
+        private int faceNr;
+        
+        public FaceUpdater(int faceNr) {
+            this.faceNr = faceNr;
+        }
+        
+        @Override
+        public Void call() throws Exception {
+            switch(faceNr) {
+            case 0: updateX(true, 0); break;
+            case 1: updateX(false, 1); break;
+            case 2: updateY(true, 2); break;
+            case 3: updateY(false, 3); break;
+            case 4: updateZ(true, 4); break;
+            case 5: updateZ(false, 5); break;
+            }
+            return null;
+        }
     }
 }

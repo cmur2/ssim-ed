@@ -1,5 +1,7 @@
 package sed;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
@@ -53,6 +55,7 @@ public class Main extends SimpleApplication {
     
     private float time = 0;
     
+    private ScheduledThreadPoolExecutor executor;
     private Mission mission;
     private SimClock simClock;
     private WeatherController weatherController;
@@ -68,6 +71,8 @@ public class Main extends SimpleApplication {
         assetManager.registerLoader(XMLLoader.class, "xml");
         inputManager.deleteTrigger("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Z));
         inputManager.addMapping("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Y));
+        
+        executor = new ScheduledThreadPoolExecutor(2 * Runtime.getRuntime().availableProcessors());
         
         initMission();
         
@@ -171,6 +176,14 @@ public class Main extends SimpleApplication {
         simClock.step(dt);
     }
     
+    @Override
+    public void destroy() {
+        super.destroy();
+        
+        // shutdown all (non daemon) worker pool threads
+        executor.shutdown();
+    }
+    
     // simple getters
     
     public Mission getMission() {
@@ -200,6 +213,10 @@ public class Main extends SimpleApplication {
     
     public SkyGradient getSkyGradient() {
         return skyGradient;
+    }
+    
+    public ScheduledThreadPoolExecutor getExecutor() {
+        return executor;
     }
     
     // helpers

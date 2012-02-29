@@ -44,7 +44,7 @@ public class SkyAppState extends AbstractAppState {
         //mat.getAdditionalRenderState().setWireframe(true);
         mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
         
-        skyBoxTexture = new SkyBoxTexture(app.getSkyGradient());
+        skyBoxTexture = new SkyBoxTexture(app.getSkyGradient(), app.getExecutor());
         skyBoxTexture.update();
         mat.setTexture("SkyBox", skyBoxTexture);
         
