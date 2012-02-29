@@ -80,7 +80,7 @@ public class Main extends SimpleApplication {
         
         flyCam.setMoveSpeed(10 * 6);
         //flyCam.setDragToRotate(true);
-        cam.setLocation(new Vector3f(0, -200f, 0));
+        //cam.setLocation(new Vector3f(0, -200f, 0));
         
         skyNode = new Node("SkyNode");
         skyNode.setCullHint(CullHint.Never);
@@ -118,7 +118,7 @@ public class Main extends SimpleApplication {
             rockMat.setFloat("Shininess", 5f); // [1,128]
             rockGeom.setMaterial(rockMat);
             rockGeom.rotate(1.6f, 0, 0);
-            rootNode.attachChild(rockGeom);
+            //rootNode.attachChild(rockGeom);
         }
         
         skyNode.addControl(new SurfaceCameraControl(cam));
