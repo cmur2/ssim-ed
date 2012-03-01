@@ -1,5 +1,6 @@
 package sed;
 
+import sed.terrain.BinaryMapBasedHeightMap;
 import jme3tools.converters.ImageToAwt;
 
 import com.jme3.app.Application;
@@ -10,7 +11,7 @@ import com.jme3.material.Material;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
-import com.jme3.terrain.heightmap.AbstractHeightMap;
+import com.jme3.terrain.heightmap.HeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
@@ -68,21 +69,22 @@ public class TerrainAppState extends AbstractAppState {
         
         java.awt.Image heightMapImageAwt = ImageToAwt.convert(heightMapImage.getImage(), false, false, 0);
         
-        AbstractHeightMap heightmap = null;
+        HeightMap heightmap = null;
         try {
-            heightmap = new ImageBasedHeightMap(heightMapImageAwt, 1f);
+            //heightmap = new ImageBasedHeightMap(heightMapImageAwt, 1f);
+            heightmap = new BinaryMapBasedHeightMap(map);
             heightmap.load();
         } catch(Exception ex) {
             ex.printStackTrace();
         }
         
-        terrainRoot = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
-        TerrainLodControl control = new TerrainLodControl(terrainRoot, app.getCamera());
-        control.setLodCalculator(new DistanceLodCalculator(65, 2.7f));
-        terrainRoot.addControl(control);
+        terrainRoot = new TerrainQuad("terrain", 65, 65, heightmap.getHeightMap());
+        //TerrainLodControl control = new TerrainLodControl(terrainRoot, app.getCamera());
+        //control.setLodCalculator(new DistanceLodCalculator(65, 2.7f));
+        //terrainRoot.addControl(control);
         terrainRoot.setMaterial(matRock);
         //terrainRoot.setLocalTranslation(0, -100, 0);
-        //terrainRoot.setLocalScale(2f, 1f, 2f);
+        terrainRoot.setLocalScale(4, 1f, 4);
         app.getRootNode().attachChild(terrainRoot);
     }
     
