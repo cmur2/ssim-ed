@@ -97,9 +97,9 @@ public class Main extends SimpleApplication {
         skyNode.setCullHint(CullHint.Never);
         rootNode.attachChild(skyNode);
         
-        sun = new Sun(this);
+        sun = new Sun(simClock, mission);
         sun.update();
-        skyGradient = new SkyGradient(this);
+        skyGradient = new SkyGradient(sun);
         skyGradient.setTurbidity(getWeather().getFloat("sky.turbidity"));
         skyGradient.update();
         

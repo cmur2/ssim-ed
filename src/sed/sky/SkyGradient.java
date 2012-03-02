@@ -1,7 +1,5 @@
 package sed.sky;
 
-import sed.Main;
-
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
@@ -21,7 +19,7 @@ public class SkyGradient {
     
     private static final ColorRGBA NightSkyColor = new ColorRGBA(0f, 0f, 0.08f, 1f);
     
-    private Main app;
+    private Sun sun;
     
     /**
      * x: sunPhiAngle, y: sunThetaAngle
@@ -43,8 +41,8 @@ public class SkyGradient {
     
     private Vector3f gammaCorrection = new Vector3f(1f, 0f, 1f);
     
-    public SkyGradient(Main app) {
-        this.app = app;
+    public SkyGradient(Sun sun) {
+        this.sun = sun;
     }
     
     public void setTurbidity(float turbidity) {
@@ -64,7 +62,7 @@ public class SkyGradient {
     }
     
     public void update() {
-        sunAngles = app.getSun().getSunAngles(sunAngles);
+        sunAngles = sun.getSunAngles(sunAngles);
         
         // extension to allow blend to night sky color
         float thetaDeg = (float) Math.toDegrees(sunAngles.y);
