@@ -38,6 +38,7 @@ import de.altimos.util.logger.JLFBridge;
 public class Main extends SimpleApplication {
     
     private static final Logger logger = Logger.getLogger(Main.class);
+    private static final float UpdateInterval = 1f; // in seconds
     private static final long DebugSeed = 4569845;
     
     public static void main(String[] args) {
@@ -149,33 +150,27 @@ public class Main extends SimpleApplication {
         builder.putFloat("cloud.sharpness");
         builder.putFloat("cloud.way-factor");
         builder.putInt("cloud.zoom");
-//        builder.putVec3("wind");
-//        builder.putIntArray("prime");
         
         weatherController = new RandomWeatherController(5*60f, builder.getResults());
         weatherController.registerInterpolator(new Interpolators.FloatInterpolator(), Float.class);
         weatherController.registerInterpolator(new Interpolators.BoolInterpolator(), Boolean.class);
         weatherController.registerInterpolator(new Interpolators.Vec3Interpolator(), Vector3f.class);
         weatherController.registerInterpolator(new Interpolators.IntInterpolator(), Integer.class);
-        
-//        System.out.println(weatherController.getVec3("wind"));
-//        System.out.println(java.util.Arrays.toString(weatherController.getIntArray("prime")));
     }
     
     @Override
     public void simpleUpdate(float dt) {
-        if(time > 10f) {
-            time = 0;
-            //System.out.println(getWeather().getFloat("sky.turbidity"));
+        if(time > UpdateInterval) {
+            time -= UpdateInterval;
+            sun.update();
+            skyGradient.setTurbidity(getWeather().getFloat("sky.turbidity"));
+            skyGradient.update();
         }
         
-        skyGradient.setTurbidity(getWeather().getFloat("sky.turbidity"));
-        skyGradient.update();
         weatherController.update(dt);
-        sun.update();
+        simClock.step(dt);
         
         time += dt;
-        simClock.step(dt);
     }
     
     @Override
