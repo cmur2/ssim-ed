@@ -1,10 +1,8 @@
 package sed.app;
 
-import sed.Main;
 import sed.Util;
 
 import com.jme3.app.Application;
-import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -12,7 +10,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 
-public class LightingAppState extends AbstractAppState {
+public class LightingAppState extends BasicAppState {
     
     private static final float UpdateInterval = 30f; // in seconds
     
@@ -25,7 +23,6 @@ public class LightingAppState extends AbstractAppState {
     private float time = 0;
     
     // exists only while AppState is living
-    private Main app;
     private DirectionalLight sunLight;
     private AmbientLight envLight;
     
@@ -42,15 +39,14 @@ public class LightingAppState extends AbstractAppState {
     @Override
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
-        app = (Main) baseApp;
         
         sunLight = new DirectionalLight();
         updateSunLight();
-        app.getRootNode().addLight(sunLight);
+        getApp().getRootNode().addLight(sunLight);
         
         envLight = new AmbientLight();
         updateEnvLight();
-        app.getRootNode().addLight(envLight);
+        getApp().getRootNode().addLight(envLight);
     }
     
     @Override
@@ -67,18 +63,17 @@ public class LightingAppState extends AbstractAppState {
     public void cleanup() {
         super.cleanup();
         
-        app.getRootNode().removeLight(sunLight);
-        app.getRootNode().removeLight(envLight);
+        getApp().getRootNode().removeLight(sunLight);
+        getApp().getRootNode().removeLight(envLight);
         
-        app = null;
         sunLight = null;
         envLight = null;
     }
     
     private void updateSunLight() {
-        sunPosition = app.getSun().getSunPosition(sunPosition);
+        sunPosition = getApp().getSun().getSunPosition(sunPosition);
         
-        sunAngles = app.getSun().getSunAngles(sunAngles);
+        sunAngles = getApp().getSun().getSunAngles(sunAngles);
         float thetaDeg = (float) Math.toDegrees(sunAngles.y);
         if(thetaDeg > NightThetaMax) {
             sunLight.setColor(NightSunColor);
@@ -86,7 +81,7 @@ public class LightingAppState extends AbstractAppState {
             if(sunColor == null) {
                 sunColor = new ColorRGBA();
             }
-            sunColorArray = app.getSkyGradient().getSkyColor(sunPosition, sunColorArray);
+            sunColorArray = getApp().getSkyGradient().getSkyColor(sunPosition, sunColorArray);
             Util.setTo(sunColor, sunColorArray);
             sunLight.setColor(sunColor);
         }
@@ -96,7 +91,7 @@ public class LightingAppState extends AbstractAppState {
     }
     
     private void updateEnvLight() {
-        Vector3f v = app.getWeather().getVec3("sky.light");
+        Vector3f v = getApp().getWeather().getVec3("sky.light");
         if(envColor == null) {
             envColor = new ColorRGBA();
         }

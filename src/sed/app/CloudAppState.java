@@ -2,11 +2,9 @@ package sed.app;
 
 import org.apache.log4j.Logger;
 
-import sed.Main;
 import sed.sky.CloudProcessor;
 
 import com.jme3.app.Application;
-import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
@@ -15,7 +13,7 @@ import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
 
-public class CloudAppState extends AbstractAppState {
+public class CloudAppState extends BasicAppState {
     
     private static final Logger logger = Logger.getLogger(CloudAppState.class);
     private static final float UpdateInterval = 10f; // in seconds
@@ -23,7 +21,6 @@ public class CloudAppState extends AbstractAppState {
     private float time = 0;
     
     // exists only while AppState is living
-    private Main app;
     private CloudProcessor cloudProcessor;
     private Geometry geom;
 
@@ -38,17 +35,16 @@ public class CloudAppState extends AbstractAppState {
     @Override
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
-        app = (Main) baseApp;
         
-        cloudProcessor = new CloudProcessor(app.getAssetManager(), CloudProcessor.Mode.RenderGPU, UpdateInterval);
-        app.getViewPort().addProcessor(cloudProcessor);
+        cloudProcessor = new CloudProcessor(getApp().getAssetManager(), CloudProcessor.Mode.RenderGPU, UpdateInterval);
+        getApp().getViewPort().addProcessor(cloudProcessor);
         
         // TODO: CloudPlane
         Quad cloudQuad = new Quad(10, 10);
         geom = new Geometry("Clouds", cloudQuad);
         
         //Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        Material mat = new Material(app.getAssetManager(), "shaders/CloudFinal.j3md");
+        Material mat = new Material(getApp().getAssetManager(), "shaders/CloudFinal.j3md");
         mat.setTexture("ColorMap", cloudProcessor.getCloudTex());
         mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         geom.setMaterial(mat);
@@ -58,7 +54,7 @@ public class CloudAppState extends AbstractAppState {
         // then (and the CP requires some variables set)
         updateClouds();
         
-        app.getRootNode().attachChild(geom);
+        getApp().getRootNode().attachChild(geom);
     }
     
     @Override
@@ -74,10 +70,9 @@ public class CloudAppState extends AbstractAppState {
     public void cleanup() {
         super.cleanup();
         
-        app.getRootNode().detachChild(geom);
-        app.getViewPort().removeProcessor(cloudProcessor);
+        getApp().getRootNode().detachChild(geom);
+        getApp().getViewPort().removeProcessor(cloudProcessor);
         
-        app = null;
         cloudProcessor = null;
         geom = null;
         sunPosition = null;
@@ -87,12 +82,12 @@ public class CloudAppState extends AbstractAppState {
     }
     
     private void updateClouds() {
-        cloudProcessor.setCloudCover(app.getWeather().getFloat("cloud.cover"));
-        cloudProcessor.setCloudSharpness(app.getWeather().getFloat("cloud.sharpness"));
-        cloudProcessor.setWayFactor(app.getWeather().getFloat("cloud.way-factor"));
-        cloudProcessor.setZoom(app.getWeather().getInt("cloud.zoom"));
+        cloudProcessor.setCloudCover(getApp().getWeather().getFloat("cloud.cover"));
+        cloudProcessor.setCloudSharpness(getApp().getWeather().getFloat("cloud.sharpness"));
+        cloudProcessor.setWayFactor(getApp().getWeather().getFloat("cloud.way-factor"));
+        cloudProcessor.setZoom(getApp().getWeather().getInt("cloud.zoom"));
         
-        sunPosition = app.getSun().getSunPosition(sunPosition);
+        sunPosition = getApp().getSun().getSunPosition(sunPosition);
         if(sunColor == null) {
             sunColor = new Vector3f();
         }

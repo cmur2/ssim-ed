@@ -2,18 +2,16 @@ package sed.app;
 
 import org.apache.log4j.Logger;
 
-import sed.Main;
 import sed.sky.SkyBoxTexture;
 import sed.sky.SkyDome;
 
 import com.jme3.app.Application;
-import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.scene.Geometry;
 
-public class SkyAppState extends AbstractAppState {
+public class SkyAppState extends BasicAppState {
     
     // TODO: realize SkyDome and Sun as background geometry in jme? Bucket.Sky
     
@@ -25,7 +23,6 @@ public class SkyAppState extends AbstractAppState {
     private float time = 0;
     
     // exists only while AppState is living
-    private Main app;
     private Geometry geom;
     private SkyBoxTexture skyBoxTexture;
     
@@ -35,17 +32,14 @@ public class SkyAppState extends AbstractAppState {
     @Override
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
-        app = (Main) baseApp;
-        
-        float timeOfDay = app.getSimClock().hourTime();
         
         geom = new Geometry("SkyDome");
         
-        Material mat = new Material(app.getAssetManager(), "shaders/Sky.j3md");
+        Material mat = new Material(getApp().getAssetManager(), "shaders/Sky.j3md");
         //mat.getAdditionalRenderState().setWireframe(true);
         mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
         
-        skyBoxTexture = new SkyBoxTexture(app.getSkyGradient(), app.getExecutor());
+        skyBoxTexture = new SkyBoxTexture(getApp().getSkyGradient(), getApp().getExecutor());
         skyBoxTexture.update();
         mat.setTexture("SkyBox", skyBoxTexture);
         
@@ -55,7 +49,7 @@ public class SkyAppState extends AbstractAppState {
         SkyDome s = new SkyDome(HemisphereRadius, 2f, 2f);
         geom.setMesh(s);
         
-        app.getSkyNode().attachChild(geom);
+        getApp().getSkyNode().attachChild(geom);
     }
     
     @Override
@@ -73,9 +67,8 @@ public class SkyAppState extends AbstractAppState {
     public void cleanup() {
         super.cleanup();
         
-        app.getSkyNode().detachChild(geom);
+        getApp().getSkyNode().detachChild(geom);
         
-        app = null;
         geom = null;
         skyBoxTexture = null;
     }
