@@ -79,7 +79,7 @@ public class SunAppState extends AbstractAppState {
     public void cleanup() {
         super.cleanup();
         
-        app.getSkyNode().detachChild(geom);
+        app.getSkyNode().detachChild(sunTranslationNode);
         
         app = null;
         geom = null;

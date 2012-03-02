@@ -88,8 +88,9 @@ public class TerrainAppState extends AbstractAppState {
     
     @Override
     public void update(float dt) {
-        if(time > UpdateInterval) {
-            time = 0;
+        if(time >= UpdateInterval) {
+            time -= UpdateInterval;
+            // ...
         }
         time += dt;
     }

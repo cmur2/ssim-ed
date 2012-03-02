@@ -76,10 +76,14 @@ public class CloudAppState extends AbstractAppState {
         super.cleanup();
         
         app.getRootNode().detachChild(geom);
+        app.getViewPort().removeProcessor(cloudProcessor);
         
         app = null;
         cloudProcessor = null;
         geom = null;
+        sunPosition = null;
+        sunColor = null;
+        sunColorArray = null;
         cloudShift = null;
     }
     
