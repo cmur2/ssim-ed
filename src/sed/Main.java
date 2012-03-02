@@ -6,6 +6,11 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
+import sed.app.CloudAppState;
+import sed.app.LightingAppState;
+import sed.app.SkyAppState;
+import sed.app.StarAppState;
+import sed.app.SunAppState;
 import sed.mission.Mission;
 import sed.mission.MissionParser;
 import sed.sky.SkyGradient;

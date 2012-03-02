@@ -1,7 +1,8 @@
-package sed;
+package sed.app;
 
 import org.apache.log4j.Logger;
 
+import sed.Main;
 import sed.sky.SunQuad;
 import sed.sky.SunTexture;
 

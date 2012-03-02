@@ -1,7 +1,8 @@
-package sed;
+package sed.app;
 
 import org.apache.log4j.Logger;
 
+import sed.Main;
 import sed.sky.SkyBoxTexture;
 import sed.sky.SkyDome;
 
