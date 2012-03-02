@@ -39,7 +39,7 @@ public class SkyDomeAppState extends BasicAppState {
         //mat.getAdditionalRenderState().setWireframe(true);
         mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
         
-        skyBoxTexture = new SkyBoxTexture(getApp().getSkyGradient(), getApp().getExecutor());
+        skyBoxTexture = new SkyBoxTexture(getState(SkyAppState.class).getSkyGradient(), getApp().getExecutor());
         skyBoxTexture.update();
         mat.setTexture("SkyBox", skyBoxTexture);
         
@@ -49,7 +49,7 @@ public class SkyDomeAppState extends BasicAppState {
         SkyDome s = new SkyDome(HemisphereRadius, 2f, 2f);
         geom.setMesh(s);
         
-        getApp().getSkyNode().attachChild(geom);
+        getState(SkyAppState.class).getSkyNode().attachChild(geom);
     }
     
     @Override
@@ -65,7 +65,7 @@ public class SkyDomeAppState extends BasicAppState {
     public void cleanup() {
         super.cleanup();
         
-        getApp().getSkyNode().detachChild(geom);
+        getState(SkyAppState.class).getSkyNode().detachChild(geom);
         
         geom = null;
         skyBoxTexture = null;

@@ -39,7 +39,7 @@ public class SunAppState extends BasicAppState {
         geom = new Geometry("Sun", sunQuad);
         Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         
-        sunTexture = new SunTexture(getApp().getSun());
+        sunTexture = new SunTexture(getState(SkyAppState.class).getSun());
         sunTexture.setLensflareEnabled(getApp().getWeather().getBool("sun.lensflare.enabled"));
         sunTexture.setLensflareShininess(getApp().getWeather().getFloat("sun.lensflare.shininess"));
         sunTexture.update();
@@ -57,7 +57,7 @@ public class SunAppState extends BasicAppState {
         updateSunTranslation();
         
         sunTranslationNode.attachChild(geom);
-        getApp().getSkyNode().attachChild(sunTranslationNode);
+        getState(SkyAppState.class).getSkyNode().attachChild(sunTranslationNode);
     }
     
     @Override
@@ -76,7 +76,7 @@ public class SunAppState extends BasicAppState {
     public void cleanup() {
         super.cleanup();
         
-        getApp().getSkyNode().detachChild(sunTranslationNode);
+        getState(SkyAppState.class).getSkyNode().detachChild(sunTranslationNode);
         
         geom = null;
         sunTexture = null;
@@ -87,7 +87,7 @@ public class SunAppState extends BasicAppState {
     // TODO: build SunControl to move sun
     
     private void updateSunTranslation() {
-        sunTranslation = getApp().getSun().getSunPosition(sunTranslation);
+        sunTranslation = getState(SkyAppState.class).getSun().getSunPosition(sunTranslation);
         sunTranslation.multLocal(0.9f*SkyDomeAppState.HemisphereRadius);
         sunTranslationNode.setLocalTranslation(sunTranslation);
     }

@@ -87,7 +87,7 @@ public class CloudAppState extends BasicAppState {
         cloudProcessor.setWayFactor(getApp().getWeather().getFloat("cloud.way-factor"));
         cloudProcessor.setZoom(getApp().getWeather().getInt("cloud.zoom"));
         
-        sunPosition = getApp().getSun().getSunPosition(sunPosition);
+        sunPosition = getState(SkyAppState.class).getSun().getSunPosition(sunPosition);
         if(sunColor == null) {
             sunColor = new Vector3f();
         }

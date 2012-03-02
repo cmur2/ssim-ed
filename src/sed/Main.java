@@ -8,13 +8,12 @@ import org.apache.log4j.PatternLayout;
 
 import sed.app.CloudAppState;
 import sed.app.LightingAppState;
+import sed.app.SkyAppState;
 import sed.app.SkyDomeAppState;
 import sed.app.StarAppState;
 import sed.app.SunAppState;
 import sed.mission.Mission;
 import sed.mission.MissionParser;
-import sed.sky.SkyGradient;
-import sed.sky.Sun;
 import sed.weather.Interpolators;
 import sed.weather.RandomWeatherController;
 import sed.weather.Weather;
@@ -33,7 +32,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 
@@ -64,9 +62,6 @@ public class Main extends SimpleApplication {
     private Mission mission;
     private SimClock simClock;
     private WeatherController weatherController;
-    private Node skyNode;
-    private Sun sun;
-    private SkyGradient skyGradient;
     
     @Override
     public void simpleInitApp() {
@@ -93,16 +88,10 @@ public class Main extends SimpleApplication {
         //flyCam.setDragToRotate(true);
         //cam.setLocation(new Vector3f(0, -200f, 0));
         
-        skyNode = new Node("SkyNode");
-        skyNode.setCullHint(CullHint.Never);
-        rootNode.attachChild(skyNode);
+        // base layer
+        stateManager.attach(new SkyAppState());
         
-        sun = new Sun(simClock, mission);
-        sun.update();
-        skyGradient = new SkyGradient(sun);
-        skyGradient.setTurbidity(getWeather().getFloat("sky.turbidity"));
-        skyGradient.update();
-        
+        // high layer
         stateManager.attach(new SkyDomeAppState());
         stateManager.attach(new SunAppState());
         stateManager.attach(new LightingAppState());
@@ -132,8 +121,6 @@ public class Main extends SimpleApplication {
             rockGeom.rotate(1.6f, 0, 0);
             //rootNode.attachChild(rockGeom);
         }
-        
-        skyNode.addControl(new SurfaceCameraControl(cam));
         
         //printSceneGraph(rootNode);
     }
@@ -166,9 +153,7 @@ public class Main extends SimpleApplication {
     public void simpleUpdate(float dt) {
         if(time > UpdateInterval) {
             time -= UpdateInterval;
-            sun.update();
-            skyGradient.setTurbidity(getWeather().getFloat("sky.turbidity"));
-            skyGradient.update();
+            // ...
         }
         
         weatherController.update(dt);
@@ -202,18 +187,6 @@ public class Main extends SimpleApplication {
      */
     public Weather getWeather() {
         return weatherController;
-    }
-    
-    public Node getSkyNode() {
-        return skyNode;
-    }
-    
-    public Sun getSun() {
-        return sun;
-    }
-    
-    public SkyGradient getSkyGradient() {
-        return skyGradient;
     }
     
     public ScheduledThreadPoolExecutor getExecutor() {

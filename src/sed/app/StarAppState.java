@@ -9,6 +9,7 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 
 public class StarAppState extends BasicAppState {
     
@@ -37,7 +38,7 @@ public class StarAppState extends BasicAppState {
         mat.setBoolean("VertexColor", true);
         geom.setMaterial(mat);
         
-        getApp().getSkyNode().attachChild(geom);
+        getSkyNode().attachChild(geom);
 
         updateStars();
     }
@@ -55,24 +56,28 @@ public class StarAppState extends BasicAppState {
     public void cleanup() {
         super.cleanup();
         
-        getApp().getSkyNode().detachChild(geom);
+        getSkyNode().detachChild(geom);
         
         geom = null;
     }
     
     private void updateStars() {
-        sunAngles = getApp().getSun().getSunAngles(sunAngles);
+        sunAngles = getState(SkyAppState.class).getSun().getSunAngles(sunAngles);
         float thetaDeg = (float) Math.toDegrees(sunAngles.y);
         if(thetaDeg > StarsThetaMin) {
-            if(!getApp().getSkyNode().hasChild(geom)) {
+            if(!getSkyNode().hasChild(geom)) {
                 logger.debug("Attach star field");
-                getApp().getSkyNode().attachChild(geom);
+                getSkyNode().attachChild(geom);
             }
         } else {
-            if(getApp().getSkyNode().hasChild(geom)) {
+            if(getSkyNode().hasChild(geom)) {
                 logger.debug("Detach star field");
-                getApp().getSkyNode().detachChild(geom);
+                getSkyNode().detachChild(geom);
             }
         }
+    }
+    
+    private Node getSkyNode() {
+        return getState(SkyAppState.class).getSkyNode();
     }
 }
