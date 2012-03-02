@@ -4,8 +4,6 @@ import org.apache.log4j.Logger;
 
 import sed.sky.CloudProcessor;
 
-import chlib.noise.NoiseUtil;
-
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
