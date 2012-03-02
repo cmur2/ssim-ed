@@ -1,4 +1,4 @@
-MaterialDef MySky {
+MaterialDef SkyDome {
     // This is the complete list of user defined uniforms
     // to be used in the shaders
     MaterialParameters {
@@ -8,8 +8,8 @@ MaterialDef MySky {
     Technique {
         // This is where the vertex and fragment shader files
         // are specified
-        VertexShader GLSL100:   shaders/Sky.vert
-        FragmentShader GLSL100: shaders/Sky.frag
+        VertexShader GLSL100:   shaders/SkyDome.vert
+        FragmentShader GLSL100: shaders/SkyDome.frag
         // This is where you specify which global uniform
         // you need for your shaders
         WorldParameters {

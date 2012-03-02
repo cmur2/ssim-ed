@@ -11,13 +11,13 @@ import com.jme3.material.Material;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.scene.Geometry;
 
-public class SkyAppState extends BasicAppState {
+public class SkyDomeAppState extends BasicAppState {
     
     // TODO: realize SkyDome and Sun as background geometry in jme? Bucket.Sky
     
     public static final float HemisphereRadius = 1000f;
     
-    private static final Logger logger = Logger.getLogger(SkyAppState.class);
+    private static final Logger logger = Logger.getLogger(SkyDomeAppState.class);
     private static final float UpdateInterval = 30f; // in seconds
     
     private float time = 0;
@@ -26,7 +26,7 @@ public class SkyAppState extends BasicAppState {
     private Geometry geom;
     private SkyBoxTexture skyBoxTexture;
     
-    public SkyAppState() {
+    public SkyDomeAppState() {
     }
     
     @Override
@@ -35,7 +35,7 @@ public class SkyAppState extends BasicAppState {
         
         geom = new Geometry("SkyDome");
         
-        Material mat = new Material(getApp().getAssetManager(), "shaders/Sky.j3md");
+        Material mat = new Material(getApp().getAssetManager(), "shaders/SkyDome.j3md");
         //mat.getAdditionalRenderState().setWireframe(true);
         mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
         
@@ -56,8 +56,6 @@ public class SkyAppState extends BasicAppState {
     public void update(float dt) {
         if(time >= UpdateInterval) {
             time -= UpdateInterval;
-            logger.debug("Redraw sky");
-
             skyBoxTexture.update();
         }
         time += dt;

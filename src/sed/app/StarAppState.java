@@ -31,7 +31,7 @@ public class StarAppState extends BasicAppState {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        StarField starField = new StarField(100, 0.9f*SkyAppState.HemisphereRadius);
+        StarField starField = new StarField(100, 0.9f*SkyDomeAppState.HemisphereRadius);
         geom = new Geometry("StarField", starField);
         Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setBoolean("VertexColor", true);

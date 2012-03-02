@@ -8,7 +8,7 @@ import org.apache.log4j.PatternLayout;
 
 import sed.app.CloudAppState;
 import sed.app.LightingAppState;
-import sed.app.SkyAppState;
+import sed.app.SkyDomeAppState;
 import sed.app.StarAppState;
 import sed.app.SunAppState;
 import sed.mission.Mission;
@@ -103,7 +103,7 @@ public class Main extends SimpleApplication {
         skyGradient.setTurbidity(getWeather().getFloat("sky.turbidity"));
         skyGradient.update();
         
-        stateManager.attach(new SkyAppState());
+        stateManager.attach(new SkyDomeAppState());
         stateManager.attach(new SunAppState());
         stateManager.attach(new LightingAppState());
         stateManager.attach(new StarAppState());

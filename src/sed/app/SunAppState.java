@@ -88,7 +88,7 @@ public class SunAppState extends BasicAppState {
     
     private void updateSunTranslation() {
         sunTranslation = getApp().getSun().getSunPosition(sunTranslation);
-        sunTranslation.multLocal(0.9f*SkyAppState.HemisphereRadius);
+        sunTranslation.multLocal(0.9f*SkyDomeAppState.HemisphereRadius);
         sunTranslationNode.setLocalTranslation(sunTranslation);
     }
 }
