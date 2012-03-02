@@ -5,8 +5,10 @@
         <light>(0.2, 0.2, 0.2)</light>
     </sky>
     <sun>
-        <lensflare-enabled>false</lensflare-enabled>
-        <lensflare-shininess>0.95</lensflare-shininess>
+        <lensflare>
+            <enabled>true</enabled>
+            <shininess>0.95</shininess>
+        </lensflare>
     </sun>
     <ocean>
     </ocean>

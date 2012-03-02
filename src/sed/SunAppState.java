@@ -43,8 +43,8 @@ public class SunAppState extends AbstractAppState {
         Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         
         sunTexture = new SunTexture(app.getSun());
-        sunTexture.setLensflareEnabled(app.getWeather().getBool("sun.lensflare-enabled"));
-        sunTexture.setLensflareShininess(app.getWeather().getFloat("sun.lensflare-shininess"));
+        sunTexture.setLensflareEnabled(app.getWeather().getBool("sun.lensflare.enabled"));
+        sunTexture.setLensflareShininess(app.getWeather().getFloat("sun.lensflare.shininess"));
         sunTexture.update();
         mat.setTexture("ColorMap", sunTexture);
         
@@ -68,8 +68,8 @@ public class SunAppState extends AbstractAppState {
         if(time >= UpdateInterval) {
             time -= UpdateInterval;
             updateSunTranslation();
-            sunTexture.setLensflareEnabled(app.getWeather().getBool("sun.lensflare-enabled"));
-            sunTexture.setLensflareShininess(app.getWeather().getFloat("sun.lensflare-shininess"));
+            sunTexture.setLensflareEnabled(app.getWeather().getBool("sun.lensflare.enabled"));
+            sunTexture.setLensflareShininess(app.getWeather().getFloat("sun.lensflare.shininess"));
             sunTexture.update();
         }
         time += dt;

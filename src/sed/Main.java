@@ -144,8 +144,8 @@ public class Main extends SimpleApplication {
         XMLPropertySetBuilder builder = new XMLPropertySetBuilder(assetManager, sets);
         builder.putFloat("sky.turbidity");
         builder.putVec3("sky.light");
-        builder.putBool("sun.lensflare-enabled");
-        builder.putFloat("sun.lensflare-shininess");
+        builder.putBool("sun.lensflare.enabled");
+        builder.putFloat("sun.lensflare.shininess");
         builder.putFloat("cloud.cover");
         builder.putFloat("cloud.sharpness");
         builder.putFloat("cloud.way-factor");
