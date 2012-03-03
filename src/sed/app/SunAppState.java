@@ -15,12 +15,18 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.BillboardControl;
 
+/**
+ * <b>Higher layer</b> {@link AppState} responsible for rendering the
+ * {@link Sun}.
+ * 
+ * @author cn
+ */
 public class SunAppState extends BasicAppState {
     
     private static final Logger logger = Logger.getLogger(SunAppState.class);
     private static final float UpdateInterval = 30f; // in seconds
     
- // exists only while AppState is attached
+    // exists only while AppState is attached
     private Geometry geom;
     private SunTexture sunTexture;
     private Node sunTranslationNode;

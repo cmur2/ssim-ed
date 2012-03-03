@@ -73,7 +73,8 @@ public class Main extends SimpleApplication {
         inputManager.deleteTrigger("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Z));
         inputManager.addMapping("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Y));
         
-        executor = new ScheduledThreadPoolExecutor(2 * Runtime.getRuntime().availableProcessors());
+        int numWorker = 2 * Runtime.getRuntime().availableProcessors();
+        executor = new ScheduledThreadPoolExecutor(numWorker);
         
         initMission();
         
@@ -88,10 +89,12 @@ public class Main extends SimpleApplication {
         //flyCam.setDragToRotate(true);
         //cam.setLocation(new Vector3f(0, -200f, 0));
         
-        // base layer
+        // AppState base layer:
+        // these serve as a common base for the higher AppStates
         stateManager.attach(new SkyAppState());
         
-        // high layer
+        // AppState higher layer:
+        // these have no dependencies to each other, just to the base layer
         stateManager.attach(new SkyDomeAppState());
         stateManager.attach(new SunAppState());
         stateManager.attach(new LightingAppState());

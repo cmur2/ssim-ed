@@ -10,11 +10,17 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 
+/**
+ * <b>Higher layer</b> {@link AppState} responsible for setting up scene
+ * lighting.
+ * 
+ * @author cn
+ */
 public class LightingAppState extends BasicAppState {
     
     private static final float UpdateInterval = 30f; // in seconds
     
- // exists only while AppState is attached
+    // exists only while AppState is attached
     private DirectionalLight sunLight;
     private AmbientLight envLight;
     

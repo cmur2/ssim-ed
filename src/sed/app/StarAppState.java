@@ -11,6 +11,11 @@ import com.jme3.math.Vector2f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
+/**
+ * <b>Higher layer</b> {@link AppState} responsible for rendering a star field.
+ * 
+ * @author cn
+ */
 public class StarAppState extends BasicAppState {
     
     private static final Logger logger = Logger.getLogger(StarAppState.class);
@@ -18,7 +23,7 @@ public class StarAppState extends BasicAppState {
     
     private static final float StarsThetaMin = 80f;
     
- // exists only while AppState is attached
+    // exists only while AppState is attached
     private Geometry geom;
     
     private Vector2f sunAngles;

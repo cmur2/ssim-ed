@@ -13,6 +13,11 @@ import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
 
+/**
+ * <b>Higher layer</b> {@link AppState} responsible for cloud rendering.
+ * 
+ * @author cn
+ */
 public class CloudAppState extends BasicAppState {
     
     private static final Logger logger = Logger.getLogger(CloudAppState.class);

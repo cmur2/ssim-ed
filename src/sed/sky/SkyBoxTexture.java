@@ -37,7 +37,6 @@ public class SkyBoxTexture extends TextureCubeMap {
         // -z
         faces.add(newFace());
         
-        // TODO: what means depth in Image
         Image img = new Image(Image.Format.BGR8, TexSize, TexSize, 1, faces);
         setImage(img);
     }

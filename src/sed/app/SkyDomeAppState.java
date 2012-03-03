@@ -11,14 +11,17 @@ import com.jme3.material.Material;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.scene.Geometry;
 
+/**
+ * <b>Higher layer</b> {@link AppState} responsible for rendering sky dome.
+ * 
+ * @author cn
+ */
 public class SkyDomeAppState extends BasicAppState {
-    
-    // TODO: realize SkyDome and Sun as background geometry in jme? Bucket.Sky
     
     private static final Logger logger = Logger.getLogger(SkyDomeAppState.class);
     private static final float UpdateInterval = 30f; // in seconds
     
- // exists only while AppState is attached
+    // exists only while AppState is attached
     private Geometry geom;
     private SkyBoxTexture skyBoxTexture;
     

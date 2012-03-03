@@ -16,11 +16,16 @@ import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 
+/**
+ * <b>Higher layer</b> {@link AppState} responsible for rendering terrain.
+ * 
+ * @author cn
+ */
 public class TerrainAppState extends BasicAppState {
     
     private static final float UpdateInterval = 30f; // in seconds
     
- // exists only while AppState is attached
+    // exists only while AppState is attached
     private TerrainQuad terrainRoot;
     
     public TerrainAppState() {
