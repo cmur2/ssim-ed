@@ -2,16 +2,17 @@ package sed.app;
 
 import org.apache.log4j.Logger;
 
+import sed.sky.CloudPlane;
 import sed.sky.CloudProcessor;
 
 import com.jme3.app.Application;
+import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Quad;
 
 /**
  * <b>Higher layer</b> {@link AppState} responsible for cloud rendering.
@@ -43,14 +44,20 @@ public class CloudAppState extends BasicAppState {
         cloudProcessor = new CloudProcessor(getApp().getAssetManager(), CloudProcessor.Mode.RenderGPU, UpdateInterval);
         getApp().getViewPort().addProcessor(cloudProcessor);
         
-        // TODO: CloudPlane
-        Quad cloudQuad = new Quad(10, 10);
+        //Quad cloudQuad = new Quad(10, 10);
+        CloudPlane cloudQuad = new CloudPlane(750f, 50f, new Vector3f(0, 500, 0));
         geom = new Geometry("Clouds", cloudQuad);
         
-        //Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        //Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        //mat.setColor("Color", ColorRGBA.Orange);
+        //mat.getAdditionalRenderState().setWireframe(true);
+        //mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
+        
         Material mat = new Material(getApp().getAssetManager(), "shaders/CloudFinal.j3md");
         mat.setTexture("ColorMap", cloudProcessor.getCloudTex());
+        //mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
         mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+        
         geom.setMaterial(mat);
         geom.setQueueBucket(Bucket.Transparent);
         
@@ -58,14 +65,14 @@ public class CloudAppState extends BasicAppState {
         // then (and the CP requires some variables set)
         intervalUpdate();
         
-        getApp().getRootNode().attachChild(geom);
+        getState(SkyAppState.class).getSkyNode().attachChild(geom);
     }
     
     @Override
     public void cleanup() {
         super.cleanup();
         
-        getApp().getRootNode().detachChild(geom);
+        getState(SkyAppState.class).getSkyNode().detachChild(geom);
         getApp().getViewPort().removeProcessor(cloudProcessor);
         
         cloudProcessor = null;

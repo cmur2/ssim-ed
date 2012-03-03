@@ -28,6 +28,8 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -85,9 +87,11 @@ public class Main extends SimpleApplication {
         
         initWeather();
         
-        flyCam.setMoveSpeed(10 * 6);
+        flyCam.setMoveSpeed(3e2f);
         //flyCam.setDragToRotate(true);
-        //cam.setLocation(new Vector3f(0, -200f, 0));
+        //cam.setLocation(new Vector3f(0, -450f, 0));
+        //cam.setRotation(new Quaternion(new float[] {-90*FastMath.DEG_TO_RAD,0,0}));
+        //cam.lookAtDirection(Vector3f.UNIT_Y, Vector3f.UNIT_Z);
         cam.setFrustumPerspective(45f, (float)cam.getWidth() / cam.getHeight(), 1f, 2000f);
         
         // AppState base layer:

@@ -10,35 +10,58 @@ public class CloudPlane extends Mesh {
 
     private static final int FragmentDivisions = 8;
     private static final int VertexNum = FragmentDivisions+1;
-    private static final float PlaneSize = 12000; // in m
 
-    private static final float PlaneY = 2000; // in m
-
-    private static final float DivisionGeomDelta = PlaneSize / FragmentDivisions;
-    private static final float DivisionTexDelta = 1f / FragmentDivisions;
-    private static final float PlaneDeltaHeight = 800; // in m
-
-    public CloudPlane() {
+    /**
+     * Size per dimension, so width and height are equal.
+     */
+    private float planeSize;
+    /**
+     * Y extent of the (arched) plane.
+     */
+    private float heightScale;
+    /**
+     * Describes how the center of the plane (at bottom) is shifted from
+     * models origin.
+     */
+    private Vector3f shift;
+    
+    public CloudPlane(float planeSize, float heightScale, Vector3f shift) {
+        this.planeSize = planeSize;
+        this.heightScale = heightScale;
+        this.shift = shift;
         initGeometry();
     }
 
     private void initGeometry() {
-        int numVertices = FragmentDivisions * FragmentDivisions * 4;
+        Vector3f[][] positions = genCurvedPlane(VertexNum, planeSize, heightScale);
+        Vector2f[][] texCoords = genCurvedPlaneTC(VertexNum);
         
-        Vector3f[][] positions = genCurvedPlane();
-        Vector2f[][] texCoords = genCurvedPlaneTC();
+        for(int i = 0; i < VertexNum; i++) { // x
+            for(int j = 0; j < VertexNum; j++) { // -z
+                positions[i][j].addLocal(shift);
+            }
+        }
         
+        int numVertices = FragmentDivisions * FragmentDivisions * 2 * 3;
         Vector3f[] posFinal = new Vector3f[numVertices];
         Vector2f[] tcFinal = new Vector2f[numVertices];
         
         int idx = 0;
         for(int i = 0; i < FragmentDivisions; i++) {
             for(int j = 0; j < FragmentDivisions; j++) {
+                // build each quad face out of two triangles
                 posFinal[idx] = positions[i][j];
                 tcFinal[idx] = texCoords[i][j];
                 idx++;
                 posFinal[idx] = positions[i][j+1];
                 tcFinal[idx] = texCoords[i][j+1];
+                idx++;
+                posFinal[idx] = positions[i+1][j+1];
+                tcFinal[idx] = texCoords[i+1][j+1];
+                idx++;
+                
+                posFinal[idx] = positions[i][j];
+                tcFinal[idx] = texCoords[i][j];
                 idx++;
                 posFinal[idx] = positions[i+1][j+1];
                 tcFinal[idx] = texCoords[i+1][j+1];
@@ -54,36 +77,45 @@ public class CloudPlane extends Mesh {
         updateBound();
     }
     
-    private static Vector3f[][] genCurvedPlane() {
-        Vector3f[][] coords = new Vector3f[VertexNum][VertexNum];
+    private static Vector3f[][] genCurvedPlane(
+            int numVertices, float planeSize, float heightScale)
+    {
+        Vector3f[][] coords = new Vector3f[numVertices][numVertices];
         
-        float x_height_max = (float) Math.pow(0.5f * PlaneSize*0.07, 2.0) / PlaneDeltaHeight;
-        float z_height_max = (float) Math.pow(0.5f * PlaneSize*0.07, 2.0) / PlaneDeltaHeight;
+        float planeSizeHalf = .5f * planeSize;
         
-        for(int i = 0; i < VertexNum; i++) { // x
-            for(int j = 0; j < VertexNum; j++) { // -z
-            float x_dist = -0.5f*PlaneSize + i*DivisionGeomDelta;
-            float z_dist = +0.5f*PlaneSize - j*DivisionGeomDelta;
-            float x_height = (float)Math.pow(x_dist*0.07, 2.0)/PlaneDeltaHeight;
-            float z_height = (float)Math.pow(z_dist*0.07, 2.0)/PlaneDeltaHeight;
-            float h = ( (1f-x_height/x_height_max)*(1f-z_height/z_height_max) )*4000f;
-            //float h = ( (x_height_max-x_height)*(z_height_max-z_height) )*0.005f;
-            coords[i][j] = new Vector3f(x_dist, PlaneY+h, z_dist);
+        float x_height_max = (float) Math.pow(planeSizeHalf, 2.0);
+        float z_height_max = (float) Math.pow(planeSizeHalf, 2.0);
+        
+        float indexScale = planeSize / (numVertices-1);
+        
+        for(int i = 0; i < numVertices; i++) { // x
+            for(int j = 0; j < numVertices; j++) { // -z
+                float x_dist = -planeSizeHalf + indexScale * i;
+                float z_dist = +planeSizeHalf - indexScale * j;
+                
+                float x_height = (float) Math.pow(x_dist, 2.0);
+                float z_height = (float) Math.pow(z_dist, 2.0);
+                
+                float h = (1f-x_height/x_height_max) * (1f-z_height/z_height_max);
+                //float h = (x_height_max-x_height)*(z_height_max-z_height*0.005f;
+                
+                coords[i][j] = new Vector3f(x_dist, h*heightScale, z_dist);
             }
         }
         
         return coords;
     }
     
-    private static Vector2f[][] genCurvedPlaneTC() {
-        Vector2f[][] texCoords = new Vector2f[VertexNum][VertexNum];
-        for(int i = 0; i < VertexNum; i++) { // x
-            for(int j = 0; j < VertexNum; j++) { // -z
-              texCoords[i][j] = new Vector2f(i, j);
-              texCoords[i][j].mult(DivisionTexDelta);
+    private static Vector2f[][] genCurvedPlaneTC(int numVertices) {
+        Vector2f[][] texCoords = new Vector2f[numVertices][numVertices];
+        float texCoordScale = 1f / (numVertices-1);
+        for(int i = 0; i < numVertices; i++) { // x
+            for(int j = 0; j < numVertices; j++) { // -z
+                texCoords[i][j] = new Vector2f(i, j);
+                texCoords[i][j].multLocal(texCoordScale);
             }
         }
         return texCoords;
     }
-    
 }
