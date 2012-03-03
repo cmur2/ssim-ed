@@ -23,12 +23,14 @@ public class SkyAppState extends BasicAppState {
     
     private static final float UpdateInterval = 1f; // in seconds
     
-    private float time = 0;
-    
-    // exists only while AppState is living
+ // exists only while AppState is attached
     private Node skyNode;
     private Sun sun;
     private SkyGradient skyGradient;
+    
+    public SkyAppState() {
+        super(UpdateInterval);
+    }
     
     @Override
     public void initialize(AppStateManager stateManager, Application baseApp) {
@@ -42,18 +44,9 @@ public class SkyAppState extends BasicAppState {
         // the delayed update should work
         sun = new Sun(getApp().getSimClock(), getApp().getMission());
         skyGradient = new SkyGradient(sun);
-        updateSky();
+        intervalUpdate();
         
         skyNode.addControl(new SurfaceCameraControl(getApp().getCamera()));
-    }
-    
-    @Override
-    public void update(float dt) {
-        if(time >= UpdateInterval) {
-            time -= UpdateInterval;
-            updateSky();
-        }
-        time += dt;
     }
     
     @Override
@@ -61,7 +54,8 @@ public class SkyAppState extends BasicAppState {
         super.cleanup();
     }
     
-    private void updateSky() {
+    @Override
+    protected void intervalUpdate() {
         sun.update();
         skyGradient.setTurbidity(getApp().getWeather().getFloat("sky.turbidity"));
         skyGradient.update();

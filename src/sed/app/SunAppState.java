@@ -20,15 +20,14 @@ public class SunAppState extends BasicAppState {
     private static final Logger logger = Logger.getLogger(SunAppState.class);
     private static final float UpdateInterval = 30f; // in seconds
     
-    private float time = 0;
-    
-    // exists only while AppState is living
+ // exists only while AppState is attached
     private Geometry geom;
     private SunTexture sunTexture;
     private Node sunTranslationNode;
     private Vector3f sunTranslation;
     
     public SunAppState() {
+        super(UpdateInterval);
     }
     
     @Override
@@ -61,18 +60,6 @@ public class SunAppState extends BasicAppState {
     }
     
     @Override
-    public void update(float dt) {
-        if(time >= UpdateInterval) {
-            time -= UpdateInterval;
-            updateSunTranslation();
-            sunTexture.setLensflareEnabled(getApp().getWeather().getBool("sun.lensflare.enabled"));
-            sunTexture.setLensflareShininess(getApp().getWeather().getFloat("sun.lensflare.shininess"));
-            sunTexture.update();
-        }
-        time += dt;
-    }
-    
-    @Override
     public void cleanup() {
         super.cleanup();
         
@@ -82,6 +69,14 @@ public class SunAppState extends BasicAppState {
         sunTexture = null;
         sunTranslationNode = null;
         sunTranslation = null;
+    }
+    
+    @Override
+    protected void intervalUpdate() {
+        updateSunTranslation();
+        sunTexture.setLensflareEnabled(getApp().getWeather().getBool("sun.lensflare.enabled"));
+        sunTexture.setLensflareShininess(getApp().getWeather().getFloat("sun.lensflare.shininess"));
+        sunTexture.update();
     }
     
     // TODO: build SunControl to move sun

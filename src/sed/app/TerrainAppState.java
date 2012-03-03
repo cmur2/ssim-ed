@@ -20,12 +20,11 @@ public class TerrainAppState extends BasicAppState {
     
     private static final float UpdateInterval = 30f; // in seconds
     
-    private float time = 0;
-    
-    // exists only while AppState is living
+ // exists only while AppState is attached
     private TerrainQuad terrainRoot;
     
     public TerrainAppState() {
+        super(UpdateInterval);
     }
     
     @Override
@@ -83,15 +82,6 @@ public class TerrainAppState extends BasicAppState {
         //terrainRoot.setLocalTranslation(0, -100, 0);
         //terrainRoot.setLocalScale(2f, 1f, 2f);
         getApp().getRootNode().attachChild(terrainRoot);
-    }
-    
-    @Override
-    public void update(float dt) {
-        if(time >= UpdateInterval) {
-            time -= UpdateInterval;
-            // ...
-        }
-        time += dt;
     }
     
     @Override

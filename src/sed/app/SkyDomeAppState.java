@@ -18,13 +18,12 @@ public class SkyDomeAppState extends BasicAppState {
     private static final Logger logger = Logger.getLogger(SkyDomeAppState.class);
     private static final float UpdateInterval = 30f; // in seconds
     
-    private float time = 0;
-    
-    // exists only while AppState is living
+ // exists only while AppState is attached
     private Geometry geom;
     private SkyBoxTexture skyBoxTexture;
     
     public SkyDomeAppState() {
+        super(UpdateInterval);
     }
     
     @Override
@@ -51,15 +50,6 @@ public class SkyDomeAppState extends BasicAppState {
     }
     
     @Override
-    public void update(float dt) {
-        if(time >= UpdateInterval) {
-            time -= UpdateInterval;
-            skyBoxTexture.update();
-        }
-        time += dt;
-    }
-    
-    @Override
     public void cleanup() {
         super.cleanup();
         
@@ -67,6 +57,11 @@ public class SkyDomeAppState extends BasicAppState {
         
         geom = null;
         skyBoxTexture = null;
+    }
+    
+    @Override
+    protected void intervalUpdate() {
+        skyBoxTexture.update();
     }
     
     private SkyAppState getSkyAppState() {

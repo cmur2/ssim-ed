@@ -18,14 +18,13 @@ public class StarAppState extends BasicAppState {
     
     private static final float StarsThetaMin = 80f;
     
-    private float time = 0;
-    
-    // exists only while AppState is living
+ // exists only while AppState is attached
     private Geometry geom;
     
     private Vector2f sunAngles;
     
     public StarAppState() {
+        super(UpdateInterval);
     }
     
     @Override
@@ -40,16 +39,7 @@ public class StarAppState extends BasicAppState {
         
         getSkyNode().attachChild(geom);
 
-        updateStars();
-    }
-    
-    @Override
-    public void update(float dt) {
-        if(time >= UpdateInterval) {
-            time -= UpdateInterval;
-            updateStars();
-        }
-        time += dt;
+        intervalUpdate();
     }
     
     @Override
@@ -61,7 +51,8 @@ public class StarAppState extends BasicAppState {
         geom = null;
     }
     
-    private void updateStars() {
+    @Override
+    protected void intervalUpdate() {
         sunAngles = getState(SkyAppState.class).getSun().getSunAngles(sunAngles);
         float thetaDeg = (float) Math.toDegrees(sunAngles.y);
         if(thetaDeg > StarsThetaMin) {

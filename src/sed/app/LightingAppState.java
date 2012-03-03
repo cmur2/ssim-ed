@@ -14,9 +14,7 @@ public class LightingAppState extends BasicAppState {
     
     private static final float UpdateInterval = 30f; // in seconds
     
-    private float time = 0;
-    
-    // exists only while AppState is living
+ // exists only while AppState is attached
     private DirectionalLight sunLight;
     private AmbientLight envLight;
     
@@ -28,6 +26,7 @@ public class LightingAppState extends BasicAppState {
     private ColorRGBA envColor;
     
     public LightingAppState() {
+        super(UpdateInterval);
     }
     
     @Override
@@ -44,16 +43,6 @@ public class LightingAppState extends BasicAppState {
     }
     
     @Override
-    public void update(float dt) {
-        if(time >= UpdateInterval) {
-            time -= UpdateInterval;
-            updateSunLight();
-            updateEnvLight();
-        }
-        time += dt;
-    }
-    
-    @Override
     public void cleanup() {
         super.cleanup();
         
@@ -62,6 +51,12 @@ public class LightingAppState extends BasicAppState {
         
         sunLight = null;
         envLight = null;
+    }
+    
+    @Override
+    protected void intervalUpdate() {
+        updateSunLight();
+        updateEnvLight();
     }
     
     private void updateSunLight() {

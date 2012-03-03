@@ -18,9 +18,7 @@ public class CloudAppState extends BasicAppState {
     private static final Logger logger = Logger.getLogger(CloudAppState.class);
     private static final float UpdateInterval = 10f; // in seconds
     
-    private float time = 0;
-    
-    // exists only while AppState is living
+    // exists only while AppState is attached
     private CloudProcessor cloudProcessor;
     private Geometry geom;
 
@@ -30,6 +28,7 @@ public class CloudAppState extends BasicAppState {
     private Vector3f cloudShift;
     
     public CloudAppState() {
+        super(UpdateInterval);
     }
     
     @Override
@@ -52,18 +51,9 @@ public class CloudAppState extends BasicAppState {
         
         // update before attaching since all SceneProcessors are initialized
         // then (and the CP requires some variables set)
-        updateClouds();
+        intervalUpdate();
         
         getApp().getRootNode().attachChild(geom);
-    }
-    
-    @Override
-    public void update(float dt) {
-        if(time >= UpdateInterval) {
-            time -= UpdateInterval;
-            updateClouds();
-        }
-        time += dt;
     }
     
     @Override
@@ -81,7 +71,8 @@ public class CloudAppState extends BasicAppState {
         cloudShift = null;
     }
     
-    private void updateClouds() {
+    @Override
+    protected void intervalUpdate() {
         cloudProcessor.setCloudCover(getApp().getWeather().getFloat("cloud.cover"));
         cloudProcessor.setCloudSharpness(getApp().getWeather().getFloat("cloud.sharpness"));
         cloudProcessor.setWayFactor(getApp().getWeather().getFloat("cloud.way-factor"));
