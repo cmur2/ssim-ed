@@ -13,11 +13,15 @@ public class SkyGradient {
                   0.055648f,-0.204043f, 1.057311f);*/
     
     // night sky blend consts
-    private static final float NightThetaRange = 6f; // in degrees
-    private static final float NightThetaMin = 100f; // in degrees
-    private static final float NightThetaMax = NightThetaMin + NightThetaRange; // in degrees
+    public static final float NightThetaRange = 6f; // in degrees
+    public static final float NightThetaMin = 100f; // in degrees
+    public static final float NightThetaMax = NightThetaMin + NightThetaRange; // in degrees
     
-    private static final ColorRGBA NightSkyColor = new ColorRGBA(0f, 0f, 0.08f, 1f);
+    // a dark blue for the sky
+    public static final ColorRGBA NightSkyColor = new ColorRGBA(0f, 0f, 0.08f, 1f);
+    
+    // since the sun is below the horizon it should actually be black
+    public static final ColorRGBA NightSunColor = ColorRGBA.Black;
     
     private Sun sun;
     

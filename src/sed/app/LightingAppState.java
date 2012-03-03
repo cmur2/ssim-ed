@@ -14,12 +14,6 @@ public class LightingAppState extends BasicAppState {
     
     private static final float UpdateInterval = 30f; // in seconds
     
-    // since the sun is below the horizon it should actually be black
-    private static final ColorRGBA NightSunColor = ColorRGBA.Black;
-    
-    // TODO: sync with SkyGradient - central (sky) constant storage
-    private static final float NightThetaMax = 106f;
-    
     private float time = 0;
     
     // exists only while AppState is living
@@ -71,17 +65,17 @@ public class LightingAppState extends BasicAppState {
     }
     
     private void updateSunLight() {
-        sunPosition = getState(SkyAppState.class).getSun().getSunPosition(sunPosition);
+        sunPosition = getSkyAppState().getSun().getSunPosition(sunPosition);
         
-        sunAngles = getState(SkyAppState.class).getSun().getSunAngles(sunAngles);
+        sunAngles = getSkyAppState().getSun().getSunAngles(sunAngles);
         float thetaDeg = (float) Math.toDegrees(sunAngles.y);
-        if(thetaDeg > NightThetaMax) {
-            sunLight.setColor(NightSunColor);
+        if(thetaDeg > getSkyAppState().getNightThetaMax()) {
+            sunLight.setColor(getSkyAppState().getNightSunColor());
         } else {
             if(sunColor == null) {
                 sunColor = new ColorRGBA();
             }
-            sunColorArray = getState(SkyAppState.class).getSkyGradient().getSkyColor(sunPosition, sunColorArray);
+            sunColorArray = getSkyAppState().getSkyGradient().getSkyColor(sunPosition, sunColorArray);
             Util.setTo(sunColor, sunColorArray);
             sunLight.setColor(sunColor);
         }
@@ -97,5 +91,9 @@ public class LightingAppState extends BasicAppState {
         }
         Util.setTo(envColor, v, 1f);
         envLight.setColor(envColor);
+    }
+    
+    private SkyAppState getSkyAppState() {
+        return getState(SkyAppState.class);
     }
 }

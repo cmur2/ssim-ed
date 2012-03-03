@@ -15,8 +15,6 @@ public class SkyDomeAppState extends BasicAppState {
     
     // TODO: realize SkyDome and Sun as background geometry in jme? Bucket.Sky
     
-    public static final float HemisphereRadius = 1000f;
-    
     private static final Logger logger = Logger.getLogger(SkyDomeAppState.class);
     private static final float UpdateInterval = 30f; // in seconds
     
@@ -39,17 +37,17 @@ public class SkyDomeAppState extends BasicAppState {
         //mat.getAdditionalRenderState().setWireframe(true);
         mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
         
-        skyBoxTexture = new SkyBoxTexture(getState(SkyAppState.class).getSkyGradient(), getApp().getExecutor());
+        skyBoxTexture = new SkyBoxTexture(getSkyAppState().getSkyGradient(), getApp().getExecutor());
         skyBoxTexture.update();
         mat.setTexture("SkyBox", skyBoxTexture);
         
         geom.setMaterial(mat);
         
         //Box s = new Box(Vector3f.ZERO, 1, 1, 1);
-        SkyDome s = new SkyDome(HemisphereRadius, 2f, 2f);
+        SkyDome s = new SkyDome(getSkyAppState().getHemisphereRadius(), 2f, 2f);
         geom.setMesh(s);
         
-        getState(SkyAppState.class).getSkyNode().attachChild(geom);
+        getSkyAppState().getSkyNode().attachChild(geom);
     }
     
     @Override
@@ -65,9 +63,13 @@ public class SkyDomeAppState extends BasicAppState {
     public void cleanup() {
         super.cleanup();
         
-        getState(SkyAppState.class).getSkyNode().detachChild(geom);
+        getSkyAppState().getSkyNode().detachChild(geom);
         
         geom = null;
         skyBoxTexture = null;
+    }
+    
+    private SkyAppState getSkyAppState() {
+        return getState(SkyAppState.class);
     }
 }

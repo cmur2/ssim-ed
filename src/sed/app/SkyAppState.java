@@ -6,6 +6,7 @@ import sed.sky.Sun;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial.CullHint;
 
@@ -17,6 +18,8 @@ import com.jme3.scene.Spatial.CullHint;
  * @author cn
  */
 public class SkyAppState extends BasicAppState {
+    
+    private static final float HemisphereRadius = 1000f;
     
     private static final float UpdateInterval = 1f; // in seconds
     
@@ -76,5 +79,17 @@ public class SkyAppState extends BasicAppState {
     
     public SkyGradient getSkyGradient() {
         return skyGradient;
+    }
+
+    public float getNightThetaMax() {
+        return SkyGradient.NightThetaMax;
+    }
+
+    public ColorRGBA getNightSunColor() {
+        return SkyGradient.NightSunColor;
+    }
+
+    public float getHemisphereRadius() {
+        return HemisphereRadius;
     }
 }
