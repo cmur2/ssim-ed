@@ -88,6 +88,7 @@ public class Main extends SimpleApplication {
         flyCam.setMoveSpeed(10 * 6);
         //flyCam.setDragToRotate(true);
         //cam.setLocation(new Vector3f(0, -200f, 0));
+        cam.setFrustumPerspective(45f, (float)cam.getWidth() / cam.getHeight(), 1f, 2000f);
         
         // AppState base layer:
         // these serve as a common base for the higher AppStates
