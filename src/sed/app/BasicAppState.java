@@ -1,5 +1,7 @@
 package sed.app;
 
+import org.apache.log4j.Logger;
+
 import sed.Main;
 
 import com.jme3.app.Application;
@@ -21,6 +23,8 @@ import com.jme3.app.state.AppStateManager;
  * @author cn
  */
 public class BasicAppState extends AbstractAppState {
+    
+    private static final Logger logger = Logger.getLogger(BasicAppState.class);
     
     private AppStateManager stateManager;
     private Main app;
@@ -45,6 +49,8 @@ public class BasicAppState extends AbstractAppState {
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
+        
+        logger.debug("Initialize app state: " + getClass().getSimpleName());
 
         // keep references of state manager and the main app 
         this.stateManager = stateManager;
@@ -68,6 +74,8 @@ public class BasicAppState extends AbstractAppState {
     @Override
     public void cleanup() {
         super.cleanup();
+        
+        logger.debug("Cleanup app state: " + getClass().getSimpleName());
     }
     
     // internal API

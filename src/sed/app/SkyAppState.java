@@ -57,9 +57,10 @@ public class SkyAppState extends BasicAppState {
         
         getApp().getRootNode().detachChild(skyNode);
         
-        skyNode = null;
-        sun = null;
-        skyGradient = null;
+        // TODO: Don't cleanup() members used for public API
+//        skyNode = null;
+//        sun = null;
+//        skyGradient = null;
     }
     
     @Override
