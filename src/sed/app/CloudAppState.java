@@ -47,7 +47,7 @@ public class CloudAppState extends BasicAppState {
         
         //Quad cloudQuad = new Quad(10, 10);
         CloudPlane cloudQuad = new CloudPlane(750f, 50f, new Vector3f(0, 500, 0));
-        geom = new Geometry("Clouds", cloudQuad);
+        geom = new Geometry("CloudPlane", cloudQuad);
         
         //Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         //mat.setColor("Color", ColorRGBA.Orange);

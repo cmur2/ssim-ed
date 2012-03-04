@@ -1,18 +1,70 @@
 package sed;
 
+import java.io.PrintStream;
+
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 public class Util {
     
+    /**
+     * Apply the given rgba (from array[0] to array[3]) data to the color.
+     *  
+     * @param c the target
+     * @param rgba delivers rgba data
+     * @return the target
+     */
     public static ColorRGBA setTo(ColorRGBA c, float[] rgba) {
         c.set(rgba[0], rgba[1], rgba[2], rgba[3]);
         return c;
     }
     
+    /**
+     * Apply the given xyz (from vector) and alpha data to the color.
+     *  
+     * @param c the target
+     * @param v delivers xyz/rgb data
+     * @param alpha delivers alpha data
+     * @return the target
+     */
     public static ColorRGBA setTo(ColorRGBA c, Vector3f v, float alpha) {
         c.set(v.x, v.y, v.z, alpha);
         return c;
+    }
+    
+    /**
+     * Prints the scenegraph {@linkplain Node}s below the given root node one
+     * node per line with increasing indent to {@link System#out}.
+     * 
+     * @param root root node
+     */
+    public static void printSceneGraph(Node root) {
+        printSceneGraph(root, System.out);
+    }
+    
+    /**
+     * Prints the scenegraph {@linkplain Node}s below the given root node one
+     * node per line with increasing indent to given {@link PrintStream}.
+     * 
+     * @param root root node
+     */
+    public static void printSceneGraph(Node root, PrintStream p) {
+        printSceneGraph(root, 0, p);
+    }
+    
+    private static void printSceneGraph(Spatial root, int indent, PrintStream p) {
+        String s = "";
+        for(int i = 0; i < indent; i++) {
+            s += "  ";
+        }
+        p.println(s + root.toString());
+        if(!(root instanceof Node))
+            return;
+        for(Spatial c : ((Node) root).getChildren()) {
+            printSceneGraph(c, indent + 1, p);
+        }
     }
     
     /**

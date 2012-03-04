@@ -22,15 +22,13 @@ import chlib.noise.NoiseUtil;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 
 import de.altimos.util.logger.JLFBridge;
 
 public class Main extends SimpleApplication {
     
     private static final Logger logger = Logger.getLogger(Main.class);
-    private static final float UpdateInterval = 1f; // in seconds
+    private static final float UpdateInterval = 5f; // in seconds
     private static final long DebugSeed = 4569845;
     
     public static void main(String[] args) {
@@ -117,8 +115,6 @@ public class Main extends SimpleApplication {
             //rockGeom.rotate(1.6f, 0, 0);
             //rootNode.attachChild(rockGeom);
         }
-        
-        //printSceneGraph(rootNode);
     }
     
     private void initMission() {
@@ -130,6 +126,7 @@ public class Main extends SimpleApplication {
         if(time > UpdateInterval) {
             time -= UpdateInterval;
             // ...
+            //Util.printSceneGraph(rootNode);
         }
         
         simClock.step(dt);
@@ -157,24 +154,5 @@ public class Main extends SimpleApplication {
     
     public ScheduledThreadPoolExecutor getExecutor() {
         return executor;
-    }
-    
-    // helpers
-    
-    private static void printSceneGraph(Node root) {
-        printSceneGraph(root, 0);
-    }
-    
-    private static void printSceneGraph(Spatial root, int indent) {
-        String s = "";
-        for(int i = 0; i < indent; i++) {
-            s += "  ";
-        }
-        System.out.println(s + root.toString());
-        if(!(root instanceof Node))
-            return;
-        for(Spatial c : ((Node) root).getChildren()) {
-            printSceneGraph(c, indent + 1);
-        }
     }
 }
