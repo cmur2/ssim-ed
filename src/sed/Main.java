@@ -68,7 +68,8 @@ public class Main extends SimpleApplication {
         inputManager.deleteTrigger("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Z));
         inputManager.addMapping("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Y));
         
-        int numWorker = 2 * Runtime.getRuntime().availableProcessors();
+        int numWorker = (int) (1.5f * Runtime.getRuntime().availableProcessors());
+        logger.info(String.format("Worker thread pool size: %d", numWorker));
         executor = new ScheduledThreadPoolExecutor(numWorker);
         
         initMission();
