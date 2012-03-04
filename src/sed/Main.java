@@ -26,14 +26,9 @@ import chlib.noise.NoiseUtil;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Sphere;
 
 import de.altimos.util.logger.JLFBridge;
 
@@ -107,25 +102,25 @@ public class Main extends SimpleApplication {
         stateManager.attach(new GuiAppState());
         
         {
-            Box boxBox = new Box(Vector3f.ZERO, 1, 1, 1);
-            Geometry boxGeom = new Geometry("Box", boxBox);
-            Material boxMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            boxMat.setColor("Color", ColorRGBA.Blue);
-            boxGeom.setMaterial(boxMat);
+            //Box boxBox = new Box(Vector3f.ZERO, 1, 1, 1);
+            //Geometry boxGeom = new Geometry("Box", boxBox);
+            //Material boxMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+            //boxMat.setColor("Color", ColorRGBA.Blue);
+            //boxGeom.setMaterial(boxMat);
             //rootNode.attachChild(boxGeom);
         }
         
         {
-            Sphere rockSphere = new Sphere(32,32, 2f);
-            Geometry rockGeom = new Geometry("Shiny rock", rockSphere);
-            rockSphere.setTextureMode(Sphere.TextureMode.Projected);
-            com.jme3.util.TangentBinormalGenerator.generate(rockSphere);
-            Material rockMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-            rockMat.setTexture("DiffuseMap", assetManager.loadTexture("Textures/Terrain/Pond/Pond.jpg"));
-            rockMat.setTexture("NormalMap", assetManager.loadTexture("Textures/Terrain/Pond/Pond_normal.png"));
-            rockMat.setFloat("Shininess", 5f); // [1,128]
-            rockGeom.setMaterial(rockMat);
-            rockGeom.rotate(1.6f, 0, 0);
+            //Sphere rockSphere = new Sphere(32,32, 2f);
+            //Geometry rockGeom = new Geometry("Shiny rock", rockSphere);
+            //rockSphere.setTextureMode(Sphere.TextureMode.Projected);
+            //com.jme3.util.TangentBinormalGenerator.generate(rockSphere);
+            //Material rockMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+            //rockMat.setTexture("DiffuseMap", assetManager.loadTexture("Textures/Terrain/Pond/Pond.jpg"));
+            //rockMat.setTexture("NormalMap", assetManager.loadTexture("Textures/Terrain/Pond/Pond_normal.png"));
+            //rockMat.setFloat("Shininess", 5f); // [1,128]
+            //rockGeom.setMaterial(rockMat);
+            //rockGeom.rotate(1.6f, 0, 0);
             //rootNode.attachChild(rockGeom);
         }
         
