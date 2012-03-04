@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
 import sed.app.CloudAppState;
+import sed.app.GuiAppState;
 import sed.app.LightingAppState;
 import sed.app.SkyAppState;
 import sed.app.SkyDomeAppState;
@@ -20,7 +21,6 @@ import sed.weather.Weather;
 import sed.weather.WeatherController;
 import sed.weather.XMLPropertySetBuilder;
 import ssim.sim.SimClock;
-
 import chlib.noise.NoiseUtil;
 
 import com.jme3.app.SimpleApplication;
@@ -28,8 +28,6 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -106,6 +104,7 @@ public class Main extends SimpleApplication {
         stateManager.attach(new StarAppState());
         stateManager.attach(new CloudAppState());
         //stateManager.attach(new TerrainAppState());
+        stateManager.attach(new GuiAppState());
         
         {
             Box boxBox = new Box(Vector3f.ZERO, 1, 1, 1);
