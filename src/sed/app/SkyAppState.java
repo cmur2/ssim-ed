@@ -55,6 +55,7 @@ public class SkyAppState extends BasicAppState {
     public void cleanup() {
         super.cleanup();
         
+        skyNode.removeControl(SurfaceCameraControl.class);
         getApp().getRootNode().detachChild(skyNode);
         
         skyNode = null;
