@@ -54,6 +54,12 @@ public class SkyAppState extends BasicAppState {
     @Override
     public void cleanup() {
         super.cleanup();
+        
+        getApp().getRootNode().detachChild(skyNode);
+        
+        skyNode = null;
+        sun = null;
+        skyGradient = null;
     }
     
     @Override
