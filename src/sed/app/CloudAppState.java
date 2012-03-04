@@ -66,14 +66,16 @@ public class CloudAppState extends BasicAppState {
         // then (and the CP requires some variables set)
         intervalUpdate();
         
-        getState(SkyAppState.class).getSkyNode().attachChild(geom);
+        getSkyAppState().getSkyNode().attachChild(geom);
     }
     
     @Override
     public void cleanup() {
         super.cleanup();
         
-        getState(SkyAppState.class).getSkyNode().detachChild(geom);
+        if(getSkyAppState().getSkyNode() != null) {
+            getSkyAppState().getSkyNode().detachChild(geom);
+        }
         getApp().getViewPort().removeProcessor(cloudProcessor);
         
         cloudProcessor = null;
@@ -91,7 +93,7 @@ public class CloudAppState extends BasicAppState {
         cloudProcessor.setWayFactor(getWeather().getFloat("cloud.way-factor"));
         cloudProcessor.setZoom(getWeather().getInt("cloud.zoom"));
         
-        sunPosition = getState(SkyAppState.class).getSun().getSunPosition(sunPosition);
+        sunPosition = getSkyAppState().getSun().getSunPosition(sunPosition);
         if(sunColor == null) {
             sunColor = new Vector3f();
         }
@@ -116,5 +118,9 @@ public class CloudAppState extends BasicAppState {
     
     private Weather getWeather() {
         return getState(WeatherAppState.class).getWeather();
+    }
+    
+    private SkyAppState getSkyAppState() {
+        return getState(SkyAppState.class);
     }
 }

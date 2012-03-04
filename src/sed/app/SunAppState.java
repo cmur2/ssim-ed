@@ -70,7 +70,9 @@ public class SunAppState extends BasicAppState {
     public void cleanup() {
         super.cleanup();
         
-        getSkyAppState().getSkyNode().detachChild(sunTranslationNode);
+        if(getSkyAppState().getSkyNode() != null) {
+            getSkyAppState().getSkyNode().detachChild(sunTranslationNode);
+        }
         
         geom = null;
         sunTexture = null;

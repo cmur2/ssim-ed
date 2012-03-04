@@ -56,7 +56,9 @@ public class SkyDomeAppState extends BasicAppState {
     public void cleanup() {
         super.cleanup();
         
-        getSkyAppState().getSkyNode().detachChild(geom);
+        if(getSkyAppState().getSkyNode() != null) {
+            getSkyAppState().getSkyNode().detachChild(geom);
+        }
         
         geom = null;
         skyBoxTexture = null;

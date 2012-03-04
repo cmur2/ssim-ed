@@ -57,8 +57,7 @@ public class SkyAppState extends BasicAppState {
         
         getApp().getRootNode().detachChild(skyNode);
         
-        // TODO: Don't cleanup() scenegraph nodes used by public API
-        //skyNode = null;
+        skyNode = null;
         sun = null;
         skyGradient = null;
     }
