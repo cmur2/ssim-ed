@@ -57,16 +57,16 @@ public class SkyAppState extends BasicAppState {
         
         getApp().getRootNode().detachChild(skyNode);
         
-        // TODO: Don't cleanup() members used for public API
-//        skyNode = null;
-//        sun = null;
-//        skyGradient = null;
+        // TODO: Don't cleanup() scenegraph nodes used by public API
+        //skyNode = null;
+        sun = null;
+        skyGradient = null;
     }
     
     @Override
     protected void intervalUpdate() {
         sun.update();
-        skyGradient.setTurbidity(getApp().getWeather().getFloat("sky.turbidity"));
+        skyGradient.setTurbidity(getState(WeatherAppState.class).getWeather().getFloat("sky.turbidity"));
         skyGradient.update();
     }
     

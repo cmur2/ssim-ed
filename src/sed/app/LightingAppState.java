@@ -86,7 +86,7 @@ public class LightingAppState extends BasicAppState {
     }
     
     private void updateEnvLight() {
-        Vector3f v = getApp().getWeather().getVec3("sky.light");
+        Vector3f v = getState(WeatherAppState.class).getWeather().getVec3("sky.light");
         if(envColor == null) {
             envColor = new ColorRGBA();
         }

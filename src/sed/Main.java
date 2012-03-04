@@ -13,20 +13,15 @@ import sed.app.SkyAppState;
 import sed.app.SkyDomeAppState;
 import sed.app.StarAppState;
 import sed.app.SunAppState;
+import sed.app.WeatherAppState;
 import sed.mission.Mission;
 import sed.mission.MissionParser;
-import sed.weather.Interpolators;
-import sed.weather.RandomWeatherController;
-import sed.weather.Weather;
-import sed.weather.WeatherController;
-import sed.weather.XMLPropertySetBuilder;
 import ssim.sim.SimClock;
 import chlib.noise.NoiseUtil;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
@@ -56,7 +51,6 @@ public class Main extends SimpleApplication {
     private ScheduledThreadPoolExecutor executor;
     private Mission mission;
     private SimClock simClock;
-    private WeatherController weatherController;
     
     @Override
     public void simpleInitApp() {
@@ -79,8 +73,6 @@ public class Main extends SimpleApplication {
         
         speed = 1f;
         
-        initWeather();
-        
         flyCam.setMoveSpeed(3e2f);
         //flyCam.setDragToRotate(true);
         //cam.setLocation(new Vector3f(0, -450f, 0));
@@ -90,6 +82,7 @@ public class Main extends SimpleApplication {
         
         // AppState base layer:
         // these serve as a common base for the higher AppStates
+        stateManager.attach(new WeatherAppState("clear"));
         stateManager.attach(new SkyAppState());
         
         // AppState higher layer:
@@ -132,26 +125,6 @@ public class Main extends SimpleApplication {
         mission = MissionParser.load(assetManager, "missions/mission_01.xml");
     }
     
-    private void initWeather() {
-//        String[] sets = {"clear", "snowy"};
-        String[] sets = {"clear"};
-        XMLPropertySetBuilder builder = new XMLPropertySetBuilder(assetManager, sets);
-        builder.putFloat("sky.turbidity");
-        builder.putVec3("sky.light");
-        builder.putBool("sun.lensflare.enabled");
-        builder.putFloat("sun.lensflare.shininess");
-        builder.putFloat("cloud.cover");
-        builder.putFloat("cloud.sharpness");
-        builder.putFloat("cloud.way-factor");
-        builder.putInt("cloud.zoom");
-        
-        weatherController = new RandomWeatherController(5*60f, builder.getResults());
-        weatherController.registerInterpolator(new Interpolators.FloatInterpolator(), Float.class);
-        weatherController.registerInterpolator(new Interpolators.BoolInterpolator(), Boolean.class);
-        weatherController.registerInterpolator(new Interpolators.Vec3Interpolator(), Vector3f.class);
-        weatherController.registerInterpolator(new Interpolators.IntInterpolator(), Integer.class);
-    }
-    
     @Override
     public void simpleUpdate(float dt) {
         if(time > UpdateInterval) {
@@ -159,7 +132,6 @@ public class Main extends SimpleApplication {
             // ...
         }
         
-        weatherController.update(dt);
         simClock.step(dt);
         
         time += dt;
@@ -181,15 +153,6 @@ public class Main extends SimpleApplication {
     
     public SimClock getSimClock() {
         return simClock;
-    }
-    
-    /**
-     * @return only the {@link Weather} part of the applications
-     *         {@link WeatherController} since all other part should only
-     *         read weather information
-     */
-    public Weather getWeather() {
-        return weatherController;
     }
     
     public ScheduledThreadPoolExecutor getExecutor() {

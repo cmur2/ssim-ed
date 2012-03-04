@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import sed.sky.CloudPlane;
 import sed.sky.CloudProcessor;
+import sed.weather.Weather;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppState;
@@ -85,10 +86,10 @@ public class CloudAppState extends BasicAppState {
     
     @Override
     protected void intervalUpdate() {
-        cloudProcessor.setCloudCover(getApp().getWeather().getFloat("cloud.cover"));
-        cloudProcessor.setCloudSharpness(getApp().getWeather().getFloat("cloud.sharpness"));
-        cloudProcessor.setWayFactor(getApp().getWeather().getFloat("cloud.way-factor"));
-        cloudProcessor.setZoom(getApp().getWeather().getInt("cloud.zoom"));
+        cloudProcessor.setCloudCover(getWeather().getFloat("cloud.cover"));
+        cloudProcessor.setCloudSharpness(getWeather().getFloat("cloud.sharpness"));
+        cloudProcessor.setWayFactor(getWeather().getFloat("cloud.way-factor"));
+        cloudProcessor.setZoom(getWeather().getInt("cloud.zoom"));
         
         sunPosition = getState(SkyAppState.class).getSun().getSunPosition(sunPosition);
         if(sunColor == null) {
@@ -111,5 +112,9 @@ public class CloudAppState extends BasicAppState {
 //        cloudShift.x += 0.025;
         
         // TODO: some movement (wind)/change (permutation) should be done (aka cloud physics)
+    }
+    
+    private Weather getWeather() {
+        return getState(WeatherAppState.class).getWeather();
     }
 }

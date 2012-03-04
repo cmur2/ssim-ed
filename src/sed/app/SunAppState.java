@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import sed.sky.SunQuad;
 import sed.sky.SunTexture;
+import sed.weather.Weather;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -45,8 +46,8 @@ public class SunAppState extends BasicAppState {
         Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         
         sunTexture = new SunTexture(getSkyAppState().getSun());
-        sunTexture.setLensflareEnabled(getApp().getWeather().getBool("sun.lensflare.enabled"));
-        sunTexture.setLensflareShininess(getApp().getWeather().getFloat("sun.lensflare.shininess"));
+        sunTexture.setLensflareEnabled(getWeather().getBool("sun.lensflare.enabled"));
+        sunTexture.setLensflareShininess(getWeather().getFloat("sun.lensflare.shininess"));
         sunTexture.update();
         mat.setTexture("ColorMap", sunTexture);
         
@@ -80,8 +81,8 @@ public class SunAppState extends BasicAppState {
     @Override
     protected void intervalUpdate() {
         updateSunTranslation();
-        sunTexture.setLensflareEnabled(getApp().getWeather().getBool("sun.lensflare.enabled"));
-        sunTexture.setLensflareShininess(getApp().getWeather().getFloat("sun.lensflare.shininess"));
+        sunTexture.setLensflareEnabled(getWeather().getBool("sun.lensflare.enabled"));
+        sunTexture.setLensflareShininess(getWeather().getFloat("sun.lensflare.shininess"));
         sunTexture.update();
     }
     
@@ -91,6 +92,10 @@ public class SunAppState extends BasicAppState {
         sunTranslation = getSkyAppState().getSun().getSunPosition(sunTranslation);
         sunTranslation.multLocal(0.9f * getSkyAppState().getHemisphereRadius());
         sunTranslationNode.setLocalTranslation(sunTranslation);
+    }
+    
+    private Weather getWeather() {
+        return getState(WeatherAppState.class).getWeather();
     }
     
     private SkyAppState getSkyAppState() {
