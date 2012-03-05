@@ -1,7 +1,5 @@
 package sed.sky;
 
-import sed.Main;
-
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
@@ -15,13 +13,17 @@ public class SkyGradient {
                   0.055648f,-0.204043f, 1.057311f);*/
     
     // night sky blend consts
-    private static final float NightThetaRange = 6f; // in degrees
-    private static final float NightThetaMin = 100f; // in degrees
-    private static final float NightThetaMax = NightThetaMin + NightThetaRange; // in degrees
+    public static final float NightThetaRange = 6f; // in degrees
+    public static final float NightThetaMin = 100f; // in degrees
+    public static final float NightThetaMax = NightThetaMin + NightThetaRange; // in degrees
     
-    private static final ColorRGBA NightSkyColor = new ColorRGBA(0f, 0f, 0.08f, 1f);
+    // a dark blue for the sky
+    public static final ColorRGBA NightSkyColor = new ColorRGBA(0f, 0f, 0.08f, 1f);
     
-    private Main app;
+    // since the sun is below the horizon it should actually be black
+    public static final ColorRGBA NightSunColor = ColorRGBA.Black;
+    
+    private Sun sun;
     
     /**
      * x: sunPhiAngle, y: sunThetaAngle
@@ -43,8 +45,8 @@ public class SkyGradient {
     
     private Vector3f gammaCorrection = new Vector3f(1f, 0f, 1f);
     
-    public SkyGradient(Main app) {
-        this.app = app;
+    public SkyGradient(Sun sun) {
+        this.sun = sun;
     }
     
     public void setTurbidity(float turbidity) {
@@ -64,7 +66,7 @@ public class SkyGradient {
     }
     
     public void update() {
-        sunAngles = app.getSun().getSunAngles(sunAngles);
+        sunAngles = sun.getSunAngles(sunAngles);
         
         // extension to allow blend to night sky color
         float thetaDeg = (float) Math.toDegrees(sunAngles.y);

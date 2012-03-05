@@ -39,9 +39,8 @@ public class RandomWeatherController extends BasicWeatherController {
     
     @Override
     public void update(float dt) {
-        
         if(time >= intervalTime) {
-            time = 0;
+            time -= intervalTime;
             current = next;
             next = selectRandom();
             logger.debug("New weather: "+next.getName());

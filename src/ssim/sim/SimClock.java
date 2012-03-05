@@ -37,7 +37,7 @@ public class SimClock {
     private int hours = 0;
     private int minutes = 0;
     private int seconds = 0;
-    private long millis = 0;
+    private double millis = 0;
     
     /**
      * Private constructor without parameter checking!
@@ -69,9 +69,9 @@ public class SimClock {
             return;
         }
         assert stepInSeconds >= 0;
-        millis += (long) (stepInSeconds*1000);
+        millis += stepInSeconds*1000;
         
-        long newmillis = millis % 1000;
+        double newmillis = millis % 1000;
         seconds += (millis-newmillis)/1000;
         millis = newmillis;
         
@@ -113,7 +113,7 @@ public class SimClock {
      * @return milliseconds since last full second
      */
     public long getMillis() {
-        return millis;
+        return (long) millis;
     }
     
     /**
@@ -135,6 +135,12 @@ public class SimClock {
      */
     public float hourTime() {
         return hours+minutes/60f;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("SimClock(time state %d:%d:%d.%g)",
+                hours, minutes, seconds, millis);
     }
     
     /**

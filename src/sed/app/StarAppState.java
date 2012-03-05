@@ -1,83 +1,85 @@
-package sed;
+package sed.app;
 
 import org.apache.log4j.Logger;
 
 import sed.sky.StarField;
 
 import com.jme3.app.Application;
-import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
 import com.jme3.math.Vector2f;
-import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 
-public class StarAppState extends AbstractAppState {
+/**
+ * <b>Higher layer</b> {@link AppState} responsible for rendering a star field.
+ * 
+ * @author cn
+ */
+public class StarAppState extends BasicAppState {
     
     private static final Logger logger = Logger.getLogger(StarAppState.class);
     private static final float UpdateInterval = 30f; // in seconds
     
     private static final float StarsThetaMin = 80f;
     
-    private float time = 0;
-    
-    // exists only while AppState is living
-    private Main app;
+    // exists only while AppState is attached
     private Geometry geom;
     
     private Vector2f sunAngles;
     
     public StarAppState() {
+        super(UpdateInterval);
     }
     
     @Override
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
-        app = (Main) baseApp;
         
-        StarField starField = new StarField(100, 0.9f*SkyAppState.HemisphereRadius);
+        StarField starField = new StarField(100, 0.9f * getState(SkyAppState.class).getHemisphereRadius());
         geom = new Geometry("StarField", starField);
-        Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setBoolean("VertexColor", true);
         geom.setMaterial(mat);
         
-        app.getSkyNode().attachChild(geom);
+        getSkyNode().attachChild(geom);
 
-        updateStars();
-    }
-    
-    @Override
-    public void update(float dt) {
-        if(time > UpdateInterval) {
-            time = 0;
-            updateStars();
-        }
-        time += dt;
+        intervalUpdate();
     }
     
     @Override
     public void cleanup() {
         super.cleanup();
         
-        app.getSkyNode().detachChild(geom);
+        if(getSkyAppState().getSkyNode() != null) {
+            getSkyNode().detachChild(geom);
+        }
         
-        app = null;
         geom = null;
     }
     
-    private void updateStars() {
-        sunAngles = app.getSun().getSunAngles(sunAngles);
+    @Override
+    protected void intervalUpdate() {
+        sunAngles = getState(SkyAppState.class).getSun().getSunAngles(sunAngles);
         float thetaDeg = (float) Math.toDegrees(sunAngles.y);
         if(thetaDeg > StarsThetaMin) {
-            if(!app.getSkyNode().hasChild(geom)) {
+            if(!getSkyNode().hasChild(geom)) {
                 logger.debug("Attach star field");
-                app.getSkyNode().attachChild(geom);
+                getSkyNode().attachChild(geom);
             }
         } else {
-            if(app.getSkyNode().hasChild(geom)) {
+            if(getSkyNode().hasChild(geom)) {
                 logger.debug("Detach star field");
-                app.getSkyNode().detachChild(geom);
+                getSkyNode().detachChild(geom);
             }
         }
+    }
+    
+    private SkyAppState getSkyAppState() {
+        return getState(SkyAppState.class);
+    }
+    
+    private Node getSkyNode() {
+        return getSkyAppState().getSkyNode();
     }
 }

@@ -5,14 +5,18 @@
         <light>(0.2, 0.2, 0.2)</light>
     </sky>
     <sun>
-        <lensflare-enabled>false</lensflare-enabled>
-        <lensflare-shininess>0.95</lensflare-shininess>
+        <lensflare>
+            <enabled>true</enabled>
+            <shininess>0.95</shininess>
+        </lensflare>
     </sun>
     <ocean>
     </ocean>
     <cloud>
         <cover>50</cover>
         <sharpness>0.96</sharpness>
+        <way-factor>0.003</way-factor>
+        <zoom>40</zoom>
     </cloud>
     <!-- north east -->
     <wind>(1.0, 0, 1.0)</wind>

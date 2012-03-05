@@ -1,6 +1,7 @@
 package sed.sky;
 
-import sed.Main;
+import sed.mission.Mission;
+import ssim.sim.SimClock;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
@@ -12,15 +13,17 @@ import com.jme3.math.Vector3f;
  */
 public class Sun {
     
-    private Main app;
+    private SimClock simClock;
+    private Mission mission;
     
     /**
      * x: sunPhiAngle, y: sunThetaAngle
      */
     private Vector2f sunAngles;
     
-    public Sun(Main app) {
-        this.app = app;
+    public Sun(SimClock simClock, Mission mission) {
+        this.simClock = simClock;
+        this.mission = mission;
     }
     
     /**
@@ -50,12 +53,12 @@ public class Sun {
     }
     
     public void update() {
-        float timeOfDay = app.getSimClock().hourTime();
+        float timeOfDay = simClock.hourTime();
         sunAngles = calcSunPosition(
             timeOfDay,
-            app.getMission().getDayOfYear(),
-            app.getMission().getLatitude(),
-            app.getMission().getLongitude(),
+            mission.getDayOfYear(),
+            mission.getLatitude(),
+            mission.getLongitude(),
             sunAngles);
     }
     

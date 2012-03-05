@@ -1,7 +1,8 @@
-package sed;
+package sed.app;
+
+import sed.Util;
 
 import com.jme3.app.Application;
-import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -9,20 +10,17 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 
-public class LightingAppState extends AbstractAppState {
+/**
+ * <b>Higher layer</b> {@link AppState} responsible for setting up scene
+ * lighting.
+ * 
+ * @author cn
+ */
+public class LightingAppState extends BasicAppState {
     
     private static final float UpdateInterval = 30f; // in seconds
     
-    // since the sun is below the horizon it should actually be black
-    private static final ColorRGBA NightSunColor = ColorRGBA.Black;
-    
-    // TODO: sync with SkyGradient - central (sky) constant storage
-    private static final float NightThetaMax = 106f;
-    
-    private float time = 0;
-    
-    // exists only while AppState is living
-    private Main app;
+    // exists only while AppState is attached
     private DirectionalLight sunLight;
     private AmbientLight envLight;
     
@@ -34,56 +32,51 @@ public class LightingAppState extends AbstractAppState {
     private ColorRGBA envColor;
     
     public LightingAppState() {
+        super(UpdateInterval);
     }
     
     @Override
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
-        app = (Main) baseApp;
         
         sunLight = new DirectionalLight();
         updateSunLight();
-        app.getRootNode().addLight(sunLight);
+        getApp().getRootNode().addLight(sunLight);
         
         envLight = new AmbientLight();
         updateEnvLight();
-        app.getRootNode().addLight(envLight);
-    }
-    
-    @Override
-    public void update(float dt) {
-        if(time > UpdateInterval) {
-            time = 0;
-            updateSunLight();
-            updateEnvLight();
-        }
-        time += dt;
+        getApp().getRootNode().addLight(envLight);
     }
     
     @Override
     public void cleanup() {
         super.cleanup();
         
-        app.getRootNode().removeLight(sunLight);
-        app.getRootNode().removeLight(envLight);
+        getApp().getRootNode().removeLight(sunLight);
+        getApp().getRootNode().removeLight(envLight);
         
-        app = null;
         sunLight = null;
         envLight = null;
     }
     
+    @Override
+    protected void intervalUpdate() {
+        updateSunLight();
+        updateEnvLight();
+    }
+    
     private void updateSunLight() {
-        sunPosition = app.getSun().getSunPosition(sunPosition);
+        sunPosition = getSkyAppState().getSun().getSunPosition(sunPosition);
         
-        sunAngles = app.getSun().getSunAngles(sunAngles);
+        sunAngles = getSkyAppState().getSun().getSunAngles(sunAngles);
         float thetaDeg = (float) Math.toDegrees(sunAngles.y);
-        if(thetaDeg > NightThetaMax) {
-            sunLight.setColor(NightSunColor);
+        if(thetaDeg > getSkyAppState().getNightThetaMax()) {
+            sunLight.setColor(getSkyAppState().getNightSunColor());
         } else {
             if(sunColor == null) {
                 sunColor = new ColorRGBA();
             }
-            sunColorArray = app.getSkyGradient().getSkyColor(sunPosition, sunColorArray);
+            sunColorArray = getSkyAppState().getSkyGradient().getSkyColor(sunPosition, sunColorArray);
             Util.setTo(sunColor, sunColorArray);
             sunLight.setColor(sunColor);
         }
@@ -93,11 +86,15 @@ public class LightingAppState extends AbstractAppState {
     }
     
     private void updateEnvLight() {
-        Vector3f v = app.getWeather().getVec3("sky.light");
+        Vector3f v = getState(WeatherAppState.class).getWeather().getVec3("sky.light");
         if(envColor == null) {
             envColor = new ColorRGBA();
         }
         Util.setTo(envColor, v, 1f);
         envLight.setColor(envColor);
+    }
+    
+    private SkyAppState getSkyAppState() {
+        return getState(SkyAppState.class);
     }
 }
