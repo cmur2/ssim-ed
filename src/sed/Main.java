@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
 import sed.app.CloudAppState;
+import sed.app.DebugAppState;
 import sed.app.GuiAppState;
 import sed.app.LightingAppState;
 import sed.app.SkyAppState;
@@ -22,6 +23,7 @@ import chlib.noise.NoiseUtil;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.math.Vector3f;
 
 import de.altimos.util.logger.JLFBridge;
 
@@ -73,9 +75,9 @@ public class Main extends SimpleApplication {
         
         flyCam.setMoveSpeed(3e2f);
         //flyCam.setDragToRotate(true);
-        //cam.setLocation(new Vector3f(0, -450f, 0));
+        cam.setLocation(new Vector3f(0, -450f, 0));
         //cam.setRotation(new Quaternion(new float[] {-90*FastMath.DEG_TO_RAD,0,0}));
-        //cam.lookAtDirection(Vector3f.UNIT_Y, Vector3f.UNIT_Z);
+        cam.lookAtDirection(Vector3f.UNIT_Y, Vector3f.UNIT_Z);
         cam.setFrustumPerspective(45f, (float)cam.getWidth() / cam.getHeight(), 1f, 2000f);
         
         // AppState base layer:
@@ -92,6 +94,7 @@ public class Main extends SimpleApplication {
         stateManager.attach(new CloudAppState());
         //stateManager.attach(new TerrainAppState());
         stateManager.attach(new GuiAppState());
+        stateManager.attach(new DebugAppState());
         
         {
             //Box boxBox = new Box(Vector3f.ZERO, 1, 1, 1);

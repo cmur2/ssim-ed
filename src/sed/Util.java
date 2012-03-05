@@ -35,6 +35,20 @@ public class Util {
     }
     
     /**
+     * Insert given rgba (from color) into array at given offset. 
+     * 
+     * @param f the target
+     * @param offset index offset to begin filling
+     * @param c delivers rgba
+     */
+    public static void setTo(float[] f, int offset, ColorRGBA c) {
+        f[offset+0] = c.r;
+        f[offset+1] = c.g;
+        f[offset+2] = c.b;
+        f[offset+3] = c.a;
+    }
+    
+    /**
      * Prints the scenegraph {@linkplain Node}s below the given root node one
      * node per line with increasing indent to {@link System#out}.
      * 
