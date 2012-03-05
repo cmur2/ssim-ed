@@ -1,10 +1,10 @@
-package sed;
+package sed.app;
 
+import sed.MapLoader;
 import sed.terrain.BinaryMapBasedHeightMap;
 import jme3tools.converters.ImageToAwt;
 
 import com.jme3.app.Application;
-import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetKey;
 import com.jme3.material.Material;
@@ -16,56 +16,53 @@ import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 
-public class TerrainAppState extends AbstractAppState {
+public class TerrainAppState extends BasicAppState {
     
     private static final float UpdateInterval = 30f; // in seconds
     
-    private float time = 0;
-    
-    // exists only while AppState is living
-    private Main app;
+    // exists only while AppState is attached
     private TerrainQuad terrainRoot;
     
     public TerrainAppState() {
+        super(UpdateInterval);
     }
     
     @Override
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
-        app = (Main) baseApp;
         
-        AssetKey<MapLoader.Map> mapKey = new AssetKey<MapLoader.Map>("maps/"+app.getMission().getMapFile());
-        MapLoader.Map map = app.getAssetManager().loadAsset(mapKey);
+        AssetKey<MapLoader.Map> mapKey = new AssetKey<MapLoader.Map>("maps/"+getApp().getMission().getMapFile());
+        MapLoader.Map map = getApp().getAssetManager().loadAsset(mapKey);
         //System.out.println(map);
         
         // TODO: build TerraMoney glue
         
-        Material matRock = new Material(app.getAssetManager(), "Common/MatDefs/Terrain/Terrain.j3md");
+        Material matRock = new Material(getApp().getAssetManager(), "Common/MatDefs/Terrain/Terrain.j3md");
         matRock.setBoolean("useTriPlanarMapping", false);
         
         // GRASS texture
-        Texture grass = app.getAssetManager().loadTexture("Textures/Terrain/splat/grass.jpg");
+        Texture grass = getApp().getAssetManager().loadTexture("Textures/Terrain/splat/grass.jpg");
         grass.setWrap(WrapMode.Repeat);
         matRock.setTexture("Tex1", grass);
         matRock.setFloat("Tex1Scale", 64);
         
         // DIRT texture
-        Texture dirt = app.getAssetManager().loadTexture("Textures/Terrain/splat/dirt.jpg");
+        Texture dirt = getApp().getAssetManager().loadTexture("Textures/Terrain/splat/dirt.jpg");
         dirt.setWrap(WrapMode.Repeat);
         matRock.setTexture("Tex2", dirt);
         matRock.setFloat("Tex2Scale", 32);
         
         // ROCK texture
-        Texture rock = app.getAssetManager().loadTexture("Textures/Terrain/splat/road.jpg");
+        Texture rock = getApp().getAssetManager().loadTexture("Textures/Terrain/splat/road.jpg");
         rock.setWrap(WrapMode.Repeat);
         matRock.setTexture("Tex3", rock);
         matRock.setFloat("Tex3Scale", 128);
         
         // ALPHA map (for splat textures)
-        matRock.setTexture("Alpha", app.getAssetManager().loadTexture("Textures/Terrain/splat/alphamap.png"));
+        matRock.setTexture("Alpha", getApp().getAssetManager().loadTexture("Textures/Terrain/splat/alphamap.png"));
         
         
-        Texture heightMapImage = app.getAssetManager().loadTexture("Textures/Terrain/splat/mountains512.png");
+        Texture heightMapImage = getApp().getAssetManager().loadTexture("Textures/Terrain/splat/mountains512.png");
         
         java.awt.Image heightMapImageAwt = ImageToAwt.convert(heightMapImage.getImage(), false, false, 0);
         
@@ -85,22 +82,13 @@ public class TerrainAppState extends AbstractAppState {
         terrainRoot.setMaterial(matRock);
         //terrainRoot.setLocalTranslation(0, -100, 0);
         terrainRoot.setLocalScale(4, 1f, 4);
-        app.getRootNode().attachChild(terrainRoot);
-    }
-    
-    @Override
-    public void update(float dt) {
-        if(time > UpdateInterval) {
-            time = 0;
-        }
-        time += dt;
+        getApp().getRootNode().attachChild(terrainRoot);
     }
     
     @Override
     public void cleanup() {
         super.cleanup();
         
-        app = null;
         terrainRoot = null;
     }
 }
