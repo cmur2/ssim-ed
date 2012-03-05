@@ -37,7 +37,7 @@ public class DebugAppState extends BasicAppState {
         debugNode.setCullHint(showGrid ? CullHint.Never : CullHint.Always);
         getApp().getRootNode().attachChild(debugNode);
         
-        buildDebugGrid(1000f, 10, 10);
+        buildDebugGrid();
         
         buildTheThreeArrows(50f);
         
@@ -60,11 +60,14 @@ public class DebugAppState extends BasicAppState {
         handler = null;
     }
     
-    private void buildDebugGrid(float gridSize, int gridWidth, int gridHeight) {
-        DebugGridMesh debugGrid = new DebugGridMesh(gridSize, gridWidth, gridHeight);
+    private void buildDebugGrid() {
+        float gridSize = getState(SkyAppState.class).getHemisphereRadius();
+        int gridWH = Math.round(gridSize/100f);
+        
+        DebugGridMesh debugGrid = new DebugGridMesh(gridSize, gridWH, gridWH);
         Geometry debugGridGeom = new Geometry("DebugGrid", debugGrid);
         Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setBoolean("VertexColor", true);
+        mat.setColor("Color", ColorRGBA.Gray);
         debugGridGeom.setMaterial(mat);
         
         debugNode.attachChild(debugGridGeom);
