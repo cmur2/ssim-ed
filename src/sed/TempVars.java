@@ -45,16 +45,19 @@ public class TempVars {
         }
     }
     
-    public final Vector3f va = new Vector3f();
-    public final Vector3f vb = new Vector3f();
-    public final Vector3f vc = new Vector3f();
-    public final Vector3f vd = new Vector3f();
+    public final Vector3f vect1 = new Vector3f();
+    public final Vector3f vect2 = new Vector3f();
+    public final Vector3f vect3 = new Vector3f();
+    public final Vector3f vect4 = new Vector3f();
     
-    public final Vector2f v2a = new Vector2f();
-    public final Vector2f v2b = new Vector2f();
+    public final Vector2f vect10 = new Vector2f();
+    public final Vector2f vect11 = new Vector2f();
     
-    public final ColorRGBA ca = new ColorRGBA();
-    public final ColorRGBA cb = new ColorRGBA();
+    public final ColorRGBA color1 = new ColorRGBA();
+    public final ColorRGBA color2 = new ColorRGBA();
+    
+    public final float[] float1 = new float[4];
+    public final float[] float2 = new float[4];
     
     /**
      * @return a variable set

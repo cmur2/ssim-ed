@@ -1,5 +1,6 @@
 package sed.app;
 
+import sed.TempVars;
 import sed.Util;
 
 import com.jme3.app.Application;
@@ -23,13 +24,6 @@ public class LightingAppState extends BasicAppState {
     // exists only while AppState is attached
     private DirectionalLight sunLight;
     private AmbientLight envLight;
-    
-    private Vector2f sunAngles;
-    private Vector3f sunPosition;
-    private float[] sunColorArray;
-    private ColorRGBA sunColor;
-    
-    private ColorRGBA envColor;
     
     public LightingAppState() {
         super(UpdateInterval);
@@ -66,32 +60,34 @@ public class LightingAppState extends BasicAppState {
     }
     
     private void updateSunLight() {
-        sunPosition = getSkyAppState().getSun().getSunPosition(sunPosition);
+        TempVars vars = TempVars.get();
         
-        sunAngles = getSkyAppState().getSun().getSunAngles(sunAngles);
+        Vector3f sunPosition = getSkyAppState().getSun().getSunPosition(vars.vect1);
+        
+        Vector2f sunAngles = getSkyAppState().getSun().getSunAngles(vars.vect10);
         float thetaDeg = (float) Math.toDegrees(sunAngles.y);
         if(thetaDeg > getSkyAppState().getNightThetaMax()) {
             sunLight.setColor(getSkyAppState().getNightSunColor());
         } else {
-            if(sunColor == null) {
-                sunColor = new ColorRGBA();
-            }
-            sunColorArray = getSkyAppState().getSkyGradient().getSkyColor(sunPosition, sunColorArray);
-            Util.setTo(sunColor, sunColorArray);
+            float[] sunColorArray = getSkyAppState().getSkyGradient().getSkyColor(sunPosition, vars.float1);
+            ColorRGBA sunColor = Util.setTo(vars.color1, sunColorArray);
             sunLight.setColor(sunColor);
         }
         
         sunPosition.negateLocal();
         sunLight.setDirection(sunPosition);
+        
+        vars.release();
     }
     
     private void updateEnvLight() {
+        TempVars vars = TempVars.get();
+        
         Vector3f v = getState(WeatherAppState.class).getWeather().getVec3("sky.light");
-        if(envColor == null) {
-            envColor = new ColorRGBA();
-        }
-        Util.setTo(envColor, v, 1f);
+        ColorRGBA envColor = Util.setTo(vars.color1, v, 1f);
         envLight.setColor(envColor);
+        
+        vars.release();
     }
     
     private SkyAppState getSkyAppState() {
