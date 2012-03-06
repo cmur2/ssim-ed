@@ -2,6 +2,8 @@ package sed.app;
 
 import org.apache.log4j.Logger;
 
+import sed.TempVars;
+import sed.Util;
 import sed.sky.CloudPlane;
 import sed.sky.CloudProcessor;
 import sed.weather.Weather;
@@ -11,6 +13,7 @@ import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
@@ -29,9 +32,6 @@ public class CloudAppState extends BasicAppState {
     private CloudProcessor cloudProcessor;
     private Geometry geom;
 
-    private Vector3f sunPosition;
-    private Vector3f sunColor;
-    private float[] sunColorArray;
     private Vector3f cloudShift;
     
     public CloudAppState() {
@@ -80,10 +80,6 @@ public class CloudAppState extends BasicAppState {
         
         cloudProcessor = null;
         geom = null;
-        sunPosition = null;
-        sunColor = null;
-        sunColorArray = null;
-        cloudShift = null;
     }
     
     @Override
@@ -93,15 +89,16 @@ public class CloudAppState extends BasicAppState {
         cloudProcessor.setWayFactor(getWeather().getFloat("cloud.way-factor"));
         cloudProcessor.setZoom(getWeather().getInt("cloud.zoom"));
         
-        sunPosition = getSkyAppState().getSun().getSunPosition(sunPosition);
-        if(sunColor == null) {
-            sunColor = new Vector3f();
-        }
+        TempVars vars = TempVars.get();
+        
+        Vector3f sunPosition = getSkyAppState().getSun().getSunPosition(vars.vect1);
+        
         // TODO: Clouds lit by real suns color are too dark, maybe modify this color
-//        sunColorArray = app.getSkyGradient().getSkyColor(sunPosition, sunColorArray);
-//        sunColor.set(sunColorArray[0], sunColorArray[1], sunColorArray[2]);
+        // TODO: Need "correct" sun color for LightingAppState too (maybe even for SunAppState as texture color)
+//        float[] sunColorArray = getSkyAppState().getSkyGradient().getSkyColor(sunPosition, vars.float1);
+//        Vector3f sunColor = Util.setTo(vars.vect2, sunColorArray);
 //        System.out.println(sunColor);
-        sunColor.set(1f, 1f, 1f);
+        Vector3f sunColor = vars.vect2.set(1f, 1f, 1f);
         
         cloudProcessor.setSunLightColor(sunColor);
 
@@ -114,6 +111,8 @@ public class CloudAppState extends BasicAppState {
 //        cloudShift.x += 0.025;
         
         // TODO: some movement (wind)/change (permutation) should be done (aka cloud physics)
+        
+        vars.release();
     }
     
     private Weather getWeather() {

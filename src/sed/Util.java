@@ -49,6 +49,18 @@ public class Util {
     }
     
     /**
+     * Apply the given rgb (from array[0] to array[2]) data to the vector.
+     * 
+     * @param v the target
+     * @param rgb delivers rgb data
+     * @return the target
+     */
+    public static Vector3f setTo(Vector3f v, float[] rgb) {
+        v.set(rgb[0], rgb[1], rgb[2]);
+        return v;
+    }
+    
+    /**
      * Prints the scenegraph {@linkplain Node}s below the given root node one
      * node per line with increasing indent to {@link System#out}.
      * 
