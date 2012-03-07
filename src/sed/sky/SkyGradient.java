@@ -143,6 +143,8 @@ public class SkyGradient {
         store.multLocal(1f/Util.getMaxComponent(store));
         store.a = 1f;
         
+        // TODO: for zenith-near sun positions the sun light color is to bluish
+        
         vars.release();
         
         return store;

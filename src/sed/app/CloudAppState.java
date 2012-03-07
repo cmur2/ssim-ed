@@ -92,8 +92,6 @@ public class CloudAppState extends BasicAppState {
         
         Vector3f sunPosition = getSkyAppState().getSun().getSunPosition(vars.vect1);
         
-        // TODO: Clouds lit by real suns color are too dark, maybe modify this color
-        // TODO: Need "correct" sun color for LightingAppState too (maybe even for SunAppState as texture color)
         ColorRGBA sunLightColor = getSkyAppState().getSkyGradient().getSunLightColor(vars.color1);
         //ColorRGBA sunLightColor = ColorRGBA.White;
         System.out.println(sunLightColor);
