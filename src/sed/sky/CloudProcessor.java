@@ -314,6 +314,7 @@ public class CloudProcessor implements SceneProcessor {
         Vector3f v = new Vector3f();
         Vector3f vdir = new Vector3f();
         Vector3f vadd = new Vector3f();
+        ColorRGBA color = new ColorRGBA();
         //float z = 255;
         //boolean breakOnCloudExit = sunPosition.z < -z || sunPosition.z > z;
         
@@ -357,24 +358,24 @@ public class CloudProcessor implements SceneProcessor {
                         //}
                     }
                 }
-                //int color = 255 - (int) (wayInClouds * wayFactor * 255f);
-                int color = (int) (Math.exp(-wayFactor * wayInClouds) * 255f);
+                //int cfinal = 255 - (int) (wayInClouds * wayFactor * 255f);
+                float cfinal = (float) Math.exp(-wayFactor * wayInClouds);
+                
+                color.set(sunLightColor);
+                color.multLocal(cfinal*255f);
+                if(color.r > 255) color.r = 255;
+                if(color.g > 255) color.g = 255;
+                if(color.b > 255) color.b = 255;
+                
                 alpha = 1f - (float) Math.pow(cloudSharpness, alpha);
                 alpha *= heightField[column][row]/255f;
-                //alpha *= ALPHA_FACTOR;
-                if(alpha > 1f) alpha = 1f;
-                //float sdiff = 0.5f - (column/(float)size);
-                //float tdiff = 0.5f - (row/(float)size);
-                //float diff = (float) Math.sqrt(sdiff*sdiff + tdiff*tdiff);
-                //if(diff > CLOUD_CLIPPING_DISTANCE) alpha -= (diff-CLOUD_CLIPPING_DISTANCE)*CLOUD_CLIPPING_FACTOR;
                 alpha *= 255f;
-                //if(alpha < 0) alpha = 0;
-                if(color > 255) color = 255;
-                //else if(color < MIN_COLOR*255) color = (int) (MIN_COLOR*255);
+                if(alpha > 255) alpha = 255;
+                
                 int index = (row*TexSize + column)*4;
-                buf.put(index+0, (byte) color); // R
-                buf.put(index+1, (byte) color); // G
-                buf.put(index+2, (byte) color); // B
+                buf.put(index+0, (byte) color.r); // R
+                buf.put(index+1, (byte) color.g); // G
+                buf.put(index+2, (byte) color.b); // B
                 buf.put(index+3, (byte) alpha); // A
             }
         }
