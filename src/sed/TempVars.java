@@ -6,7 +6,7 @@ import com.jme3.math.Vector3f;
 
 /**
  * Nice idea copied from {@link com.jme3.util.TempVars} to solve my problems
- * with temporary object creation. Currently not used.
+ * with temporary object creation.
  * 
  * @author cn
  */

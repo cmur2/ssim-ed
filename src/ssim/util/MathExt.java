@@ -488,7 +488,7 @@ public final class MathExt {
     
     /**
      * Calculates angle named <b>gamma</b> or <b>psi</b> in a <u>skydome</u>
-     * between two vectors comming from the skydome's origin which are defined
+     * between two vectors coming from the skydome's origin which are defined
      * by <b>theta1</b>/<b>phi1</b> and <b>theta2</b>/<b>phi2</b>.
      * 
      * @param theta1 theta for vector one <i>(in radians)</i>

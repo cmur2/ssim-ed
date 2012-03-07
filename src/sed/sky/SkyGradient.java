@@ -12,7 +12,7 @@ public class SkyGradient {
                  -0.969256f, 1.875992f, 0.041556f,
                   0.055648f,-0.204043f, 1.057311f);*/
     
-    // night sky blend consts
+    // night sky blend constants
     public static final float NightThetaRange = 6f; // in degrees
     public static final float NightThetaMin = 100f; // in degrees
     public static final float NightThetaMax = NightThetaMin + NightThetaRange; // in degrees
@@ -33,7 +33,7 @@ public class SkyGradient {
     /**
      * meanings:
      *   1 - full night sky color
-     *   0 - full perez colors (day light)
+     *   0 - full Perez colors (day light)
      */
     private float linearNightBlendFactor;
     
@@ -123,7 +123,7 @@ public class SkyGradient {
      * 
      * @param p point (j3d coords)
      * @param store a float[] to store the result
-     * @return the sky color at the given point as RGBA in float[]
+     * @return the sky color at the given point as RGBA (alpha is 1) in float[]
      */
     public float[] getSkyColor(Vector3f p, float[] store) {
         return getSkyColor(p.x, p.y, p.z, store);
@@ -136,7 +136,7 @@ public class SkyGradient {
      * @param py point's y coordinate (j3d coords)
      * @param pz point's z coordinate (j3d coords)
      * @param store a float[] to store the result
-     * @return the sky color at the given point as RGBA in float[]
+     * @return the sky color at the given point as RGBA (alpha is 1) in float[]
      */
     public float[] getSkyColor(float px, float py, float pz, float[] store) {
         if(store == null) {
@@ -189,8 +189,8 @@ public class SkyGradient {
         float Y = calcPerezFunction(perezY, vertexThetaAngle, gammaAngle, zenithY, sunAngles.y);
         float X = x / y * Y;
         float Z = (1f-x-y) / y * Y;
-        // XYZ to RGB via standart Rec. 709 RGB with D65 white point
-        // (http://www.inforamp.net/%7Epoynton/notes/colour_and_gamma/ColorFAQ.html#RTFToC18)
+        // XYZ to RGB via standard Rec. 709 RGB with D65 white point
+        // (http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC18)
         colors[0] =  3.240479f*X - 1.537150f*Y - 0.498535f*Z;
         colors[1] = -0.969256f*X + 1.875992f*Y + 0.041556f*Z;
         colors[2] =  0.055648f*X - 0.204043f*Y + 1.057311f*Z;
@@ -219,11 +219,11 @@ public class SkyGradient {
     
     /**
      * Calculates angle named <b>gamma</b> or <b>psi</b> in a <u>skydome</u>
-     * between two vectors comming from the skydome's origin which are defined
+     * between two vectors coming from the skydome's origin which are defined
      * by <b>theta1</b>/<b>phi1</b> and <b>theta2</b>/<b>phi2</b>.
      * 
      * @param theta1 theta for vector one <i>(in radians)</i>
-     * @param phi1 phi for vector one <i>(in radians)</i>
+     * @param phi1 phi for vector one <i>(in radians)</i> degrees
      * @param theta2 theta for vector <i>(in radians)</i>
      * @param phi2 phi for vector two <i>(in radians)</i>
      * @return angle named <b>gamma</b> or <b>psi</b> with float precision <i>(in radians)</i>
