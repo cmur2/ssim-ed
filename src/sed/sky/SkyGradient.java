@@ -1,5 +1,8 @@
 package sed.sky;
 
+import sed.TempVars;
+import sed.Util;
+
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
@@ -116,6 +119,33 @@ public class SkyGradient {
                   (-0.04214f*theta3 + 0.08970f*theta2 - 0.04153f*sunAngles.y + 0.00516f)*t +
                   ( 0.15346f*theta3 - 0.26756f*theta2 + 0.06670f*sunAngles.y + 0.26688f);
         // @formatter:on
+    }
+    
+    /**
+     * Calculates the color of the sun light (= color of the point on the
+     * hemisphere where the sun is located) via
+     * {@link #getSkycolor(float[], double, double, double)} and brightens it
+     * proportional so that the highest component will be 1.0.
+     * 
+     * @param store a {@link ColorRGBA} to store the result
+     * @return the sun light color
+     */
+    public ColorRGBA getSunLightColor(ColorRGBA store) {
+        if(store == null) {
+            store = new ColorRGBA();
+        }
+        TempVars vars = TempVars.get();
+        
+        Vector3f sunPosition = sun.getSunPosition(vars.vect1);
+        float[] sunColorArray = getSkyColor(sunPosition, vars.float1);
+        Util.setTo(store, sunColorArray);
+        // brighten the color's rgb proportional, reset alpha
+        store.multLocal(1f/Util.getMaxComponent(store));
+        store.a = 1f;
+        
+        vars.release();
+        
+        return store;
     }
     
     /**

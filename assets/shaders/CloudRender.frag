@@ -1,18 +1,12 @@
 
 uniform float m_ImageSize;
 uniform float m_MaxSteps;
-uniform float m_CloudSharpness; // unneeded here, since alpha is outsourced
+uniform float m_CloudSharpness;
 uniform float m_WayFactor;
 uniform vec3  m_SunPosition;
-uniform vec3  m_SunLightColor;
+uniform vec4  m_SunLightColor;
 
-//uniform float m_Compression;
-//uniform float m_ClippingDistance;
-//uniform float m_ClippingFactor;
-//uniform float m_AlphaFactor;
-//uniform float m_MinColor;
-
-uniform sampler2D m_HeightField; // tex unit 0
+uniform sampler2D m_HeightField;
 
 varying vec4 varTexVoxelCoord;
 
@@ -68,22 +62,21 @@ void main() {
 
     //color = clamp(color, 0.0, 1.0);
 
-    // ==========================================
-    // = the second component: sun lights color =
-    // ==========================================
-    //vec3 lig = gl_LightSource[0].diffuse.rgb;
-    //vec3 lig = vec3(1.0,1.0,1.0);
-    vec3 lig = m_SunLightColor;
+    // =========================================
+    // = the second component: sun light color =
+    // =========================================
+    //vec3 light = vec3(1.0,1.0,1.0);
+    vec3 light = m_SunLightColor.rgb;
 
-    // ====================================
-    // = determine the alpha (outsourced) =
-    // ====================================
+    // =======================
+    // = determine the alpha =
+    // =======================
     alpha = 1.0 - pow(m_CloudSharpness, alpha);
     alpha *= texture2D(m_HeightField, varTexVoxelCoord.xy).r; // use fading information
 
     // ================
     // = final action =
     // ================
-    gl_FragColor = vec4(color * lig, alpha);
-    //gl_FragColor = vec4(color * lig, 1.0);
+    gl_FragColor = vec4(color * light, alpha);
+    //gl_FragColor = vec4(color * light, 1.0);
 }

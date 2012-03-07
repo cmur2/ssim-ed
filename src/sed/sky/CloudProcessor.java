@@ -73,7 +73,7 @@ public class CloudProcessor implements SceneProcessor {
     private float cloudSharpness;
     private float wayFactor;
     private Vector3f sunPosition;
-    private Vector3f sunLightColor;
+    private ColorRGBA sunLightColor;
     
     public CloudProcessor(AssetManager assetManager, Mode mode, float updateInterval) {
         this.assetManager = assetManager;
@@ -123,7 +123,7 @@ public class CloudProcessor implements SceneProcessor {
             mat.setFloat("CloudSharpness", cloudSharpness);
             mat.setFloat("WayFactor", wayFactor);
             mat.setVector3("SunPosition", sunPosition);
-            mat.setVector3("SunLightColor", sunLightColor);
+            mat.setColor("SunLightColor", sunLightColor);
             mat.setTexture("HeightField", heightFieldTex);
             quad.setMaterial(mat);
             quad.updateGeometricState();
@@ -223,11 +223,11 @@ public class CloudProcessor implements SceneProcessor {
         this.sunPosition = sunPosition;
     }
 
-    public Vector3f getSunLightColor() {
+    public ColorRGBA getSunLightColor() {
         return sunLightColor;
     }
 
-    public void setSunLightColor(Vector3f sunLightColor) {
+    public void setSunLightColor(ColorRGBA sunLightColor) {
         this.sunLightColor = sunLightColor;
     }
 

@@ -61,6 +61,26 @@ public class Util {
     }
     
     /**
+     * Retrieve greatest components' value.
+     * 
+     * @param v delivers xyz
+     * @return the greatest components' value
+     */
+    public static float getMaxComponent(Vector3f v) {
+        return Math.max(v.x, Math.max(v.y, v.z));
+    }
+    
+    /**
+     * Retrieve greatest components' value of the rgb components.
+     * 
+     * @param v delivers rgb
+     * @return the greatest components' value
+     */
+    public static float getMaxComponent(ColorRGBA v) {
+        return Math.max(v.r, Math.max(v.g, v.b));
+    }
+    
+    /**
      * Prints the scenegraph {@linkplain Node}s below the given root node one
      * node per line with increasing indent to {@link System#out}.
      * 

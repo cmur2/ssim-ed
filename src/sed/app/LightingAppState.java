@@ -62,18 +62,16 @@ public class LightingAppState extends BasicAppState {
     private void updateSunLight() {
         TempVars vars = TempVars.get();
         
-        Vector3f sunPosition = getSkyAppState().getSun().getSunPosition(vars.vect1);
-        
         Vector2f sunAngles = getSkyAppState().getSun().getSunAngles(vars.vect10);
         float thetaDeg = (float) Math.toDegrees(sunAngles.y);
         if(thetaDeg > getSkyAppState().getNightThetaMax()) {
             sunLight.setColor(getSkyAppState().getNightSunColor());
         } else {
-            float[] sunColorArray = getSkyAppState().getSkyGradient().getSkyColor(sunPosition, vars.float1);
-            ColorRGBA sunColor = Util.setTo(vars.color1, sunColorArray);
-            sunLight.setColor(sunColor);
+            ColorRGBA sunLightColor = getSkyAppState().getSkyGradient().getSunLightColor(vars.color1);
+            sunLight.setColor(sunLightColor);
         }
         
+        Vector3f sunPosition = getSkyAppState().getSun().getSunPosition(vars.vect1);
         sunPosition.negateLocal();
         sunLight.setDirection(sunPosition);
         

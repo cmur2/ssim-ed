@@ -7,7 +7,7 @@ MaterialDef CloudRender {
         Float CloudSharpness
         Float WayFactor
         Vector3 SunPosition
-        Vector3 SunLightColor
+        Color SunLightColor
         Texture2D HeightField
     }
     Technique {

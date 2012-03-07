@@ -3,7 +3,6 @@ package sed.app;
 import org.apache.log4j.Logger;
 
 import sed.TempVars;
-import sed.Util;
 import sed.sky.CloudPlane;
 import sed.sky.CloudProcessor;
 import sed.weather.Weather;
@@ -95,12 +94,10 @@ public class CloudAppState extends BasicAppState {
         
         // TODO: Clouds lit by real suns color are too dark, maybe modify this color
         // TODO: Need "correct" sun color for LightingAppState too (maybe even for SunAppState as texture color)
-//        float[] sunColorArray = getSkyAppState().getSkyGradient().getSkyColor(sunPosition, vars.float1);
-//        Vector3f sunColor = Util.setTo(vars.vect2, sunColorArray);
-//        System.out.println(sunColor);
-        Vector3f sunColor = vars.vect2.set(1f, 1f, 1f);
-        
-        cloudProcessor.setSunLightColor(sunColor);
+        ColorRGBA sunLightColor = getSkyAppState().getSkyGradient().getSunLightColor(vars.color1);
+        //ColorRGBA sunLightColor = ColorRGBA.White;
+        System.out.println(sunLightColor);
+        cloudProcessor.setSunLightColor(sunLightColor);
 
         cloudProcessor.setSunPosition(new Vector3f(-500, 256/2, 3000));
         
