@@ -113,7 +113,6 @@ public class CloudProcessor implements SceneProcessor {
             quad.setWidth(TexSize);
             quad.setHeight(TexSize);
             
-            // this shader does the real work... later
             //Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             //mat.setColor("Color", ColorRGBA.Orange.mult(new ColorRGBA(1f, 1f, 1f, 0.5f)));
             //mat.setTexture("ColorMap", heightFieldTex);
@@ -168,11 +167,16 @@ public class CloudProcessor implements SceneProcessor {
 
     @Override
     public void cleanup() {
-        // nothing
-        tempViewPort.clearScenes();
-        tempViewPort.setOutputFrameBuffer(null);
-        tempViewPort = null;
+        if(mode == Mode.AllCPU) {
+            // nothing
+        } else {
+            tempViewPort.clearScenes();
+            tempViewPort.setOutputFrameBuffer(null);
+            tempViewPort = null;
+        }
+        heightFieldTex = null;
         cloudTex = null;
+        cloudHeightField = null;
     }
     
     public float getCloudCover() {
