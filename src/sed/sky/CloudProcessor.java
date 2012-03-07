@@ -61,6 +61,7 @@ public class CloudProcessor implements SceneProcessor {
     
     // view ports
     private ViewPort tempViewPort;
+    private Material tempMat;
     
     // textures
     private Texture2D heightFieldTex;
@@ -116,15 +117,15 @@ public class CloudProcessor implements SceneProcessor {
             //Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             //mat.setColor("Color", ColorRGBA.Orange.mult(new ColorRGBA(1f, 1f, 1f, 0.5f)));
             //mat.setTexture("ColorMap", heightFieldTex);
-            Material mat = new Material(assetManager, "shaders/CloudRender.j3md");
-            mat.setFloat("ImageSize", TexSize);
-            mat.setFloat("MaxSteps", MaxSteps);
-            mat.setFloat("CloudSharpness", cloudSharpness);
-            mat.setFloat("WayFactor", wayFactor);
-            mat.setVector3("SunPosition", sunPosition);
-            mat.setColor("SunLightColor", sunLightColor);
-            mat.setTexture("HeightField", heightFieldTex);
-            quad.setMaterial(mat);
+            tempMat = new Material(assetManager, "shaders/CloudRender.j3md");
+            tempMat.setFloat("ImageSize", TexSize);
+            tempMat.setFloat("MaxSteps", MaxSteps);
+            tempMat.setFloat("CloudSharpness", cloudSharpness);
+            tempMat.setFloat("WayFactor", wayFactor);
+            tempMat.setVector3("SunPosition", sunPosition);
+            tempMat.setColor("SunLightColor", sunLightColor);
+            tempMat.setTexture("HeightField", heightFieldTex);
+            quad.setMaterial(tempMat);
             quad.updateGeometricState();
             
             tempViewPort.attachScene(quad);
@@ -209,6 +210,9 @@ public class CloudProcessor implements SceneProcessor {
 
     public void setCloudSharpness(float cloudSharpness) {
         this.cloudSharpness = cloudSharpness;
+        if(mode == Mode.RenderGPU && tempMat != null) {
+            tempMat.setFloat("CloudSharpness", cloudSharpness);
+        }
     }
 
     public float getWayFactor() {
@@ -217,6 +221,9 @@ public class CloudProcessor implements SceneProcessor {
 
     public void setWayFactor(float wayFactor) {
         this.wayFactor = wayFactor;
+        if(mode == Mode.RenderGPU && tempMat != null) {
+            tempMat.setFloat("WayFactor", wayFactor);
+        }
     }
 
     public Vector3f getSunPosition() {
@@ -225,6 +232,9 @@ public class CloudProcessor implements SceneProcessor {
 
     public void setSunPosition(Vector3f sunPosition) {
         this.sunPosition = sunPosition;
+        if(mode == Mode.RenderGPU && tempMat != null) {
+            tempMat.setVector3("SunPosition", sunPosition);
+        }
     }
 
     public ColorRGBA getSunLightColor() {
@@ -233,6 +243,9 @@ public class CloudProcessor implements SceneProcessor {
 
     public void setSunLightColor(ColorRGBA sunLightColor) {
         this.sunLightColor = sunLightColor;
+        if(mode == Mode.RenderGPU && tempMat != null) {
+            tempMat.setColor("SunLightColor", sunLightColor);
+        }
     }
 
     /**
