@@ -90,14 +90,18 @@ public class CloudAppState extends BasicAppState {
         
         TempVars vars = TempVars.get();
         
-        Vector3f sunPosition = getSkyAppState().getSun().getSunPosition(vars.vect1);
-        
         ColorRGBA sunLightColor = getSkyAppState().getSkyGradient().getSunLightColor(vars.color1);
-        //ColorRGBA sunLightColor = ColorRGBA.White;
-        System.out.println(sunLightColor);
+//        ColorRGBA sunLightColor = ColorRGBA.White;
+//        System.out.println(sunLightColor);
         cloudProcessor.setSunLightColor(sunLightColor);
 
-        cloudProcessor.setSunPosition(new Vector3f(-500, 256/2, 3000));
+        Vector3f vToSun = getSkyAppState().getSun().getSunPosition(vars.vect1);
+        vToSun.set(vToSun.x, -vToSun.z, vToSun.y); // from J3D to Sky
+        float x = vToSun.x; // from 1f to -1f
+        Vector3f sunPosition = vars.vect2.set(+2.0f*x * 256, 0.5f*256, 5000);
+//        System.out.println(vToSun+" "+x);
+        cloudProcessor.setSunPosition(sunPosition);
+        //cloudProcessor.setSunPosition(new Vector3f(-500, 256/2, 3000));
         
         if(cloudShift == null) {
             cloudShift = new Vector3f(Vector3f.ZERO);
