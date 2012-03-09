@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<weather name="snowy">
+<p:weather id="snowy" xmlns:p="http://mycrobase.de/sed-weather-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mycrobase.de/sed-weather-1.0 sed-weather-1.0.xsd ">
     <sky>
         <turbidity>10.0</turbidity>
         <light>(0.2, 0.2, 0.2)</light>
@@ -10,15 +10,16 @@
             <shininess>0.95</shininess>
         </lensflare>
     </sun>
-    <ocean>
-    </ocean>
+    <ocean />
     <cloud>
         <cover>50</cover>
         <sharpness>0.96</sharpness>
         <way-factor>0.005</way-factor>
-        <zoom>40</zoom>
+        <zoom>40</zoom> <!-- static value -->
     </cloud>
-    <!-- north east -->
-    <wind>(1.0, 0, 1.0)</wind>
-    <prime>[2, 3, 5, 7, 11, 23]</prime>
-</weather>
+    <wind>
+        <!-- north east -->
+        <direction>(1.0, 0, 1.0)</direction>
+        <strength>0</strength>
+    </wind>
+</p:weather>

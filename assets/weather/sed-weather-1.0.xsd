@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://mycrobase.de/sed-weather-1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://mycrobase.de/sed-weather-1.0">
+    <xs:element name="weather" type="weatherType" />
+    
+    <xs:complexType name="weatherType">
+    	<xs:sequence>
+    		<xs:element name="sky" type="skyType"></xs:element>
+    		<xs:element name="sun" type="sunType"></xs:element>
+    		<xs:element name="ocean" type="oceanType"></xs:element>
+    		<xs:element name="cloud" type="cloudType"></xs:element>
+    		<xs:element name="wind" type="windType"></xs:element>
+    	</xs:sequence>
+    	<xs:attribute name="id" type="xs:string" use="required"></xs:attribute>
+    </xs:complexType>
+    
+    <xs:complexType name="skyType">
+    	<xs:sequence>
+    		<xs:element name="turbidity">
+    			<xs:simpleType>
+    				<xs:restriction base="xs:float">
+    					<xs:minInclusive value="2"></xs:minInclusive>
+    					<xs:maxInclusive value="30"></xs:maxInclusive>
+    				</xs:restriction>
+    			</xs:simpleType>
+    		</xs:element>
+    		<xs:element name="light" type="Vector3f">
+    		</xs:element>
+    		
+    	</xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="sunType">
+    	<xs:sequence>
+    		<xs:element name="lensflare" type="sunLensflareType"></xs:element>
+    	</xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="cloudType">
+    	<xs:sequence>
+    		<xs:element name="cover">
+    			<xs:simpleType>
+    				<xs:restriction base="xs:int">
+    					<xs:minInclusive value="0"></xs:minInclusive>
+    					<xs:maxInclusive value="255"></xs:maxInclusive>
+    				</xs:restriction>
+    			</xs:simpleType>
+    		</xs:element>
+    		<xs:element name="sharpness">
+    			<xs:simpleType>
+    				<xs:restriction base="xs:float">
+    					<xs:minInclusive value="0"></xs:minInclusive>
+    					<xs:maxInclusive value="1"></xs:maxInclusive>
+    				</xs:restriction>
+    			</xs:simpleType>
+    		</xs:element>
+    		<xs:element name="way-factor">
+    			<xs:simpleType>
+    				<xs:restriction base="xs:float">
+    					<xs:minInclusive value="0"></xs:minInclusive>
+    				</xs:restriction>
+    			</xs:simpleType>
+    		</xs:element>
+    		<xs:element name="zoom" type="xs:int"></xs:element>
+    	</xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="oceanType"></xs:complexType>
+
+    <xs:complexType name="windType">
+    	<xs:sequence>
+    		<xs:element name="direction" type="Vector3f"></xs:element>
+    		<xs:element name="strength">
+    			<xs:simpleType>
+    				<xs:restriction base="xs:float">
+    					<xs:minInclusive value="0"></xs:minInclusive>
+    				</xs:restriction>
+    			</xs:simpleType>
+    		</xs:element>
+    	</xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="sunLensflareType">
+    	<xs:sequence>
+    		<xs:element name="enabled" type="xs:boolean"></xs:element>
+    		<xs:element name="shininess">
+    			<xs:simpleType>
+    				<xs:restriction base="xs:float">
+    					<xs:minInclusive value="0"></xs:minInclusive>
+    					<xs:maxInclusive value="1"></xs:maxInclusive>
+    				</xs:restriction>
+    			</xs:simpleType>
+    		</xs:element>
+    	</xs:sequence>
+    </xs:complexType>
+    
+    <xs:element name="sky" type="skyType"></xs:element>
+
+    <xs:element name="sun" type="sunType"></xs:element>
+
+    <xs:element name="lensflare" type="sunLensflareType"></xs:element>
+
+    <xs:element name="cloud" type="cloudType"></xs:element>
+
+    <xs:element name="ocean" type="oceanType"></xs:element>
+
+    <xs:element name="wind" type="windType"></xs:element>
+
+
+    <xs:simpleType name="Vector3f">
+        <xs:annotation>
+        	<xs:documentation>A Vector is a tupel made out of three float components.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+    		<xs:pattern value="\(.+,.+,.+\)"></xs:pattern>
+    	</xs:restriction>
+    </xs:simpleType>
+</xs:schema>
