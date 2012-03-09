@@ -183,8 +183,6 @@ public class SkyGradient {
         return store;
     }
     
-    // TODO: deal with that sky to j3d coordinate conversions
-    
     /**
      * Calculates the color of a given point on a hemisphere
      * based on Perez' model and fills the results in the given color array.
@@ -204,20 +202,22 @@ public class SkyGradient {
             return;
         }
         // calculate direction vector onto hemisphere
-        double vVertexx = pointx, vVertexy = -pointz, vVertexz = pointy; // from J3D to Sky
+        double vVertexx = pointx;
+        double vVertexy = pointy;
+        double vVertexz = pointz;
         double norm = 1d/Math.sqrt(vVertexx*vVertexx + vVertexy*vVertexy + vVertexz*vVertexz);
         vVertexx *= norm;
         vVertexy *= norm;
         vVertexz *= norm;
         // mirror upper hemisphere to the lower for ocean
-        vVertexz = Math.abs(vVertexz);
+        vVertexy = Math.abs(vVertexy);
         // @formatter:off
         float vertexThetaAngle =
-            (vVertexz < 0.001) ? FastMath.PI/2f-0.001f :
-                (float) Math.acos(vVertexz);
+            (vVertexy < 0.001) ? FastMath.PI/2f-0.001f :
+                (float) Math.acos(vVertexy);
         float vertexPhiAngle =
-            (vVertexx == 0.0 && vVertexy == 0.0) ? 0f :
-                (float) Math.atan2(vVertexy, vVertexx);
+            (vVertexx == 0.0 && -vVertexz == 0.0) ? 0f :
+                (float) Math.atan2(-vVertexz, vVertexx);
         float gammaAngle = getAngleBetween(vertexThetaAngle, vertexPhiAngle, sunAngles.y, sunAngles.x);
         // compute xyY (and XYZ) values
         float x = calcPerezFunction(perezx, vertexThetaAngle, gammaAngle, zenithx, sunAngles.y);
