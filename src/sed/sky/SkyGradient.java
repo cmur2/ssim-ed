@@ -134,26 +134,23 @@ public class SkyGradient {
         if(store == null) {
             store = new ColorRGBA();
         }
-        
         if(linearNightBlendFactor >= 1f) {
             store.set(NightSunColor);
             return store;
         }
-        
         TempVars vars = TempVars.get();
-        
+        // retrieve sun's color
         Vector3f sunPosition = sun.getSunPosition(vars.vect1);
         float[] sunColorArray = getSkyColor(sunPosition, vars.float1);
         Util.setTo(store, sunColorArray);
         // brighten the color's rgb proportional, reset alpha
         store.multLocal(1f/Util.getMaxComponent(store));
         store.a = 1f;
+        // mix in some (50%) white to prevent too bluish/yellowish colors
+        store.interpolate(ColorRGBA.White, 0.5f);
+        // blend it against the night color
         store.interpolate(NightSunColor, linearNightBlendFactor);
-        
-        // TODO: for zenith-near sun positions the sun light color is to bluish
-        
         vars.release();
-        
         return store;
     }
     
