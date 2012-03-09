@@ -20,15 +20,15 @@ public class CloudPlane extends Mesh {
      */
     private float heightScale;
     /**
-     * Describes how the center of the plane (at bottom) is shifted from
+     * Describes how the center of the plane (at bottom) is translated from
      * models origin.
      */
-    private Vector3f shift;
+    private Vector3f translation;
     
-    public CloudPlane(float planeSize, float heightScale, Vector3f shift) {
+    public CloudPlane(float planeSize, float heightScale, Vector3f translation) {
         this.planeSize = planeSize;
         this.heightScale = heightScale;
-        this.shift = shift;
+        this.translation = translation;
         initGeometry();
     }
 
@@ -38,7 +38,7 @@ public class CloudPlane extends Mesh {
         
         for(int i = 0; i < VertexNum; i++) { // x
             for(int j = 0; j < VertexNum; j++) { // -z
-                positions[i][j].addLocal(shift);
+                positions[i][j].addLocal(translation);
             }
         }
         
