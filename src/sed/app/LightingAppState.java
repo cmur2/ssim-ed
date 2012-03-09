@@ -4,11 +4,11 @@ import sed.TempVars;
 import sed.Util;
 
 import com.jme3.app.Application;
+import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 
 /**
@@ -62,14 +62,8 @@ public class LightingAppState extends BasicAppState {
     private void updateSunLight() {
         TempVars vars = TempVars.get();
         
-        Vector2f sunAngles = getSkyAppState().getSun().getSunAngles(vars.vect10);
-        float thetaDeg = (float) Math.toDegrees(sunAngles.y);
-        if(thetaDeg > getSkyAppState().getNightThetaMax()) {
-            sunLight.setColor(getSkyAppState().getNightSunColor());
-        } else {
-            ColorRGBA sunLightColor = getSkyAppState().getSkyGradient().getSunLightColor(vars.color1);
-            sunLight.setColor(sunLightColor);
-        }
+        ColorRGBA sunLightColor = getSkyAppState().getSkyGradient().getSunLightColor(vars.color1);
+        sunLight.setColor(sunLightColor);
         
         Vector3f sunPosition = getSkyAppState().getSun().getSunPosition(vars.vect1);
         sunPosition.negateLocal();

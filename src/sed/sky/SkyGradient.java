@@ -134,6 +134,12 @@ public class SkyGradient {
         if(store == null) {
             store = new ColorRGBA();
         }
+        
+        if(linearNightBlendFactor >= 1f) {
+            store.set(NightSunColor);
+            return store;
+        }
+        
         TempVars vars = TempVars.get();
         
         Vector3f sunPosition = sun.getSunPosition(vars.vect1);
@@ -142,6 +148,7 @@ public class SkyGradient {
         // brighten the color's rgb proportional, reset alpha
         store.multLocal(1f/Util.getMaxComponent(store));
         store.a = 1f;
+        store.interpolate(NightSunColor, linearNightBlendFactor);
         
         // TODO: for zenith-near sun positions the sun light color is to bluish
         
