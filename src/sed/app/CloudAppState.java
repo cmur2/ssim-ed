@@ -29,6 +29,7 @@ public class CloudAppState extends BasicAppState {
     private static final Logger logger = Logger.getLogger(CloudAppState.class);
     private static final float UpdateInterval = 10f; // in seconds
     private static final int TexSize = 256;
+    private static final boolean UseGPU = true;
     
     private static final Vector3f CloudPlaneTranslation = new Vector3f(0, 500, 0);
     private static final float CloudPlaneSize = 750f; // in m
@@ -55,8 +56,11 @@ public class CloudAppState extends BasicAppState {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        //cloudProcessor = new GPUCloudProcessor(getApp().getAssetManager(), TexSize, UpdateInterval);
-        cloudProcessor = new CPUCloudProcessor(TexSize, UpdateInterval);
+        if(UseGPU) {
+            cloudProcessor = new GPUCloudProcessor(getApp().getAssetManager(), TexSize, UpdateInterval);
+        } else {
+            cloudProcessor = new CPUCloudProcessor(TexSize, UpdateInterval);
+        }
         getApp().getViewPort().addProcessor(cloudProcessor);
         
         //Quad cloudQuad = new Quad(10, 10);

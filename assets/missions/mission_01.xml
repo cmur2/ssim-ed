@@ -5,7 +5,7 @@
     </description>
     <location latitude="36.4" longitude="11.8" />
     <date dayOfYear="180" />
-    <time timeOfDay="11.00" />
+    <time timeOfDay="9.00" />
     <map file="Florida+Kuba.map" />
     <win>
         <Const value="false" />

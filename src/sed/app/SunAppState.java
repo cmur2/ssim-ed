@@ -88,8 +88,6 @@ public class SunAppState extends BasicAppState {
         sunTexture.update();
     }
     
-    // TODO: build SunControl to move sun
-    
     private void updateSunTranslation() {
         sunTranslation = getSkyAppState().getSun().getSunPosition(sunTranslation);
         sunTranslation.multLocal(0.9f * getSkyAppState().getHemisphereRadius());

@@ -43,7 +43,7 @@ public class RandomWeatherController extends BasicWeatherController {
             time -= intervalTime;
             current = next;
             next = selectRandom();
-            logger.debug("New weather: "+next.getName());
+            //logger.debug("New weather: "+next.getName());
         }
         
         float ratio = time/intervalTime;
