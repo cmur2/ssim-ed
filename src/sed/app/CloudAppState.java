@@ -101,20 +101,34 @@ public class CloudAppState extends BasicAppState {
         
         TempVars vars = TempVars.get();
         
+        // Simply pass the sun light's current color to the cloudProcessor who
+        // will pass it to the renderer that uses it to give the clouds color
+        // some touch of the sun light color and not just pure white as base
         ColorRGBA sunLightColor = getSkyAppState().getSkyGradient().getSunLightColor(vars.color1);
-//        ColorRGBA sunLightColor = ColorRGBA.White;
-//        System.out.println(sunLightColor);
+        //ColorRGBA sunLightColor = ColorRGBA.White;
+        //System.out.println(sunLightColor);
         cloudProcessor.setSunLightColor(sunLightColor);
 
-        Vector3f vToSun = getSkyAppState().getSun().getSunPosition(vars.vect1);
-        vToSun.set(vToSun.x, -vToSun.z, vToSun.y); // from J3D to Sky
-        float x = vToSun.x; // from 1f to -1f
-        Vector3f sunPosition = vars.vect2.set(+1f * CloudPlaneSize, 0, 5000);
-        sunPosition.addLocal(VirtualOrigin);
-//        System.out.println(vToSun+" "+x);
-        cloudProcessor.setSunPosition(sunPosition);
-        //cloudProcessor.setSunPosition(new Vector3f(-500, 256/2, 3000));
+        // The following calculation determines the position of the sun in the
+        // virtual cloud heightfield grid (in pixels) - this position has only
+        // the purpose to produce good looking results during render and highly
+        // depends on the renderer implementation, there are no relations to
+        // physics etc so the formula below might be tweaked
+        {
+            Vector3f vToSun = getSkyAppState().getSun().getSunPosition(vars.vect1);
+            vToSun.set(vToSun.x, -vToSun.z, vToSun.y); // from J3D to Sky
+            float x = vToSun.x; // from 1f to -1f
+            float y = vToSun.y; // from 1f to -1f
+            Vector3f sunPosition = vars.vect2.set(x * CloudPlaneSize, y * CloudPlaneSize, 5000);
+            sunPosition.addLocal(VirtualOrigin);
+            //System.out.println(vToSun+" "+x+" "+y);
+            cloudProcessor.setSunPosition(sunPosition);
+        }
         
+        // To reflect the impact of wind (shift) and change of the cloud face
+        // and structure over time (permutation) we use this 3D (x,y: shift,
+        // z: permutation) "shift" vector since it's all implemented as a shift
+        // of the noise parameters
         if(cloudShift == null) {
             cloudShift = new Vector3f(Vector3f.ZERO);
         }
