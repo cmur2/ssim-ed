@@ -1,25 +1,16 @@
 package sed.sky;
 
-import java.nio.ByteBuffer;
-
 import org.apache.log4j.Logger;
 
-import ssim.util.MathExt;
-
-import com.jme3.asset.AssetManager;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.post.SceneProcessor;
-import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Image.Format;
 import com.jme3.texture.Texture2D;
-import com.jme3.ui.Picture;
-import com.jme3.util.BufferUtils;
 
 /**
  * This processor hooks into the render process to use preFrame to render
@@ -27,113 +18,30 @@ import com.jme3.util.BufferUtils;
  * 
  * @author cn
  */
-public class CloudProcessor implements SceneProcessor {
+public abstract class CloudProcessor implements SceneProcessor {
 
     private static final Logger logger = Logger.getLogger(CloudProcessor.class);
     
-    private static final int TexSize = 256;
     private static final int MaxSteps = 30;
     private static final int NumOctaves = 8;
-    
-    public enum Mode {
-        /**
-         * HeightField generation and rendering are done on CPU
-         * (slow, fall back)
-         */
-        AllCPU,
-        /**
-         * HeightField generation is done on CPU, but rendering will be GPU task
-         * (faster)
-         */
-        RenderGPU;
-    }
     
     // state
     private boolean init = false;
     private float time = 0;
-    private Mode mode;
+    private int texSize;
     private float updateInterval; // in seconds
     
-    // main part of final scene
-    private AssetManager assetManager;
-    private RenderManager renderManager;
-    private ViewPort mainViewPort;
-    
-    // view ports
-    private ViewPort tempViewPort;
-    private Material tempMat;
-    
-    // textures
-    private Texture2D heightFieldTex;
     private Texture2D cloudTex;
     
-    // height field
-    private CloudHeightField cloudHeightField;
-    
-    // (weather) variables
-    private float cloudSharpness;
-    private float wayFactor;
-    private Vector3f sunPosition;
-    private ColorRGBA sunLightColor;
-    
-    public CloudProcessor(AssetManager assetManager, Mode mode, float updateInterval) {
-        this.assetManager = assetManager;
-        this.mode = mode;
+    public CloudProcessor(int texSize, float updateInterval) {
+        this.texSize = texSize;
         this.updateInterval = updateInterval;
         
-        heightFieldTex = new Texture2D(TexSize, TexSize, Format.RGBA8);
-        cloudTex = new Texture2D(TexSize, TexSize, Format.RGBA8);
-        
-        cloudHeightField = new CloudHeightField(TexSize, NumOctaves);
+        cloudTex = new Texture2D(getTexSize(), getTexSize(), Format.RGBA8);
     }
-    
-    // create heightfield (different algos: CPU GPU)
-    // create pre-texture (different algos: CPU GPU [in mini scene with pre-appearance])
-    // create final appearance -> done by user of this processor?
     
     @Override
     public void initialize(RenderManager rm, ViewPort vp) {
-        renderManager = rm;
-        mainViewPort = vp;
-        
-        if(mode == Mode.AllCPU) {
-            // nothing
-        } else {
-            Camera cam = new Camera(TexSize, TexSize);
-            
-            tempViewPort = new ViewPort("Cloud-Render-ViewPort", cam);
-            tempViewPort.setClearFlags(true, true, true);
-            tempViewPort.setBackgroundColor(ColorRGBA.Black);
-            
-            FrameBuffer fb = new FrameBuffer(TexSize, TexSize, 1);
-            fb.setColorTexture(cloudTex);
-            
-            // --- mini scene ---
-            Picture quad = new Picture("Cloud-Render-Target");
-            quad.setPosition(0, 0);
-            quad.setWidth(TexSize);
-            quad.setHeight(TexSize);
-            
-            //Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            //mat.setColor("Color", ColorRGBA.Orange.mult(new ColorRGBA(1f, 1f, 1f, 0.5f)));
-            //mat.setTexture("ColorMap", heightFieldTex);
-            tempMat = new Material(assetManager, "shaders/CloudRender.j3md");
-            tempMat.setFloat("ImageSize", TexSize);
-            tempMat.setFloat("MaxSteps", MaxSteps);
-            tempMat.setFloat("CloudSharpness", cloudSharpness);
-            tempMat.setFloat("WayFactor", wayFactor);
-            tempMat.setVector3("SunPosition", sunPosition);
-            tempMat.setColor("SunLightColor", sunLightColor);
-            tempMat.setTexture("HeightField", heightFieldTex);
-            quad.setMaterial(tempMat);
-            quad.updateGeometricState();
-            
-            tempViewPort.attachScene(quad);
-            tempViewPort.setOutputFrameBuffer(fb);
-            // --- end ---
-        }
-        
-        updateAndRender();
         init = true;
     }
 
@@ -168,86 +76,43 @@ public class CloudProcessor implements SceneProcessor {
 
     @Override
     public void cleanup() {
-        if(mode == Mode.AllCPU) {
-            // nothing
-        } else {
-            tempViewPort.clearScenes();
-            tempViewPort.setOutputFrameBuffer(null);
-            tempViewPort = null;
-        }
-        heightFieldTex = null;
         cloudTex = null;
-        cloudHeightField = null;
     }
     
-    public float getCloudCover() {
-        return cloudHeightField.getCloudCover();
-    }
-
-    public void setCloudCover(float cloudCover) {
-        cloudHeightField.setCloudCover(cloudCover);
+    public abstract float getCloudCover();
+    public abstract void setCloudCover(float cloudCover);
+    
+    public abstract Vector3f getShift();
+    public abstract void setShift(Vector3f shift);
+    
+    public abstract float getZoom();
+    public abstract void setZoom(float zoom);
+    
+    public abstract float getCloudSharpness();
+    public abstract void setCloudSharpness(float cloudSharpness);
+    
+    public abstract float getWayFactor();
+    public abstract void setWayFactor(float wayFactor);
+    
+    public abstract Vector3f getSunPosition();
+    public abstract void setSunPosition(Vector3f sunPosition);
+    
+    public abstract ColorRGBA getSunLightColor();
+    public abstract void setSunLightColor(ColorRGBA sunLightColor);
+    
+    
+    public int getTexSize() {
+        return texSize;
     }
     
-    public Vector3f getShift() {
-        return cloudHeightField.getShift();
+    public int getMaxSteps() {
+        return MaxSteps;
     }
     
-    public void setShift(Vector3f shift) {
-        cloudHeightField.setShift(shift);
+    public int getNumOctaves() {
+        return NumOctaves;
     }
     
-    public float getZoom() {
-        return cloudHeightField.getZoom();
-    }
-    
-    public void setZoom(float zoom) {
-        cloudHeightField.setZoom(zoom);
-    }
-
-    public float getCloudSharpness() {
-        return cloudSharpness;
-    }
-
-    public void setCloudSharpness(float cloudSharpness) {
-        this.cloudSharpness = cloudSharpness;
-        if(mode == Mode.RenderGPU && tempMat != null) {
-            tempMat.setFloat("CloudSharpness", cloudSharpness);
-        }
-    }
-
-    public float getWayFactor() {
-        return wayFactor;
-    }
-
-    public void setWayFactor(float wayFactor) {
-        this.wayFactor = wayFactor;
-        if(mode == Mode.RenderGPU && tempMat != null) {
-            tempMat.setFloat("WayFactor", wayFactor);
-        }
-    }
-
-    public Vector3f getSunPosition() {
-        return sunPosition;
-    }
-
-    public void setSunPosition(Vector3f sunPosition) {
-        this.sunPosition = sunPosition;
-        if(mode == Mode.RenderGPU && tempMat != null) {
-            tempMat.setVector3("SunPosition", sunPosition);
-        }
-    }
-
-    public ColorRGBA getSunLightColor() {
-        return sunLightColor;
-    }
-
-    public void setSunLightColor(ColorRGBA sunLightColor) {
-        this.sunLightColor = sunLightColor;
-        if(mode == Mode.RenderGPU && tempMat != null) {
-            tempMat.setColor("SunLightColor", sunLightColor);
-        }
-    }
-
     /**
      * @return the final texture containing the rendered cloud image  
      */
@@ -255,17 +120,7 @@ public class CloudProcessor implements SceneProcessor {
         return cloudTex;
     }
     
-    private void updateAndRender() {
-        // generate height field on CPU
-        float[][] heightField = cloudHeightField.generate();
-        
-        if(mode == Mode.AllCPU) {
-            opRenderHeightField2Texture(heightField, cloudTex);
-        } else {
-            opCopyHeightField2Texture(heightField, heightFieldTex);
-            renderManager.renderViewPort(tempViewPort, 0);
-        }
-    }
+    protected abstract void updateAndRender();
     
     /**
      * @param data values in [0,255] to be converted into bytes
@@ -285,113 +140,4 @@ public class CloudProcessor implements SceneProcessor {
 //        }
 //        return bb;
 //    }
-    
-    private static void opCopyHeightField2Texture(float[][] heightField, Texture2D heightFieldTexture) {
-        // lazy allocate backing ByteBuffer
-        if(heightFieldTexture.getImage().getData(0) == null) {
-            heightFieldTexture.getImage().setData(BufferUtils.createByteBuffer(TexSize * TexSize * 4));
-        }
-        // copy alpha to texel
-        ByteBuffer buf = heightFieldTexture.getImage().getData(0);
-        buf.rewind();
-        for(int column = 0; column < TexSize; column++) {
-            for(int row = 0; row < TexSize; row++) {
-                float alpha = heightField[column][row];
-                int index = (row*TexSize + column)*4;
-//                if((column == 23 && row == 0) || (column == 117 && row == 0) || (column == 42 && row == 42)) {
-//                    buf.put(index+0, (byte) 255); // R
-//                    buf.put(index+1, (byte) 128); // G
-//                    buf.put(index+2, (byte)   0); // B
-//                    buf.put(index+3, (byte) 255); // A
-//                } else {
-                    buf.put(index+0, (byte) alpha); // R
-                    buf.put(index+1, (byte) alpha); // G
-                    buf.put(index+2, (byte) alpha); // B
-                    buf.put(index+3, (byte) 255); // A
-//                }
-//                buf.put((byte) alpha); // R
-//                buf.put((byte) alpha); // G
-//                buf.put((byte) alpha); // B
-//                buf.put((byte) 255); // A
-            }
-        }
-        heightFieldTexture.getImage().setData(0, buf);
-    }
-    
-    private void opRenderHeightField2Texture(float[][] heightField, Texture2D heightFieldTexture) {
-        // lazy allocate backing ByteBuffer
-        if(heightFieldTexture.getImage().getData(0) == null) {
-            heightFieldTexture.getImage().setData(BufferUtils.createByteBuffer(TexSize * TexSize * 4));
-        }
-        
-        Vector3f v = new Vector3f();
-        Vector3f vdir = new Vector3f();
-        Vector3f vadd = new Vector3f();
-        ColorRGBA color = new ColorRGBA();
-        //float z = 255;
-        //boolean breakOnCloudExit = sunPosition.z < -z || sunPosition.z > z;
-        
-        ByteBuffer buf = heightFieldTexture.getImage().getData(0);
-        buf.rewind();
-        // render complete image
-        for(int column = 0; column < TexSize; column++) {
-            for(int row = 0; row < TexSize; row++) {
-                // render one texel
-                float alpha = heightField[column][row];
-                if(alpha == 0) {
-                    int index = (row*TexSize + column)*4;
-                    buf.put(index+0, (byte) 0); // R
-                    buf.put(index+1, (byte) 0); // G
-                    buf.put(index+2, (byte) 0); // B
-                    buf.put(index+3, (byte) 0); // A
-                    continue;
-                }
-                v.set(column, row, -alpha);
-                vadd.set(sunPosition.x-v.x, sunPosition.y-v.y, sunPosition.z-v.z);
-                vadd.multLocal(1f/MaxSteps);
-                float len = vadd.length();
-                float wayInClouds = 0;
-                //boolean lastWasInCloud = true;
-                for(int k = 0; k < MaxSteps; k++, v.addLocal(vadd)) {
-                    //if(v.z < -z || v.z > z) break;
-                    int clamped_vx = (int)(MathExt.clamp(v.x, 0, TexSize-1));
-                    int clamped_vy = (int)(MathExt.clamp(v.y, 0, TexSize-1));
-                    float talpha = heightField[clamped_vx][clamped_vy];
-                    if(talpha != 0) {
-                        if(-talpha <= v.z && v.z <= talpha) {
-                            wayInClouds += len;
-                            //lastWasInCloud = true;
-                        }
-                        //else {
-                        //    if(lastWasInCloud) {
-                        //        wayInClouds += Math.max(talpha - v.z + vadd.z, 0f);
-                        //    }
-                        //    lastWasInCloud = false;
-                        //    if(breakOnCloudExit) break;
-                        //}
-                    }
-                }
-                //int cfinal = 255 - (int) (wayInClouds * wayFactor * 255f);
-                float cfinal = (float) Math.exp(-wayFactor * wayInClouds);
-                
-                color.set(sunLightColor);
-                color.multLocal(cfinal*255f);
-                if(color.r > 255) color.r = 255;
-                if(color.g > 255) color.g = 255;
-                if(color.b > 255) color.b = 255;
-                
-                alpha = 1f - (float) Math.pow(cloudSharpness, alpha);
-                alpha *= heightField[column][row]/255f;
-                alpha *= 255f;
-                if(alpha > 255) alpha = 255;
-                
-                int index = (row*TexSize + column)*4;
-                buf.put(index+0, (byte) color.r); // R
-                buf.put(index+1, (byte) color.g); // G
-                buf.put(index+2, (byte) color.b); // B
-                buf.put(index+3, (byte) alpha); // A
-            }
-        }
-        heightFieldTexture.getImage().setData(0, buf);
-    }
 }
