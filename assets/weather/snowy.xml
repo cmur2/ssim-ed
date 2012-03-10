@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<p:weather id="snowy" xmlns:p="http://mycrobase.de/sed-weather-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mycrobase.de/sed-weather-1.0 sed-weather-1.0.xsd ">
+<sed:weather id="snowy" xmlns:sed="http://mycrobase.de/sed-weather-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mycrobase.de/sed-weather-1.0 sed-weather-1.0.xsd">
     <sky>
         <turbidity>10.0</turbidity>
         <light>(0.2, 0.2, 0.2)</light>
@@ -22,4 +22,4 @@
         <direction>(1.0, 0, 1.0)</direction>
         <strength>0</strength>
     </wind>
-</p:weather>
+</sed:weather>
