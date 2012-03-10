@@ -93,17 +93,11 @@
     	</xs:sequence>
     </xs:complexType>
     
-    <xs:element name="sky" type="skyType"></xs:element>
 
-    <xs:element name="sun" type="sunType"></xs:element>
 
-    <xs:element name="lensflare" type="sunLensflareType"></xs:element>
 
-    <xs:element name="cloud" type="cloudType"></xs:element>
 
-    <xs:element name="ocean" type="oceanType"></xs:element>
 
-    <xs:element name="wind" type="windType"></xs:element>
 
 
     <xs:simpleType name="Vector3f">
