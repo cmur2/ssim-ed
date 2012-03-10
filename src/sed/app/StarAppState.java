@@ -23,6 +23,7 @@ public class StarAppState extends BasicAppState {
     private static final Logger logger = Logger.getLogger(StarAppState.class);
     private static final float UpdateInterval = 30f; // in seconds
     
+    private static final int NumStars = 100;
     private static final float StarsThetaMin = 80f;
     
     // exists only while AppState is attached
@@ -38,7 +39,7 @@ public class StarAppState extends BasicAppState {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        StarField starField = new StarField(100, 1.0f * getState(SkyAppState.class).getHemisphereRadius());
+        StarField starField = new StarField(NumStars, 1.0f * getState(SkyAppState.class).getHemisphereRadius());
         geom = new Geometry("StarField", starField);
         Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setBoolean("VertexColor", true);

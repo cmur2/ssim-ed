@@ -28,6 +28,8 @@ public class SunAppState extends BasicAppState {
     private static final Logger logger = Logger.getLogger(SunAppState.class);
     private static final float UpdateInterval = 30f; // in seconds
     
+    private static final float SunSize = 100f;
+    
     // exists only while AppState is attached
     private Geometry geom;
     private SunTexture sunTexture;
@@ -42,7 +44,7 @@ public class SunAppState extends BasicAppState {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        SunQuad sunQuad = new SunQuad(100f);
+        SunQuad sunQuad = new SunQuad(SunSize);
         geom = new Geometry("Sun", sunQuad);
         Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         
@@ -93,7 +95,7 @@ public class SunAppState extends BasicAppState {
     
     private void updateSunTranslation() {
         sunTranslation = getSkyAppState().getSun().getSunPosition(sunTranslation);
-        sunTranslation.multLocal(0.9f * getSkyAppState().getHemisphereRadius());
+        sunTranslation.multLocal(1.0f * getSkyAppState().getHemisphereRadius());
         sunTranslationNode.setLocalTranslation(sunTranslation);
     }
     

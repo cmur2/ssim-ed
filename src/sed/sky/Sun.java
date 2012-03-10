@@ -64,7 +64,7 @@ public class Sun {
     
     /**
      * Derives the sun's position on a sky dome hemisphere from the time,
-     * date and position (on earth). The position is returned as tupel
+     * date and position (on earth). The position is returned as tuple
      * of phi angle and theta angle.
      * <p>
      * Theta angle:
@@ -81,7 +81,7 @@ public class Sun {
      * @param latitude the first location component (N-S) in degrees
      * @param longitude the second location component (E-W) in degrees
      * @param store a Vector3f to store the result
-     * @return tupel with sun's phi and theta angle in radians
+     * @return tuple with sun's phi and theta angle in radians
      */
     private static Vector2f calcSunPosition(
             double timeOfDay, int dayOfYear,
@@ -90,7 +90,7 @@ public class Sun {
         if(store == null) {
             store = new Vector2f();
         }
-        // derive std. meridian from longitude
+        // derive standard meridian from longitude
         int standardMeridian = (int) (longitude / 15f);
         // solarTime in hours
         double solarTime = timeOfDay +
