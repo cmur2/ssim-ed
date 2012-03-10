@@ -2,8 +2,10 @@ package sed.mission;
 
 public class BasicMission implements Mission {
     
-    //private Condition[] winConditions;
-    //private Condition[] loseConditions;
+    private String id;
+    
+    private String title;
+    private String description;
     private String mapFile;
     
     private float latitude;
@@ -12,7 +14,29 @@ public class BasicMission implements Mission {
     private int dayOfYear;
     private float timeOfDay;
     
-    public BasicMission() {
+    //private Condition[] winConditions;
+    //private Condition[] loseConditions;
+    
+    public BasicMission(String id) {
+        this.id = id;
+    }
+    
+    @Override
+    public String getTitle() {
+        return null;
+    }
+    
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    
+    @Override
+    public String getDescription() {
+        return null;
+    }
+    
+    public void setDescription(String description) {
+        this.description = description;
     }
     
     @Override
@@ -58,5 +82,10 @@ public class BasicMission implements Mission {
     
     public void setTimeOfDay(float timeOfDay) {
         this.timeOfDay = timeOfDay;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("Mission(%s)", id);
     }
 }

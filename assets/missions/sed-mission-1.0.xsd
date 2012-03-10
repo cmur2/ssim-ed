@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://mycrobase.de/sed-mission-1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://mycrobase.de/sed-mission-1.0">
+    <xs:element name="mission" type="missionType"></xs:element>
+    
+    <xs:complexType name="missionType">
+    	<xs:sequence>
+    		<xs:element name="title" type="xs:string"></xs:element>
+    		<xs:element name="description" type="xs:string"></xs:element>
+    		<xs:element name="location" type="locationType"></xs:element>
+    		<xs:element name="datetime" type="datetimeType"></xs:element>
+    		<xs:element name="map" type="mapType"></xs:element>
+    		<xs:element name="win" type="conditionType"></xs:element>
+    		<xs:element name="lose" type="conditionType"></xs:element>
+    	</xs:sequence>
+    	<xs:attribute name="id" type="xs:string" use="required"></xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="locationType">
+    	<xs:attribute name="latitude" use="required">
+            <xs:annotation>
+            	<xs:documentation>Positive values mean North, negative values mean South.</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+    			<xs:restriction base="xs:float">
+    				<xs:minInclusive value="-180"></xs:minInclusive>
+    				<xs:maxInclusive value="180"></xs:maxInclusive>
+    			</xs:restriction>
+    		</xs:simpleType>
+    	</xs:attribute>
+    	<xs:attribute name="longitude" use="required">
+            <xs:annotation>
+            	<xs:documentation>Positive values mean East, negative values mean West.</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+    			<xs:restriction base="xs:float">
+    				<xs:minInclusive value="-90"></xs:minInclusive>
+    				<xs:maxInclusive value="90"></xs:maxInclusive>
+    			</xs:restriction>
+    		</xs:simpleType>
+    	</xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="datetimeType">
+    	<xs:attribute name="dayOfYear">
+    		<xs:simpleType>
+    			<xs:restriction base="xs:int">
+    				<xs:minInclusive value="0"></xs:minInclusive>
+    				<xs:maxInclusive value="365"></xs:maxInclusive>
+    			</xs:restriction>
+    		</xs:simpleType>
+    	</xs:attribute>
+    	<xs:attribute name="timeOfDay">
+    		<xs:simpleType>
+    			<xs:restriction base="xs:float">
+    				<xs:minInclusive value="0"></xs:minInclusive>
+    				<xs:maxInclusive value="23.59"></xs:maxInclusive>
+    			</xs:restriction>
+    		</xs:simpleType>
+    	</xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="mapType">
+    	<xs:attribute name="file" type="xs:string" use="required"></xs:attribute>
+    </xs:complexType>
+    
+    <xs:complexType name="conditionType">
+        <xs:sequence>
+        	<xs:any processContents="skip"></xs:any>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    
+
+
+
+
+</xs:schema>

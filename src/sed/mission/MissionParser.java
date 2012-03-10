@@ -15,14 +15,16 @@ public class MissionParser {
     public static Mission load(AssetManager mgr, String name) {
         Element missionXml = mgr.loadAsset(new AssetKey<Element>(name));
         
-        BasicMission m = new BasicMission();
+        BasicMission m = new BasicMission(missionXml.getAttributeValue("id"));
         
-        m.setMapFile(missionXml.getChild("map").getAttribute("file").getValue());
+        m.setDescription(missionXml.getChild("description").getValue());
+        m.setTitle(missionXml.getChild("title").getValue());
+        m.setMapFile(missionXml.getChild("map").getAttributeValue("file"));
         try {
             m.setLatitude(missionXml.getChild("location").getAttribute("latitude").getFloatValue());
             m.setLongitude(missionXml.getChild("location").getAttribute("longitude").getFloatValue());
-            m.setDayOfYear(missionXml.getChild("date").getAttribute("dayOfYear").getIntValue());
-            m.setTimeOfDay(missionXml.getChild("time").getAttribute("timeOfDay").getFloatValue());
+            m.setDayOfYear(missionXml.getChild("datetime").getAttribute("dayOfYear").getIntValue());
+            m.setTimeOfDay(missionXml.getChild("datetime").getAttribute("timeOfDay").getFloatValue());
         } catch(DataConversionException ex) {
             ex.printStackTrace();
             return null;

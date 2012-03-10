@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mission name="blub">
+<p:mission id="mission-01" xmlns:p="http://mycrobase.de/sed-mission-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mycrobase.de/sed-mission-1.0 sed-mission-1.0.xsd ">
+    <title>Mission 1</title>
     <description>
         Hallo!
     </description>
-    <location latitude="36.4" longitude="11.8" />
-    <date dayOfYear="180" />
-    <time timeOfDay="9.00" />
+    <location latitude="36.4" longitude="-11.8" /> <!-- N 36.4 W 11.8 -->
+    <datetime dayOfYear="180" timeOfDay="9.00" />
     <map file="Florida+Kuba.map" />
     <win>
         <Const value="false" />
@@ -15,4 +15,4 @@
             <ExistsSimobjWithId value="0" />
         </Not>
     </lose>
-</mission>
+</p:mission>
