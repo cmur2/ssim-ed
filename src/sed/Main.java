@@ -41,6 +41,8 @@ public class Main extends SimpleApplication {
             root.addAppender(new ConsoleAppender(new PatternLayout("%-3r [%t] %-5p %c: %m%n")));
         }
         JLFBridge.installBridge();
+        // prevent NPE in VertexBuffer.toString() during NativeObjectManager.deleteUnused()
+        java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.FINER);
         
         Main main = new Main();
         main.setShowSettings(false);
