@@ -2,11 +2,14 @@ package sed.terrain;
 
 import sed.MapLoader;
 
+import com.jme3.math.Vector3f;
 import com.jme3.terrain.heightmap.HeightMap;
 
 public class BinaryMapBasedHeightMap implements HeightMap {
 
     private MapLoader.Map map;
+    private Vector3f offset;
+    private int quadSize;
 
     private float[] heightMap = null;
     private int size = 0;
@@ -17,8 +20,10 @@ public class BinaryMapBasedHeightMap implements HeightMap {
     private float filter = 0.5f;
     
     // TODO: how to specify size/map rerastering/clipping?
-    public BinaryMapBasedHeightMap(MapLoader.Map map) {
+    public BinaryMapBasedHeightMap(MapLoader.Map map, Vector3f offset, int quadSize) {
         this.map = map;
+        this.offset = offset;
+        this.quadSize = quadSize;
     }
     
     /** {@inheritDoc} */
@@ -95,10 +100,8 @@ public class BinaryMapBasedHeightMap implements HeightMap {
     /** {@inheritDoc} */
     @Override
     public boolean load() {
-        
-        heightMap = BinaryMapManipulator.crop(map, 65);
-        size = 65;
-        
+        heightMap = BinaryMapManipulator.crop(map, offset, quadSize);
+        size = quadSize;
         return true;
     }
 

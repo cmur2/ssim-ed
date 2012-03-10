@@ -1,27 +1,24 @@
 package sed.app;
 
 import sed.MapLoader;
-import sed.terrain.BinaryMapBasedHeightMap;
-import jme3tools.converters.ImageToAwt;
+import sed.terrain.BinaryMapTileLoader;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetKey;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+import com.jme3.terrain.geomipmap.TerrainGrid;
+import com.jme3.terrain.geomipmap.TerrainGridTileLoader;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
-import com.jme3.terrain.geomipmap.TerrainQuad;
-import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
-import com.jme3.terrain.heightmap.HeightMap;
-import com.jme3.terrain.heightmap.ImageBasedHeightMap;
-import com.jme3.texture.Texture;
-import com.jme3.texture.Texture.WrapMode;
 
 public class TerrainAppState extends BasicAppState {
     
     private static final float UpdateInterval = 30f; // in seconds
     
     // exists only while AppState is attached
-    private TerrainQuad terrainRoot;
+    //private TerrainQuad terrainRoot;
     
     public TerrainAppState() {
         super(UpdateInterval);
@@ -34,61 +31,28 @@ public class TerrainAppState extends BasicAppState {
         AssetKey<MapLoader.Map> mapKey = new AssetKey<MapLoader.Map>("maps/"+getApp().getMission().getMapFile());
         MapLoader.Map map = getApp().getAssetManager().loadAsset(mapKey);
         //System.out.println(map);
+                
+        Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Brown);
         
-        // TODO: build TerraMoney glue
+        TerrainGridTileLoader loader = new BinaryMapTileLoader(map);
         
-        Material matRock = new Material(getApp().getAssetManager(), "Common/MatDefs/Terrain/Terrain.j3md");
-        matRock.setBoolean("useTriPlanarMapping", false);
+        TerrainGrid grid = new TerrainGrid("TerrainGrid", 65, 257, loader);
+        grid.setMaterial(mat);
+        grid.setLocalTranslation(0, 0, 0);
+        grid.setLocalScale(1f, 1f, 1f);
         
-        // GRASS texture
-        Texture grass = getApp().getAssetManager().loadTexture("Textures/Terrain/splat/grass.jpg");
-        grass.setWrap(WrapMode.Repeat);
-        matRock.setTexture("Tex1", grass);
-        matRock.setFloat("Tex1Scale", 64);
-        
-        // DIRT texture
-        Texture dirt = getApp().getAssetManager().loadTexture("Textures/Terrain/splat/dirt.jpg");
-        dirt.setWrap(WrapMode.Repeat);
-        matRock.setTexture("Tex2", dirt);
-        matRock.setFloat("Tex2Scale", 32);
-        
-        // ROCK texture
-        Texture rock = getApp().getAssetManager().loadTexture("Textures/Terrain/splat/road.jpg");
-        rock.setWrap(WrapMode.Repeat);
-        matRock.setTexture("Tex3", rock);
-        matRock.setFloat("Tex3Scale", 128);
-        
-        // ALPHA map (for splat textures)
-        matRock.setTexture("Alpha", getApp().getAssetManager().loadTexture("Textures/Terrain/splat/alphamap.png"));
-        
-        
-        Texture heightMapImage = getApp().getAssetManager().loadTexture("Textures/Terrain/splat/mountains512.png");
-        
-        java.awt.Image heightMapImageAwt = ImageToAwt.convert(heightMapImage.getImage(), false, false, 0);
-        
-        HeightMap heightmap = null;
-        try {
-            //heightmap = new ImageBasedHeightMap(heightMapImageAwt, 1f);
-            heightmap = new BinaryMapBasedHeightMap(map);
-            heightmap.load();
-        } catch(Exception ex) {
-            ex.printStackTrace();
-        }
-        
-        terrainRoot = new TerrainQuad("terrain", 65, 65, heightmap.getHeightMap());
-        //TerrainLodControl control = new TerrainLodControl(terrainRoot, app.getCamera());
-        //control.setLodCalculator(new DistanceLodCalculator(65, 2.7f));
-        //terrainRoot.addControl(control);
-        terrainRoot.setMaterial(matRock);
-        //terrainRoot.setLocalTranslation(0, -100, 0);
-        terrainRoot.setLocalScale(4, 1f, 4);
-        getApp().getRootNode().attachChild(terrainRoot);
+        grid.addControl(new TerrainLodControl(grid, getApp().getCamera()));
+        //grid.initialize(getApp().getCamera().getLocation());
+        grid.initialize(new Vector3f());
+
+        getApp().getRootNode().attachChild(grid);
     }
     
     @Override
     public void cleanup() {
         super.cleanup();
         
-        terrainRoot = null;
+        //terrainRoot = null;
     }
 }

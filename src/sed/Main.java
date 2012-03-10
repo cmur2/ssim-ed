@@ -14,6 +14,7 @@ import sed.app.SkyAppState;
 import sed.app.SkyDomeAppState;
 import sed.app.StarAppState;
 import sed.app.SunAppState;
+import sed.app.TerrainAppState;
 import sed.app.WeatherAppState;
 import sed.mission.Mission;
 import sed.mission.MissionParser;
@@ -75,9 +76,9 @@ public class Main extends SimpleApplication {
         
         flyCam.setMoveSpeed(3e2f);
         //flyCam.setDragToRotate(true);
-        cam.setLocation(new Vector3f(0, -450f, 0));
+        cam.setLocation(new Vector3f(0, 100f, 200f));
         //cam.setRotation(new Quaternion(new float[] {-90*FastMath.DEG_TO_RAD,0,0}));
-        cam.lookAtDirection(Vector3f.UNIT_Y, Vector3f.UNIT_Z);
+        //cam.lookAtDirection(Vector3f.UNIT_Y, Vector3f.UNIT_Z);
         cam.setFrustumPerspective(45f, (float)cam.getWidth() / cam.getHeight(), 1f, 2000f);
         
         // AppState base layer:
@@ -92,7 +93,7 @@ public class Main extends SimpleApplication {
         stateManager.attach(new LightingAppState());
         stateManager.attach(new StarAppState());
         stateManager.attach(new CloudAppState());
-        //stateManager.attach(new TerrainAppState());
+        stateManager.attach(new TerrainAppState());
         stateManager.attach(new GuiAppState());
         stateManager.attach(new DebugAppState());
         
