@@ -1,5 +1,6 @@
 package sed.app;
 
+import sed.FixedOrderComparator;
 import sed.SurfaceCameraControl;
 import sed.sky.SkyGradient;
 import sed.sky.Sun;
@@ -7,6 +8,7 @@ import sed.sky.Sun;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial.CullHint;
 
@@ -47,6 +49,8 @@ public class SkyAppState extends BasicAppState {
         sun = new Sun(getApp().getSimClock(), getApp().getMission());
         skyGradient = new SkyGradient(sun);
         intervalUpdate();
+        
+        getApp().getViewPort().getQueue().setGeometryComparator(Bucket.Sky, new FixedOrderComparator());
         
         skyNode.addControl(new SurfaceCameraControl(getApp().getCamera()));
     }

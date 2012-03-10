@@ -2,12 +2,14 @@ package sed.app;
 
 import org.apache.log4j.Logger;
 
+import sed.FixedOrderComparator;
 import sed.sky.StarField;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
 import com.jme3.math.Vector2f;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
@@ -36,11 +38,13 @@ public class StarAppState extends BasicAppState {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        StarField starField = new StarField(100, 0.9f * getState(SkyAppState.class).getHemisphereRadius());
+        StarField starField = new StarField(100, 1.0f * getState(SkyAppState.class).getHemisphereRadius());
         geom = new Geometry("StarField", starField);
         Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setBoolean("VertexColor", true);
         geom.setMaterial(mat);
+        geom.setUserData(FixedOrderComparator.ORDER_INDEX, 8);
+        geom.setQueueBucket(Bucket.Sky);
         
         getSkyNode().attachChild(geom);
 

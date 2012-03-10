@@ -2,6 +2,7 @@ package sed.app;
 
 import org.apache.log4j.Logger;
 
+import sed.FixedOrderComparator;
 import sed.sky.SkyBoxTexture;
 import sed.sky.SkyDome;
 
@@ -9,6 +10,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.FaceCullMode;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 
 /**
@@ -44,6 +46,8 @@ public class SkyDomeAppState extends BasicAppState {
         mat.setTexture("SkyBox", skyBoxTexture);
         
         geom.setMaterial(mat);
+        geom.setUserData(FixedOrderComparator.ORDER_INDEX, 10);
+        geom.setQueueBucket(Bucket.Sky);
         
         //Box s = new Box(Vector3f.ZERO, 1, 1, 1);
         SkyDome s = new SkyDome(getSkyAppState().getHemisphereRadius(), 2f, 2f);

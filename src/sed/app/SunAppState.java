@@ -2,6 +2,7 @@ package sed.app;
 
 import org.apache.log4j.Logger;
 
+import sed.FixedOrderComparator;
 import sed.sky.SunQuad;
 import sed.sky.SunTexture;
 import sed.weather.Weather;
@@ -54,6 +55,8 @@ public class SunAppState extends BasicAppState {
         mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         geom.setMaterial(mat);
         geom.setQueueBucket(Bucket.Transparent);
+        geom.setUserData(FixedOrderComparator.ORDER_INDEX, 4);
+        geom.setQueueBucket(Bucket.Sky);
         
         BillboardControl bbControl = new BillboardControl();
         bbControl.setAlignment(BillboardControl.Alignment.Screen);
