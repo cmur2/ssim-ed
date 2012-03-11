@@ -2,7 +2,6 @@ package sed.sky;
 
 import java.util.Arrays;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import ssim.util.MathExt;
@@ -123,6 +122,7 @@ public class CloudHeightField {
         private float[][] store;
         private int quadrantNr;
         
+        // hand over target store by reference
         public QuadrantUpdater(float[][] store, int quadrantNr) {
             this.store = store;
             this.quadrantNr = quadrantNr;
