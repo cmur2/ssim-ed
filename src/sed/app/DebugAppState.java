@@ -129,6 +129,7 @@ public class DebugAppState extends BasicAppState {
     
     private BitmapText buildOneDirection(String text, Vector3f translation, BitmapFont font) {
         BitmapText labelText = new BitmapText(font);
+        labelText.setName("Label"+text);
         labelText.setText(text);
         
         labelText.setQueueBucket(Bucket.Transparent);
