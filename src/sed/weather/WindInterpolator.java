@@ -4,17 +4,13 @@ import com.jme3.math.FastMath;
 
 /**
  * Wind is modeled as an 3D vector always perpendicular to the Y axis
- * (straight up) so the Y component is always zero. This is interpreted
- * the direction of the wind where e.g. (1.0, 0, 1.0) means "from north east".
+ * (straight up) so the Y component is always zero. This vector gets mainly
+ * constructed from an angle denoting the direction where the wind originates
+ * from. Example: "320 degrees" mens wind from the NW
  * 
  * @author cn
  */
 public class WindInterpolator implements WeatherInterpolator {
-    
-    public static void main(String[] args) {
-        WindInterpolator w = new WindInterpolator();
-        System.out.println(w.interpolate(40f, 320f, 0.1f));
-    }
     
     @Override
     public Object interpolate(Object valueA, Object valueB, float ratio) {
@@ -27,6 +23,5 @@ public class WindInterpolator implements WeatherInterpolator {
             float t = FastMath.interpolateLinear(ratio, a, b);
             return t >= 360 ? t-360 : t;
         }
-        // TODO: wind interpolation
     }
 }

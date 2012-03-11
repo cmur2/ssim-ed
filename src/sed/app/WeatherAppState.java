@@ -38,7 +38,7 @@ public class WeatherAppState extends BasicAppState {
         builder.putFloat("wind.strength");
         PropertySet[] ps = builder.getResults();
         
-        weatherController = new RandomWeatherController(1 * 60f, ps);
+        weatherController = new RandomWeatherController(5 * 60f, ps);
         weatherController.registerInterpolator(new Interpolators.FloatInterpolator(), Float.class);
         weatherController.registerInterpolator(new Interpolators.BoolInterpolator(), Boolean.class);
         weatherController.registerInterpolator(new Interpolators.Vec3Interpolator(), Vector3f.class);
