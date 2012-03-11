@@ -40,7 +40,7 @@ public class CloudAppState extends BasicAppState {
      * Should lie in the center of the height field/texture, assumed size here
      * is 256 pixels.
      */
-    private static final Vector3f VirtualOrigin = new Vector3f(.5f*256, .5f*256, 0);
+    private static final Vector3f VirtualOrigin = new Vector3f(.5f*TexSize, .5f*TexSize, 0);
     
     // exists only while AppState is attached
     private CloudProcessor cloudProcessor;
