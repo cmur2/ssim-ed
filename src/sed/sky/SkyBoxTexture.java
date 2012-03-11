@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ScheduledExecutorService;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.texture.Image;
@@ -16,11 +16,11 @@ public class SkyBoxTexture extends TextureCubeMap {
     private static final int TexSize = 256;
     
     private SkyGradient skyGradient;
-    private ScheduledThreadPoolExecutor executor;
+    private ScheduledExecutorService executor;
     
     private long updateTime;
     
-    public SkyBoxTexture(SkyGradient skyGradient, ScheduledThreadPoolExecutor executor) {
+    public SkyBoxTexture(SkyGradient skyGradient, ScheduledExecutorService executor) {
         this.skyGradient = skyGradient;
         this.executor = executor;
         ArrayList<ByteBuffer> faces = new ArrayList<ByteBuffer>();

@@ -1,6 +1,7 @@
 package sed;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
@@ -52,7 +53,7 @@ public class Main extends SimpleApplication {
     
     private float time = 0;
     
-    private ScheduledThreadPoolExecutor executor;
+    private ScheduledExecutorService executor;
     private Mission mission;
     private SimClock simClock;
     
@@ -68,7 +69,7 @@ public class Main extends SimpleApplication {
         
         int numWorker = (int) (1.5f * Runtime.getRuntime().availableProcessors());
         logger.info(String.format("Worker thread pool size: %d", numWorker));
-        executor = new ScheduledThreadPoolExecutor(numWorker);
+        executor = Executors.newScheduledThreadPool(numWorker);
         
         initMission();
         
@@ -162,7 +163,7 @@ public class Main extends SimpleApplication {
         return simClock;
     }
     
-    public ScheduledThreadPoolExecutor getExecutor() {
+    public ScheduledExecutorService getExecutor() {
         return executor;
     }
 }
