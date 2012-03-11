@@ -106,16 +106,19 @@ public class CPUCloudProcessor extends CloudProcessor {
         // generate height field on CPU
         float[][] heightField = cloudHeightField.generate();
         
-        opRenderHeightField2Texture(heightField, getCloudTex());
+        renderHeightFieldToTexture(heightField, getCloudTex());
     }
     
-    private void opRenderHeightField2Texture(float[][] heightField, Texture2D heightFieldTexture) {
+    private void renderHeightFieldToTexture(
+        float[][] heightField, Texture2D heightFieldTexture)
+    {
         int texSize = getTexSize();
         int maxSteps = getMaxSteps();
         
         // lazy allocate backing ByteBuffer
         if(heightFieldTexture.getImage().getData(0) == null) {
-            heightFieldTexture.getImage().setData(BufferUtils.createByteBuffer(texSize * texSize * 4));
+            heightFieldTexture.getImage().setData(
+                BufferUtils.createByteBuffer(texSize * texSize * 4));
         }
         
         Vector3f v = new Vector3f();

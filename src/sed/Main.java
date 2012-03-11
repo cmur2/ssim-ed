@@ -59,6 +59,8 @@ public class Main extends SimpleApplication {
     
     @Override
     public void simpleInitApp() {
+        // TODO: Settings system
+        
         // TODO: Initialize NoiseUtil with random seed
         NoiseUtil.reinitialize(DebugSeed);
         

@@ -132,7 +132,7 @@ public class GPUCloudProcessor extends CloudProcessor {
 
     public void setCloudSharpness(float cloudSharpness) {
         this.cloudSharpness = cloudSharpness;
-        if(tempMat != null) {
+        if(isInitialized()) {
             tempMat.setFloat("CloudSharpness", cloudSharpness);
         }
     }
@@ -143,7 +143,7 @@ public class GPUCloudProcessor extends CloudProcessor {
 
     public void setWayFactor(float wayFactor) {
         this.wayFactor = wayFactor;
-        if(tempMat != null) {
+        if(isInitialized()) {
             tempMat.setFloat("WayFactor", wayFactor);
         }
     }
@@ -154,7 +154,7 @@ public class GPUCloudProcessor extends CloudProcessor {
 
     public void setSunPosition(Vector3f sunPosition) {
         this.sunPosition = sunPosition;
-        if(tempMat != null) {
+        if(isInitialized()) {
             tempMat.setVector3("SunPosition", sunPosition);
         }
     }
@@ -165,7 +165,7 @@ public class GPUCloudProcessor extends CloudProcessor {
 
     public void setSunLightColor(ColorRGBA sunLightColor) {
         this.sunLightColor = sunLightColor;
-        if(tempMat != null) {
+        if(isInitialized()) {
             tempMat.setColor("SunLightColor", sunLightColor);
         }
     }
@@ -173,17 +173,19 @@ public class GPUCloudProcessor extends CloudProcessor {
     protected void updateAndRender() {
         // generate height field on CPU
         float[][] heightField = cloudHeightField.generate();
-        
-        opCopyHeightField2Texture(heightField, heightFieldTex);
+        copyHeightFieldToTexture(heightField, heightFieldTex);
         renderManager.renderViewPort(tempViewPort, 0);
     }
 
-    private void opCopyHeightField2Texture(float[][] heightField, Texture2D heightFieldTexture) {
+    private void copyHeightFieldToTexture(
+        float[][] heightField, Texture2D heightFieldTexture)
+    {
         int texSize = getTexSize();
         
         // lazy allocate backing ByteBuffer
         if(heightFieldTexture.getImage().getData(0) == null) {
-            heightFieldTexture.getImage().setData(BufferUtils.createByteBuffer(texSize * texSize * 4));
+            heightFieldTexture.getImage().setData(
+                BufferUtils.createByteBuffer(texSize * texSize * 4));
         }
         // copy alpha to texel
         ByteBuffer buf = heightFieldTexture.getImage().getData(0);
@@ -203,10 +205,6 @@ public class GPUCloudProcessor extends CloudProcessor {
                     buf.put(index+2, (byte) alpha); // B
                     buf.put(index+3, (byte) 255); // A
 //                }
-//                buf.put((byte) alpha); // R
-//                buf.put((byte) alpha); // G
-//                buf.put((byte) alpha); // B
-//                buf.put((byte) 255); // A
             }
         }
         heightFieldTexture.getImage().setData(0, buf);

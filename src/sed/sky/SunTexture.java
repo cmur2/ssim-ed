@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.log4j.Logger;
 
+import sed.TempVars;
 import ssim.util.MathExt;
 
 import com.jme3.math.Vector2f;
@@ -36,10 +37,6 @@ public class SunTexture extends Texture2D {
      */
     private boolean dirty;
     
-    /**
-     * x: sunPhiAngle, y: sunThetaAngle
-     */
-    private Vector2f sunAngles;
     private Sun sun;
     
     /**
@@ -80,7 +77,8 @@ public class SunTexture extends Texture2D {
     }
     
     public void update() {
-        sunAngles = sun.getSunAngles(sunAngles);
+        TempVars vars = TempVars.get();
+        Vector2f sunAngles = sun.getSunAngles(vars.vect10);
         float sunThetaDeg = (float) Math.toDegrees(sunAngles.y);
         // theta=0 -> zenith
         // theta=90 deg -> horizon
@@ -91,6 +89,7 @@ public class SunTexture extends Texture2D {
         } else {
             getImage().setData(getEmptyImage());
         }
+        vars.release();
     }
     
     private ByteBuffer getEmptyImage() {
