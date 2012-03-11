@@ -57,9 +57,11 @@ public class CloudAppState extends BasicAppState {
         super.initialize(stateManager, baseApp);
         
         if(UseGPU) {
-            cloudProcessor = new GPUCloudProcessor(getApp().getAssetManager(), TexSize, UpdateInterval);
+            cloudProcessor = new GPUCloudProcessor(getApp().getAssetManager(),
+                TexSize, UpdateInterval, getApp().getExecutor());
         } else {
-            cloudProcessor = new CPUCloudProcessor(TexSize, UpdateInterval);
+            cloudProcessor = new CPUCloudProcessor(TexSize, UpdateInterval,
+                getApp().getExecutor());
         }
         getApp().getViewPort().addProcessor(cloudProcessor);
         

@@ -1,6 +1,7 @@
 package sed.sky;
 
 import java.nio.ByteBuffer;
+import java.util.concurrent.ScheduledExecutorService;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
@@ -41,13 +42,15 @@ public class GPUCloudProcessor extends CloudProcessor {
     
     private CloudHeightField cloudHeightField;
 
-    public GPUCloudProcessor(AssetManager assetManager, int texSize, float updateInterval) {
+    public GPUCloudProcessor(AssetManager assetManager, int texSize,
+            float updateInterval, ScheduledExecutorService executor)
+    {
         super(texSize, updateInterval);
         this.assetManager = assetManager;
         
         heightFieldTex = new Texture2D(getTexSize(), getTexSize(), Format.RGBA8);
         
-        cloudHeightField = new CloudHeightField(texSize, getNumOctaves());
+        cloudHeightField = new CloudHeightField(texSize, getNumOctaves(), executor);
     }
     
     @Override
@@ -173,6 +176,7 @@ public class GPUCloudProcessor extends CloudProcessor {
     protected void updateAndRender() {
         // generate height field on CPU
         float[][] heightField = cloudHeightField.generate();
+        System.out.println(cloudHeightField.getLastGenerationTime());
         copyHeightFieldToTexture(heightField, heightFieldTex);
         renderManager.renderViewPort(tempViewPort, 0);
     }

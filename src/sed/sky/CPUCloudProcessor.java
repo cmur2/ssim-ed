@@ -1,6 +1,7 @@
 package sed.sky;
 
 import java.nio.ByteBuffer;
+import java.util.concurrent.ScheduledExecutorService;
 
 import ssim.util.MathExt;
 
@@ -28,10 +29,12 @@ public class CPUCloudProcessor extends CloudProcessor {
     
     private CloudHeightField cloudHeightField;
     
-    public CPUCloudProcessor(int texSize, float updateInterval) {
+    public CPUCloudProcessor(int texSize, float updateInterval,
+            ScheduledExecutorService executor)
+    {
         super(texSize, updateInterval);
         
-        cloudHeightField = new CloudHeightField(texSize, getNumOctaves());
+        cloudHeightField = new CloudHeightField(texSize, getNumOctaves(), executor);
     }
     
     @Override
