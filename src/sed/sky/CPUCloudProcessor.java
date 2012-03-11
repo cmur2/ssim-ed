@@ -29,6 +29,8 @@ public class CPUCloudProcessor extends CloudProcessor {
     
     private CloudHeightField cloudHeightField;
     
+    private long lastRenderTime;
+    
     public CPUCloudProcessor(int texSize, float updateInterval,
             ScheduledExecutorService executor)
     {
@@ -105,6 +107,14 @@ public class CPUCloudProcessor extends CloudProcessor {
         this.sunLightColor = sunLightColor;
     }
 
+    public long getLastGenerationTime() {
+        return cloudHeightField.getLastGenerationTime();
+    }
+    
+    public long getLastRenderTime() {
+        return lastRenderTime;
+    }
+    
     protected void updateAndRender() {
         // generate height field on CPU
         float[][] heightField = cloudHeightField.generate();
@@ -133,6 +143,7 @@ public class CPUCloudProcessor extends CloudProcessor {
         
         ByteBuffer buf = heightFieldTexture.getImage().getData(0);
         buf.rewind();
+        long t0 = System.nanoTime();
         // render complete image
         for(int column = 0; column < texSize; column++) {
             for(int row = 0; row < texSize; row++) {
@@ -192,6 +203,7 @@ public class CPUCloudProcessor extends CloudProcessor {
                 buf.put(index+3, (byte) alpha); // A
             }
         }
+        lastRenderTime = System.nanoTime() - t0;
         heightFieldTexture.getImage().setData(0, buf);
     }
 }

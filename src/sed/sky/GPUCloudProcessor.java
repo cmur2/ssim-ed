@@ -42,6 +42,8 @@ public class GPUCloudProcessor extends CloudProcessor {
     
     private CloudHeightField cloudHeightField;
 
+    private long lastRenderTime;
+
     public GPUCloudProcessor(AssetManager assetManager, int texSize,
             float updateInterval, ScheduledExecutorService executor)
     {
@@ -173,12 +175,21 @@ public class GPUCloudProcessor extends CloudProcessor {
         }
     }
 
+    public long getLastGenerationTime() {
+        return cloudHeightField.getLastGenerationTime();
+    }
+    
+    public long getLastRenderTime() {
+        return lastRenderTime;
+    }
+    
     protected void updateAndRender() {
         // generate height field on CPU
         float[][] heightField = cloudHeightField.generate();
-        System.out.println(cloudHeightField.getLastGenerationTime());
+        long t0 = System.nanoTime();
         copyHeightFieldToTexture(heightField, heightFieldTex);
         renderManager.renderViewPort(tempViewPort, 0);
+        lastRenderTime = System.nanoTime() - t0;
     }
 
     private void copyHeightFieldToTexture(

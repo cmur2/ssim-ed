@@ -120,6 +120,9 @@ public abstract class CloudProcessor implements SceneProcessor {
         return cloudTex;
     }
     
+    public abstract long getLastGenerationTime();
+    public abstract long getLastRenderTime();
+    
     protected abstract void updateAndRender();
     
     /**
