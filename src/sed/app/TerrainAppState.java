@@ -21,7 +21,7 @@ public class TerrainAppState extends BasicAppState {
     
     private static final int PatchSize = 17;
     private static final int MaxVisibleSize = 257;
-    private static final float LODMultiplier = 2.7f;
+    private static final float LODMultiplier = 5f;
     private static final float TerrainScale = 1/25f;
     
     // exists only while AppState is attached
@@ -41,8 +41,9 @@ public class TerrainAppState extends BasicAppState {
         MapLoader.Map map = getApp().getAssetManager().loadAsset(mapKey);
         
         // TODO: implement terrain shader(s)
-        Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Brown);
+        Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
+        mat.setColor("Diffuse", ColorRGBA.Green);
+        mat.setBoolean("UseMaterialColors", true);
         
         TerrainGridTileLoader loader = new BinaryMapTileLoader(map);
         
