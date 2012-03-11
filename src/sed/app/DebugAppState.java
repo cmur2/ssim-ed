@@ -1,6 +1,8 @@
 package sed.app;
 
 import sed.DebugGridMesh;
+import sed.TempVars;
+import sed.weather.WindRose;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -11,6 +13,7 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
@@ -23,9 +26,18 @@ public class DebugAppState extends BasicAppState {
     
     public static final String INPUT_MAPPING_SHOW_GRID = "SED_ShowGrid";
     
+    private static final float UpdateInterval = 0.5f; // in seconds
+    
+    private static final float StandardRadius = 50f;
+    
     private boolean showGrid;
     private Node debugNode;
+    private Geometry windRoseGeom;
     private InputHandler handler;
+    
+    public DebugAppState() {
+        super(UpdateInterval);
+    }
     
     @Override
     public void initialize(AppStateManager stateManager, Application baseApp) {
@@ -39,9 +51,13 @@ public class DebugAppState extends BasicAppState {
         
         buildDebugGrid();
         
-        buildTheThreeArrows(50f);
+        buildTheThreeArrows(StandardRadius);
         
         buildTheFourWinds();
+        
+        buildWindRose(1f);
+        
+        intervalUpdate();
         
         handler = new InputHandler();
         getApp().getInputManager().addMapping(INPUT_MAPPING_SHOW_GRID, new KeyTrigger(KeyInput.KEY_F6));
@@ -124,6 +140,36 @@ public class DebugAppState extends BasicAppState {
         labelText.addControl(bbControl);
         
         return labelText;
+    }
+    
+    private void buildWindRose(float size) {
+        WindRose rose = new WindRose(size);
+        rose.setLineWidth(4f);
+        Geometry geom = new Geometry("WindRose", rose);
+        Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Brown.add(ColorRGBA.DarkGray));
+        geom.setMaterial(mat);
+        geom.setLocalTranslation(0, StandardRadius/2, 0);
+        windRoseGeom = geom;
+        debugNode.attachChild(geom);
+    }
+    
+    @Override
+    protected void intervalUpdate() {
+        updateWindRose();
+    }
+    
+    private void updateWindRose() {
+        float direction = getState(WeatherAppState.class).getWeather().getFloat("wind.direction");
+        float strength = getState(WeatherAppState.class).getWeather().getFloat("wind.strength");
+        TempVars vars = TempVars.get();
+        // rotate according to direction
+        Matrix3f rot = vars.mat1;
+        rot.fromAngleNormalAxis((float) Math.toRadians(direction), vars.vect1.set(0, -1, 0));
+        windRoseGeom.setLocalRotation(rot);
+        // scale according to strength
+        windRoseGeom.setLocalScale(strength*5 + StandardRadius);
+        vars.release();
     }
     
     private class InputHandler implements ActionListener {

@@ -1,6 +1,7 @@
 package sed;
 
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 
@@ -52,6 +53,8 @@ public class TempVars {
     
     public final Vector2f vect10 = new Vector2f();
     public final Vector2f vect11 = new Vector2f();
+    
+    public final Matrix3f mat1 = new Matrix3f();
     
     public final ColorRGBA color1 = new ColorRGBA();
     public final ColorRGBA color2 = new ColorRGBA();
