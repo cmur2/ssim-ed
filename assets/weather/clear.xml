@@ -19,7 +19,7 @@
     </cloud>
     <wind>
         <!-- north east -->
-        <direction>(1.0, 0, 1.0)</direction>
+        <direction>315</direction>
         <strength>0</strength>
     </wind>
 </sed:weather>

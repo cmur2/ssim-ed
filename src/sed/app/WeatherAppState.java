@@ -5,6 +5,7 @@ import sed.weather.PropertySet;
 import sed.weather.RandomWeatherController;
 import sed.weather.Weather;
 import sed.weather.WeatherController;
+import sed.weather.WindInterpolator;
 import sed.weather.XMLPropertySetBuilder;
 
 import com.jme3.app.Application;
@@ -33,13 +34,17 @@ public class WeatherAppState extends BasicAppState {
         builder.putFloat("cloud.sharpness");
         builder.putFloat("cloud.way-factor");
         builder.putInt("cloud.zoom");
+        builder.putFloat("wind.direction");
+        builder.putFloat("wind.strength");
         PropertySet[] ps = builder.getResults();
         
-        weatherController = new RandomWeatherController(5 * 60f, ps);
+        weatherController = new RandomWeatherController(1 * 60f, ps);
         weatherController.registerInterpolator(new Interpolators.FloatInterpolator(), Float.class);
         weatherController.registerInterpolator(new Interpolators.BoolInterpolator(), Boolean.class);
         weatherController.registerInterpolator(new Interpolators.Vec3Interpolator(), Vector3f.class);
         weatherController.registerInterpolator(new Interpolators.IntInterpolator(), Integer.class);
+        
+        weatherController.registerInterpolator(new WindInterpolator(), "wind.direction");
     }
     
     @Override
