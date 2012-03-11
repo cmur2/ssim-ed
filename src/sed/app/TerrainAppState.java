@@ -19,10 +19,14 @@ public class TerrainAppState extends BasicAppState {
     
     private static final float UpdateInterval = 30f; // in seconds
     
+    private static final int PatchSize = 17;
+    private static final int MaxVisibleSize = 257;
+    private static final float LODMultiplier = 2.7f;
     private static final float TerrainScale = 1/25f;
     
     // exists only while AppState is attached
-    private TerrainGrid grid;
+    private TerrainGrid terrainGrid;
+    TerrainLodControl lodControl;
     
     public TerrainAppState() {
         super(UpdateInterval);
@@ -35,32 +39,34 @@ public class TerrainAppState extends BasicAppState {
         String path = String.format("maps/%s", getApp().getMission().getMapFile());
         AssetKey<MapLoader.Map> mapKey = new AssetKey<MapLoader.Map>(path);
         MapLoader.Map map = getApp().getAssetManager().loadAsset(mapKey);
-        //System.out.println(map);
         
+        // TODO: implement terrain shader(s)
         Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Brown);
         
         TerrainGridTileLoader loader = new BinaryMapTileLoader(map);
         
-        final int patchSize = 17;
-        grid = new TerrainGrid("TerrainGrid", patchSize, 257, loader);
-        grid.setMaterial(mat);
-        grid.setLocalTranslation(0, 0, 0);
-        grid.setLocalScale(map.woDiff * TerrainScale, TerrainScale, map.nsDiff * TerrainScale);
+        terrainGrid = new TerrainGrid("TerrainGrid", PatchSize, MaxVisibleSize, loader);
+        terrainGrid.setMaterial(mat);
+        terrainGrid.setLocalTranslation(0, 0, 0);
+        terrainGrid.setLocalScale(map.woDiff * TerrainScale, TerrainScale, map.nsDiff * TerrainScale);
         
-        TerrainLodControl control = new TerrainLodControl(grid, Arrays.asList(getApp().getCamera()));
-        control.setLodCalculator(new DistanceLodCalculator(patchSize, 2.7f));
-        grid.addControl(control);
+        lodControl = new TerrainLodControl(terrainGrid, Arrays.asList(getApp().getCamera()));
+        lodControl.setLodCalculator(new DistanceLodCalculator(PatchSize, LODMultiplier));
+        terrainGrid.addControl(lodControl);
         
-        grid.initialize(getApp().getCamera().getLocation());
+        terrainGrid.initialize(getApp().getCamera().getLocation());
 
-        getApp().getRootNode().attachChild(grid);
+        getApp().getRootNode().attachChild(terrainGrid);
     }
     
     @Override
     public void cleanup() {
         super.cleanup();
         
-        //terrainRoot = null;
+        terrainGrid.removeControl(lodControl);
+        getApp().getRootNode().detachChild(terrainGrid);
+        
+        terrainGrid = null;
     }
 }

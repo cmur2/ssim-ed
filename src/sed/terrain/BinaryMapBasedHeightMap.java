@@ -19,7 +19,6 @@ public class BinaryMapBasedHeightMap implements HeightMap {
     /** The filter is used to erode the terrain. */
     private float filter = 0.5f;
     
-    // TODO: how to specify size/map rerastering/clipping?
     public BinaryMapBasedHeightMap(MapLoader.Map map, Vector3f offset, int quadSize) {
         this.map = map;
         this.offset = offset;
