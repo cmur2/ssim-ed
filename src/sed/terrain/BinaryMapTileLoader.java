@@ -24,7 +24,6 @@ public class BinaryMapTileLoader implements TerrainGridTileLoader {
     
     @Override
     public TerrainQuad getTerrainQuadAt(Vector3f location) {
-        System.out.println(location);
         HeightMap map = getHeightMapAt(location);
         TerrainQuad tile = new TerrainQuad(
             "TerrainTile" + location.toString(), patchSize, quadSize,
@@ -53,13 +52,14 @@ public class BinaryMapTileLoader implements TerrainGridTileLoader {
     }
     
     private HeightMap getHeightMapAt(Vector3f location) {
-        BinaryMapBasedHeightMap b = new BinaryMapBasedHeightMap(map, location, quadSize);
+        BinaryMapBasedHeightMap heightmap =
+            new BinaryMapBasedHeightMap(map, location, quadSize);
         try {
-            b.load();
+            heightmap.load();
         } catch(Exception ex) {
             ex.printStackTrace();
             return null;
         }
-        return b;
+        return heightmap;
     }
 }

@@ -32,7 +32,7 @@ public class BinaryMapManipulator {
                 int iz = (int) (offset.z * (quadSize-1) + z);
                 int ix = (int) (offset.x * (quadSize-1) + x);
                 if(iz >= 0 && ix >= 0 && iz < map.nsNum && ix < map.woNum) {
-                    data[x + z*quadSize] = map.elevs[iz][ix]*(4/130f);
+                    data[x + z*quadSize] = map.elevs[iz][ix];
                 } else {
                     data[x + z*quadSize] = 0;
                 }
