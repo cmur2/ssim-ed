@@ -168,4 +168,12 @@ public class Main extends SimpleApplication {
     public ScheduledExecutorService getExecutor() {
         return executor;
     }
+    
+    public float getSpeed() {
+        return speed;
+    }
+    
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
 }

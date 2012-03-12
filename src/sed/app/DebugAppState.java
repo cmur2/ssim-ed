@@ -13,6 +13,7 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
@@ -166,7 +167,7 @@ public class DebugAppState extends BasicAppState {
         TempVars vars = TempVars.get();
         // rotate according to direction
         Matrix3f rot = vars.mat1;
-        rot.fromAngleNormalAxis((float) Math.toRadians(direction), vars.vect1.set(0, -1, 0));
+        rot.fromAngleNormalAxis(direction * FastMath.DEG_TO_RAD, vars.vect1.set(0, -1, 0));
         windRoseGeom.setLocalRotation(rot);
         // scale according to strength
         windRoseGeom.setLocalScale(strength*5 + StandardRadius);
