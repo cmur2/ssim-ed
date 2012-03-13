@@ -6,7 +6,7 @@
     </sky>
     <sun>
         <lensflare>
-            <enabled>true</enabled>
+            <enabled>false</enabled>
             <shininess>0.95</shininess>
         </lensflare>
     </sun>

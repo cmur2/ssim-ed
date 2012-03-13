@@ -15,6 +15,8 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
@@ -34,6 +36,8 @@ public class CloudAppState extends BasicAppState {
     private static final Vector3f CloudPlaneTranslation = new Vector3f(0, 500, 0);
     private static final float CloudPlaneSize = 750f; // in m
     private static final float CloudPlaneHeightScale = 50f; // in m
+    
+    private static final Vector2f WindScale = new Vector2f(0.001f, 0.003f);
     
     /**
      * Describes the virtual origin of the cloud heightfield (in pixels).
@@ -143,9 +147,26 @@ public class CloudAppState extends BasicAppState {
             cloudShift = new Vector3f(Vector3f.ZERO);
         }
         cloudProcessor.setShift(cloudShift);
-//        cloudShift.x += 0.025;
-        
-        // TODO: some movement (wind)/change (permutation) should be done (aka cloud physics)
+        {
+            float direction = getWeather().getFloat("wind.direction");
+            float strength = getWeather().getFloat("wind.strength");
+            // windVelo will be: direction into which wind is blowing and magnitude
+            // reflects strength of wind
+            Vector3f windVelo = vars.vect1.set(
+                (float) Math.sin(direction * FastMath.DEG_TO_RAD),
+                0,
+                -(float) Math.cos(direction * FastMath.DEG_TO_RAD));
+            // We do not negate here since e.g. an x++ in cloudShift will create
+            // an animation looking like an x--, so we would have to double negate
+            //windVelo.negateLocal();
+            windVelo.multLocal(strength*0.514f); // in m/s
+            // derive a shift from the windVelo, z component is 1.0 to reflect
+            // the change over time
+            Vector3f cloudShiftAdd = vars.vect2.set(windVelo.x, -windVelo.z, 1f);
+            cloudShiftAdd.multLocal(UpdateInterval);
+            cloudShiftAdd.multLocal(WindScale.x, WindScale.x, WindScale.y);
+            cloudShift.addLocal(cloudShiftAdd);
+        }
         
         vars.release();
     }
