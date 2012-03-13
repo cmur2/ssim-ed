@@ -15,11 +15,13 @@ public class Interpolators {
     }
     
     public static class Vec3Interpolator implements WeatherInterpolator {
+        private Vector3f store = new Vector3f();
+        
         @Override
         public Object interpolate(Object valueA, Object valueB, float ratio) {
             Vector3f a = (Vector3f) valueA;
             Vector3f b = (Vector3f) valueB;
-            return FastMath.interpolateLinear(ratio, a, b);
+            return FastMath.interpolateLinear(ratio, a, b, store);
         }
     }
     
