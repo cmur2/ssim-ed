@@ -24,8 +24,8 @@ public class CPUCloudProcessor extends CloudProcessor {
     // (weather) variables
     private float cloudSharpness;
     private float wayFactor;
-    private Vector3f sunPosition;
-    private ColorRGBA sunLightColor;
+    private Vector3f sunPosition = new Vector3f();
+    private ColorRGBA sunLightColor = new ColorRGBA();
     
     private CloudHeightField cloudHeightField;
     
@@ -59,8 +59,8 @@ public class CPUCloudProcessor extends CloudProcessor {
         cloudHeightField.setCloudCover(cloudCover);
     }
     
-    public Vector3f getShift() {
-        return cloudHeightField.getShift();
+    public Vector3f getShift(Vector3f store) {
+        return cloudHeightField.getShift(store);
     }
     
     public void setShift(Vector3f shift) {
@@ -91,20 +91,28 @@ public class CPUCloudProcessor extends CloudProcessor {
         this.wayFactor = wayFactor;
     }
 
-    public Vector3f getSunPosition() {
-        return sunPosition;
+    public Vector3f getSunPosition(Vector3f store) {
+        if(store == null) {
+            store = new Vector3f();
+        }
+        store.set(sunPosition);
+        return store;
     }
 
     public void setSunPosition(Vector3f sunPosition) {
-        this.sunPosition = sunPosition;
+        this.sunPosition.set(sunPosition);
     }
 
-    public ColorRGBA getSunLightColor() {
-        return sunLightColor;
+    public ColorRGBA getSunLightColor(ColorRGBA store) {
+        if(store == null) {
+            store = new ColorRGBA();
+        }
+        store.set(sunLightColor);
+        return store;
     }
 
     public void setSunLightColor(ColorRGBA sunLightColor) {
-        this.sunLightColor = sunLightColor;
+        this.sunLightColor.set(sunLightColor);
     }
 
     public long getLastGenerationTime() {

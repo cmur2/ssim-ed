@@ -82,7 +82,7 @@ public abstract class CloudProcessor implements SceneProcessor {
     public abstract float getCloudCover();
     public abstract void setCloudCover(float cloudCover);
     
-    public abstract Vector3f getShift();
+    public abstract Vector3f getShift(Vector3f store);
     public abstract void setShift(Vector3f shift);
     
     public abstract float getZoom();
@@ -94,10 +94,10 @@ public abstract class CloudProcessor implements SceneProcessor {
     public abstract float getWayFactor();
     public abstract void setWayFactor(float wayFactor);
     
-    public abstract Vector3f getSunPosition();
+    public abstract Vector3f getSunPosition(Vector3f store);
     public abstract void setSunPosition(Vector3f sunPosition);
     
-    public abstract ColorRGBA getSunLightColor();
+    public abstract ColorRGBA getSunLightColor(ColorRGBA store);
     public abstract void setSunLightColor(ColorRGBA sunLightColor);
     
     

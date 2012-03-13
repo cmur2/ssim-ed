@@ -17,7 +17,7 @@ public class CloudHeightField {
     private ScheduledExecutorService executor;
     
     private float zoom;
-    private Vector3f shift;
+    private Vector3f shift = new Vector3f();
     private float cloudCover;
     
     private long lastGenerationTime;
@@ -36,12 +36,16 @@ public class CloudHeightField {
         this.zoom = zoom;
     }
     
-    public Vector3f getShift() {
-        return shift;
+    public Vector3f getShift(Vector3f store) {
+        if(store == null) {
+            store = new Vector3f();
+        }
+        store.set(shift);
+        return store;
     }
     
     public void setShift(Vector3f shift) {
-        this.shift = shift;
+        this.shift.set(shift);
     }
     
     public float getCloudCover() {
