@@ -14,6 +14,7 @@ import com.jme3.asset.AssetLoader;
 public class MapLoader implements AssetLoader {
 
     public static final float ScaleXZ = 1/25f;
+    public static final float ScaleY = 1f;
     
     private static final Logger logger = Logger.getLogger(MapLoader.class);
 
@@ -42,7 +43,7 @@ public class MapLoader implements AssetLoader {
             float[][] elevs = new float[nsNum][weNum];
             for(int i = 0; i < nsNum; i++) {
                 for(int j = 0; j < weNum; j++) {
-                    elevs[i][j] = (float) reader.readShort();
+                    elevs[i][j] = (float) (reader.readShort()) * ScaleY;
                 }
             }
             
