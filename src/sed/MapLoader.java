@@ -33,20 +33,20 @@ public class MapLoader implements AssetLoader {
             for(int i = 0; i < MaxNameLength; i++) {
                 name.append(reader.readChar());
             }
-            double woDiff = reader.readDouble()*ScaleXZ;
+            double weDiff = reader.readDouble()*ScaleXZ;
             double nsDiff = reader.readDouble()*ScaleXZ;
-            int woNum = reader.readInt();
+            int weNum = reader.readInt();
             int nsNum = reader.readInt();
             
             // file body
-            float[][] elevs = new float[nsNum][woNum];
+            float[][] elevs = new float[nsNum][weNum];
             for(int i = 0; i < nsNum; i++) {
-                for(int j = 0; j < woNum; j++) {
+                for(int j = 0; j < weNum; j++) {
                     elevs[i][j] = (float) reader.readShort();
                 }
             }
             
-            map = new BinaryMap(woDiff, nsDiff, woNum, nsNum, elevs, name.toString().trim());
+            map = new BinaryMap(weDiff, nsDiff, weNum, nsNum, elevs, name.toString().trim());
             
             logger.info(String.format("Loaded map: %s", map.toString()));
         } else {

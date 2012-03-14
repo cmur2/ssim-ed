@@ -58,7 +58,7 @@ public class TerrainAppState extends BasicAppState {
         terrainGrid = new TerrainGrid("TerrainGrid", PatchSize, MaxVisibleSize, loader);
         terrainGrid.setMaterial(mat);
         terrainGrid.setLocalTranslation(0, 0, 0);
-        terrainGrid.setLocalScale((float) map.woDiff, 1f, (float) map.nsDiff);
+        terrainGrid.setLocalScale((float) map.weDiff, 1f, (float) map.nsDiff);
         
         lodControl = new TerrainLodControl(terrainGrid, Arrays.asList(getApp().getCamera()));
         lodControl.setLodCalculator(new DistanceLodCalculator(PatchSize, LODMultiplier));

@@ -2,18 +2,18 @@ package sed.terrain;
 
 public class BinaryMap {
     
-    public double woDiff;
+    public double weDiff;
     public double nsDiff;
-    public int woNum;
+    public int weNum;
     public int nsNum;
 
     public float[][] elevs;
     public String name;
     
-    public BinaryMap(double woDiff, double nsDiff, int woNum, int nsNum, float[][] elevs, String name) {
-        this.woDiff = woDiff;
+    public BinaryMap(double weDiff, double nsDiff, int weNum, int nsNum, float[][] elevs, String name) {
+        this.weDiff = weDiff;
         this.nsDiff = nsDiff;
-        this.woNum = woNum;
+        this.weNum = weNum;
         this.nsNum = nsNum;
         this.elevs = elevs;
         this.name = name;
@@ -21,6 +21,6 @@ public class BinaryMap {
     
     @Override
     public String toString() {
-        return String.format("Map(\"%s\", WE: %gm * %d, NS: %gm * %d)", name, woDiff, woNum, nsDiff, nsNum);
+        return String.format("Map(\"%s\", WE: %gm * %d, NS: %gm * %d)", name, weDiff, weNum, nsDiff, nsNum);
     }
 }
