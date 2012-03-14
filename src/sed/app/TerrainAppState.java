@@ -5,7 +5,6 @@ import java.util.Arrays;
 
 import javax.vecmath.Color3f;
 
-import sed.MapLoader;
 import sed.terrain.BinaryMap;
 import sed.terrain.BinaryMapTileLoader;
 
@@ -59,7 +58,7 @@ public class TerrainAppState extends BasicAppState {
         terrainGrid = new TerrainGrid("TerrainGrid", PatchSize, MaxVisibleSize, loader);
         terrainGrid.setMaterial(mat);
         terrainGrid.setLocalTranslation(0, 0, 0);
-        terrainGrid.setLocalScale(map.woDiff, 1f, map.nsDiff);
+        terrainGrid.setLocalScale((float) map.woDiff, 1f, (float) map.nsDiff);
         
         lodControl = new TerrainLodControl(terrainGrid, Arrays.asList(getApp().getCamera()));
         lodControl.setLodCalculator(new DistanceLodCalculator(PatchSize, LODMultiplier));
