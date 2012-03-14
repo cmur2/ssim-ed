@@ -37,6 +37,8 @@ public class Main extends SimpleApplication {
     
     private static final Logger logger = Logger.getLogger(Main.class);
     private static final float UpdateInterval = 5f; // in seconds
+    
+    private static final float MaxVisibility = 2000f;
     private static final long DebugSeed = 4569845;
     
     public static void main(String[] args) {
@@ -81,9 +83,9 @@ public class Main extends SimpleApplication {
         
         // AppState base layer:
         // these serve as a common base for the higher AppStates
-        stateManager.attach(new CameraAppState(2000f));
-        stateManager.attach(new WeatherAppState("clear", "snowy"));
-        stateManager.attach(new SkyAppState());
+        stateManager.attach(new CameraAppState(MaxVisibility));
+        stateManager.attach(new WeatherAppState("clear"));
+        stateManager.attach(new SkyAppState(0.5f*MaxVisibility));
         
         // AppState higher layer:
         // these have no dependencies to each other, just to the base layer

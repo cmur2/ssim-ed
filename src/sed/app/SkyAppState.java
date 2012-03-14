@@ -21,19 +21,18 @@ import com.jme3.scene.Spatial.CullHint;
  */
 public class SkyAppState extends BasicAppState {
     
-    // TODO: Realize SkyDome and Sun as background geometry in jME via Bucket.Sky?
-    
-    private static final float HemisphereRadius = 1000f;
-    
     private static final float UpdateInterval = 1f; // in seconds
+    
+    private float hemisphereRadius;
     
     // exists only while AppState is attached
     private Node skyNode;
     private Sun sun;
     private SkyGradient skyGradient;
     
-    public SkyAppState() {
+    public SkyAppState(float hemisphereRadius) {
         super(UpdateInterval);
+        this.hemisphereRadius = hemisphereRadius;
     }
     
     @Override
@@ -97,6 +96,6 @@ public class SkyAppState extends BasicAppState {
     }
 
     public float getHemisphereRadius() {
-        return HemisphereRadius;
+        return hemisphereRadius;
     }
 }
