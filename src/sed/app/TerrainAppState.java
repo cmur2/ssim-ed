@@ -27,7 +27,6 @@ public class TerrainAppState extends BasicAppState {
     private static final int PatchSize = 129;
     private static final int MaxVisibleSize = 257;
     private static final float LODMultiplier = 5f;
-    private static final float TerrainScale = 1/25f;
     
     private static final int HeightGradientTexSize = 256; // in px
     private static final float MeterPerTexel = 10f;
@@ -59,7 +58,7 @@ public class TerrainAppState extends BasicAppState {
         terrainGrid = new TerrainGrid("TerrainGrid", PatchSize, MaxVisibleSize, loader);
         terrainGrid.setMaterial(mat);
         terrainGrid.setLocalTranslation(0, 0, 0);
-        terrainGrid.setLocalScale(map.woDiff * TerrainScale, TerrainScale, map.nsDiff * TerrainScale);
+        terrainGrid.setLocalScale(map.woDiff, 1f, map.nsDiff);
         
         lodControl = new TerrainLodControl(terrainGrid, Arrays.asList(getApp().getCamera()));
         lodControl.setLodCalculator(new DistanceLodCalculator(PatchSize, LODMultiplier));
