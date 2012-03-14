@@ -7,10 +7,10 @@ public class BinaryMap {
     public int woNum;
     public int nsNum;
 
-    public short[][] elevs;
+    public float[][] elevs;
     public String name;
     
-    public BinaryMap(double woDiff, double nsDiff, int woNum, int nsNum, short[][] elevs, String name) {
+    public BinaryMap(double woDiff, double nsDiff, int woNum, int nsNum, float[][] elevs, String name) {
         this.woDiff = woDiff;
         this.nsDiff = nsDiff;
         this.woNum = woNum;

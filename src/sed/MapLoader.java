@@ -39,10 +39,10 @@ public class MapLoader implements AssetLoader {
             int nsNum = reader.readInt();
             
             // file body
-            short[][] elevs = new short[nsNum][woNum];
+            float[][] elevs = new float[nsNum][woNum];
             for(int i = 0; i < nsNum; i++) {
                 for(int j = 0; j < woNum; j++) {
-                    elevs[i][j] = reader.readShort();
+                    elevs[i][j] = (float) reader.readShort();
                 }
             }
             
