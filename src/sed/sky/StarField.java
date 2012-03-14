@@ -8,6 +8,12 @@ import com.jme3.scene.VertexBuffer.Type;
 
 public class StarField extends Mesh {
     
+    private static final float PhiRange = 359f; // in degree
+    private static final float ThetaRange = 75f; // in degree
+    private static final float ThetaOffset = 5f; // in degree
+    private static final float MagOffset = 0.4f;
+    private static final float MagRange = 0.6f;
+    
     private int numStars;
     private float radius;
     
@@ -23,14 +29,23 @@ public class StarField extends Mesh {
         
         Random rand = new Random();
         for(int i = 0; i < numStars; i++) {
-            float phi = (rand.nextFloat()*359f)/180f*FastMath.PI;
-            float theta = (5+rand.nextFloat()*82f)/180f*FastMath.PI;
+            // phi range should cover the whole 360°
+            float phi = (rand.nextFloat() * PhiRange) * FastMath.DEG_TO_RAD;
+            // the theta offset prevents positions exactly in zenith
+            // (theta = 0 in zenith), and theta range should be smaller than
+            // 90°-offset because horizon is at 90°
+            float theta = (ThetaOffset + rand.nextFloat() * ThetaRange) * FastMath.DEG_TO_RAD;
+            // the magnitude provides a grey scale color value in [0.0, 1.0]
+            float mag = MagOffset + MagRange * rand.nextFloat();
+            // generate position
             starFieldCoords[i*3+0] = (float)( radius*Math.sin(theta)*Math.cos(phi));
             starFieldCoords[i*3+1] = (float)( radius*Math.cos(theta));
             starFieldCoords[i*3+2] = (float)(-radius*Math.sin(theta)*Math.sin(phi));
-            float mag = 0.2f + 0.8f * rand.nextFloat();
-            starFieldColors[i*4+0] = starFieldColors[i*4+1] = starFieldColors[i*4+2] = mag;
-            starFieldColors[i*4+3] = 1f;
+            // generate color
+            starFieldColors[i*4+0] = mag; // R
+            starFieldColors[i*4+1] = mag; // G
+            starFieldColors[i*4+2] = mag; // B
+            starFieldColors[i*4+3] = 1f; // A
         }
         
         setBuffer(Type.Position, 3, starFieldCoords);
