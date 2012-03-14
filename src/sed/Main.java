@@ -7,6 +7,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
+import sed.app.CameraAppState;
 import sed.app.CloudAppState;
 import sed.app.DebugAppState;
 import sed.app.GuiAppState;
@@ -66,8 +67,6 @@ public class Main extends SimpleApplication {
         
         assetManager.registerLoader(XMLLoader.class, "xml");
         assetManager.registerLoader(MapLoader.class, "map");
-        inputManager.deleteTrigger("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Z));
-        inputManager.addMapping("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Y));
         
         int numWorker = (int) (1.5f * Runtime.getRuntime().availableProcessors());
         logger.info(String.format("Worker thread pool size: %d", numWorker));
@@ -80,17 +79,10 @@ public class Main extends SimpleApplication {
         
         speed = 1f;
         
-        flyCam.setMoveSpeed(3e2f);
-        //flyCam.setDragToRotate(true);
-        cam.setLocation(new Vector3f(0, -450f, 0));
-        //cam.setRotation(new Quaternion(new float[] {-90*FastMath.DEG_TO_RAD,0,0}));
-        cam.lookAtDirection(Vector3f.UNIT_Y, Vector3f.UNIT_Z);
-        //cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Z);
-        cam.setFrustumPerspective(45f, (float)cam.getWidth() / cam.getHeight(), 1f, 2000f);
-        
         // AppState base layer:
         // these serve as a common base for the higher AppStates
-        stateManager.attach(new WeatherAppState("clear"));
+        stateManager.attach(new CameraAppState(2000f));
+        stateManager.attach(new WeatherAppState("clear", "snowy"));
         stateManager.attach(new SkyAppState());
         
         // AppState higher layer:
