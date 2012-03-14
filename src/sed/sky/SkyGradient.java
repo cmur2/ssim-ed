@@ -2,6 +2,7 @@ package sed.sky;
 
 import sed.TempVars;
 import sed.Util;
+import ssim.util.MathExt;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -20,8 +21,8 @@ public class SkyGradient {
     public static final float NightThetaMin = 100f; // in degrees
     public static final float NightThetaMax = NightThetaMin + NightThetaRange; // in degrees
     
-    // a dark blue for the sky
-    public static final ColorRGBA NightSkyColor = new ColorRGBA(0f, 0f, 0.08f, 1f);
+    // a dark gray for the sky
+    public static final ColorRGBA NightSkyColor = new ColorRGBA(0.08f, 0.08f, 0.08f, 1f);
     
     // since the sun is below the horizon it should actually be black
     public static final ColorRGBA NightSunColor = ColorRGBA.Black;
@@ -247,9 +248,9 @@ public class SkyGradient {
         colors[0] = (float) (gammaCorrection.y + gammaCorrection.z * Math.pow(colors[0], gammaCorrection.x));
         colors[1] = (float) (gammaCorrection.y + gammaCorrection.z * Math.pow(colors[1], gammaCorrection.x));
         colors[2] = (float) (gammaCorrection.y + gammaCorrection.z * Math.pow(colors[2], gammaCorrection.x));
-        /*colors[0] = MathExt.clamp01(colors[0]);
+        colors[0] = MathExt.clamp01(colors[0]);
         colors[1] = MathExt.clamp01(colors[1]);
-        colors[2] = MathExt.clamp01(colors[2]);*/
+        colors[2] = MathExt.clamp01(colors[2]);
         // @formatter:on
     }
     
