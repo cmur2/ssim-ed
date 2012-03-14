@@ -6,6 +6,7 @@ import java.util.Arrays;
 import javax.vecmath.Color3f;
 
 import sed.MapLoader;
+import sed.terrain.BinaryMap;
 import sed.terrain.BinaryMapTileLoader;
 
 import com.jme3.app.Application;
@@ -44,8 +45,8 @@ public class TerrainAppState extends BasicAppState {
         super.initialize(stateManager, baseApp);
         
         String path = String.format("maps/%s", getApp().getMission().getMapFile());
-        AssetKey<MapLoader.Map> mapKey = new AssetKey<MapLoader.Map>(path);
-        MapLoader.Map map = getApp().getAssetManager().loadAsset(mapKey);
+        AssetKey<BinaryMap> mapKey = new AssetKey<BinaryMap>(path);
+        BinaryMap map = getApp().getAssetManager().loadAsset(mapKey);
         
         // TODO: implement terrain shader(s)
         Material mat = new Material(getApp().getAssetManager(), "shaders/TerrainGradient.j3md");

@@ -2,11 +2,9 @@ package sed.terrain;
 
 import com.jme3.math.Vector3f;
 
-import sed.MapLoader;
-
 public class BinaryMapManipulator {
     
-    public static float[] testcrop(MapLoader.Map map, int size) {
+    public static float[] testcrop(BinaryMap map, int size) {
         float[] data = new float[size*size];
         for(int z = 0; z < size; z++) {
             for(int x = 0; x < size; x++) {
@@ -16,7 +14,7 @@ public class BinaryMapManipulator {
         return data;
     }
     
-    public static float[] test(MapLoader.Map map, int size) {
+    public static float[] test(BinaryMap map, int size) {
         float[] data = new float[size*size];
         data[0] = 255;
         int x = 0;
@@ -25,7 +23,7 @@ public class BinaryMapManipulator {
         return data;
     }
     
-    public static float[] crop(MapLoader.Map map, Vector3f offset, int quadSize) {
+    public static float[] crop(BinaryMap map, Vector3f offset, int quadSize) {
         float[] data = new float[quadSize*quadSize];
         for(int z = 0; z < quadSize; z++) {
             for(int x = 0; x < quadSize; x++) {

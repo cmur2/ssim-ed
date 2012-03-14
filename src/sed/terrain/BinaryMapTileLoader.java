@@ -2,8 +2,6 @@ package sed.terrain;
 
 import java.io.IOException;
 
-import sed.MapLoader;
-
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.math.Vector3f;
@@ -13,12 +11,12 @@ import com.jme3.terrain.heightmap.HeightMap;
 
 public class BinaryMapTileLoader implements TerrainGridTileLoader {
 
-    private MapLoader.Map map;
+    private BinaryMap map;
     
     private int patchSize;
     private int quadSize;
     
-    public BinaryMapTileLoader(MapLoader.Map map) {
+    public BinaryMapTileLoader(BinaryMap map) {
         this.map = map;
     }
     

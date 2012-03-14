@@ -1,13 +1,11 @@
 package sed.terrain;
 
-import sed.MapLoader;
-
 import com.jme3.math.Vector3f;
 import com.jme3.terrain.heightmap.HeightMap;
 
 public class BinaryMapBasedHeightMap implements HeightMap {
 
-    private MapLoader.Map map;
+    private BinaryMap map;
     private Vector3f offset;
     private int quadSize;
 
@@ -19,7 +17,7 @@ public class BinaryMapBasedHeightMap implements HeightMap {
     /** The filter is used to erode the terrain. */
     private float filter = 0.5f;
     
-    public BinaryMapBasedHeightMap(MapLoader.Map map, Vector3f offset, int quadSize) {
+    public BinaryMapBasedHeightMap(BinaryMap map, Vector3f offset, int quadSize) {
         this.map = map;
         this.offset = offset;
         this.quadSize = quadSize;
