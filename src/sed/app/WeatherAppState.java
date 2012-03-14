@@ -9,12 +9,21 @@ import sed.weather.WindInterpolator;
 import sed.weather.XMLPropertySetBuilder;
 
 import com.jme3.app.Application;
+import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Vector3f;
 
+/**
+ * <b>Base layer</b> {@link AppState} exposing the {@link Weather} interface
+ * for all interested entities and responsible for weather changes.
+ * 
+ * @author cn
+ */
 public class WeatherAppState extends BasicAppState {
     
     private String[] sets;
+    
+    // exists only while AppState is attached
     private WeatherController weatherController;
     
     public WeatherAppState(String... sets) {

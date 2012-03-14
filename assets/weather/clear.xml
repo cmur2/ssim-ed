@@ -18,7 +18,7 @@
         <zoom>40</zoom> <!-- static value -->
     </cloud>
     <wind>
-        <!-- north east -->
+        <!-- from north west -->
         <direction>315</direction>
         <strength>0</strength>
     </wind>
