@@ -34,7 +34,7 @@ public class CloudAppState extends BasicAppState {
     private static final boolean UseGPU = true;
     
     private static final Vector3f CloudPlaneTranslation = new Vector3f(0, 500, 0);
-    private static final float CloudPlaneSize = 750f; // in m
+    private static final float CloudPlaneSize = 1500f; // in m
     private static final float CloudPlaneHeightScale = 50f; // in m
     
     private static final Vector2f WindScale = new Vector2f(0.001f, 0.003f);

@@ -1,12 +1,12 @@
 
 // 0.0 - fading starts at center
 // 0.5 - no fading
-const float DIST_OFFSET = 1.0;
+const float DIST_OFFSET = 0.4;
 
 // 0.0 - no falloff in alpha
-const float FALLOFF = 2.0;
+const float FALLOFF = 10.0;
 
-uniform sampler2D m_ColorMap; // tex unit 0
+uniform sampler2D m_ColorMap;
 
 varying vec2 varTexCoord;
 
@@ -22,6 +22,6 @@ void main() {
     vec2 diff = max(abs(varTexCoord - 0.5) - DIST_OFFSET, 0.0); // at least 0
     float dist = max(diff.s, diff.t);
     color.a *= clamp(pow(1.0 - FALLOFF * dist, 2.0), 0.0, 1.0);
-
+    
     gl_FragColor = color;
 }
