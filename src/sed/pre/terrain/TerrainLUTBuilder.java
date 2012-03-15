@@ -17,8 +17,10 @@ public class TerrainLUTBuilder extends TextureMapBuilder {
         this.maxAltitude = maxAltitude;
     }
     
-    public void setTypeRect(TerrainType type, int x, int y, int w, int h) {
-        System.out.format("setTypeRect(%s,%d,%d,%d,%d)\n", type, x, y, w, h);
+    public void setTypeRect(TerrainType type, int xs, int ys, int xe, int ye) {
+        System.out.format("setTypeRect(%s,%d,%d,%d,%d)\n", type, xs, ys, xe, ye);
+        int w = xe-xs;
+        int h = ye-ys;
         int rValue = typeToRedValue(type);
         int[] data = new int[w*h*4];
         for(int index = 0; index < w*h*4; index += 4) {
@@ -27,7 +29,7 @@ public class TerrainLUTBuilder extends TextureMapBuilder {
             data[index+2] = 0; // B
             data[index+3] = 255; // A
         }
-        getTexture().getRaster().setPixels(x, y, w, h, data);
+        getTexture().getRaster().setPixels(xs, ys, w, h, data);
     }
     
     public void setType(TerrainType type, float startSlope, float endSlope,
@@ -49,7 +51,7 @@ public class TerrainLUTBuilder extends TextureMapBuilder {
         
         setTypeRect(type,
             (int) (xs * getWidth()), (int) (ys * getHeight()),
-            (int) ((xe-xs) * getWidth()), (int) ((ye-ys) * getHeight()));
+            (int) (xe * getWidth()), (int) (ye * getHeight()));
     }
     
     public float getCoverage(TerrainType type) {
