@@ -27,6 +27,9 @@ public class TerrainLUTGenerator {
             // real data
             setType(TerrainType.Gras,        0, 20,    10,  7000);
             setType(TerrainType.Mountain,   20, 90,    10,  7000);
+            // under water
+            setType(TerrainType.LakeFloor,   0, 90,   -50,   -10);
+            setType(TerrainType.OceanFloor,  0, 90, -7000,   -50);
         }};
         
         float defaultCov = builder.getCoverage(TerrainType.Default);

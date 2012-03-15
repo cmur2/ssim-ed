@@ -15,7 +15,17 @@ public enum TerrainType {
     /**
      * High mountains.
      */
-    Mountain(2);
+    Mountain(2),
+    
+    /**
+     * Floor of shallow waters.
+     */
+    LakeFloor(8),
+    
+    /**
+     * Floor of deep waters.
+     */
+    OceanFloor(9);
     
     private int id;
     
