@@ -7,7 +7,7 @@ public class TextureMapBuilder {
     private int width;
     private int height;
     
-    protected BufferedImage texture;
+    private BufferedImage texture;
     
     public TextureMapBuilder(int width, int height) {
         this.width = width;
@@ -15,7 +15,15 @@ public class TextureMapBuilder {
         texture = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
     }
     
-    public final BufferedImage getTexture() {
+    public int getWidth() {
+        return width;
+    }
+    
+    public int getHeight() {
+        return height;
+    }
+    
+    public BufferedImage getTexture() {
         return texture;
     }
 }

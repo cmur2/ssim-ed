@@ -22,11 +22,17 @@ public class TerrainLUTGenerator {
         
         System.out.println("Applying commands...");
         
-        TerrainLUTBuilder builder = new TerrainLUTBuilder(Width, Height) {{
-            setType(TerrainType.Default, 0, 0, Width, Height);
-            setType(TerrainType.Gras, Width-84, 0, 84, 128);
-            setType(TerrainType.Mountain, 0, 0, Width-84, 128);
+        TerrainLUTBuilder builder = new TerrainLUTBuilder(Width, Height, 7000f) {{
+            setTypeRect(TerrainType.Default, 0, 0, Width, Height);
+            // real data
+            setType(TerrainType.Gras,        0, 20,    10,  7000);
+            setType(TerrainType.Mountain,   20, 90,    10,  7000);
         }};
+        
+        float defaultCov = builder.getCoverage(TerrainType.Default);
+        System.out.format("Default coverage: %.2g%%%s\n",
+            defaultCov*100f,
+            defaultCov > 0.1f ? " (warning!)" : "");
         
         BufferedImage lutTex = builder.getTexture();
         try {
