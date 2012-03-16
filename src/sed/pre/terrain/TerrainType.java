@@ -8,14 +8,19 @@ public enum TerrainType {
     Default(0),
     
     /**
+     * Shallow beach.
+     */
+    Beach(1),
+    
+    /**
      * Green shallow grass lands.
      */
-    Gras(1),
+    Gras(2),
     
     /**
      * High mountains.
      */
-    Mountain(2),
+    Mountain(3),
     
     /**
      * Floor of shallow waters.

@@ -78,6 +78,6 @@ public class TerrainLUTBuilder extends TextureMapBuilder {
     }
     
     private int typeToRedValue(TerrainType type) {
-        return type.getId()*32;
+        return type.getId();
     }
 }

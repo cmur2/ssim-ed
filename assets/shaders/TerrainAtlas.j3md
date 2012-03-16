@@ -1,6 +1,7 @@
 MaterialDef TerrainGradient {
     MaterialParameters {
         Texture2D TextureTable
+        Texture2D TextureAtlas
         Float InvMaxAltitude
     }
     Technique {

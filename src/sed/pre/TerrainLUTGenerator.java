@@ -28,11 +28,12 @@ public class TerrainLUTGenerator {
         TerrainLUTBuilder builder = new TerrainLUTBuilder(Width, Height, maxA) {{
             setTypeRect(TerrainType.Default, 0, 0, Width, Height);
             // real data
-            setType(TerrainType.Gras,        0, 20,    10,  maxA);
-            setType(TerrainType.Mountain,   20, 90,    10,  maxA);
+            setType(TerrainType.Beach,       0, 90,   -50,    50);
+            setType(TerrainType.Gras,        0, 90,    50,  2000);
+            setType(TerrainType.Mountain,    0, 90,  2000,  maxA);
             // under water
-            setType(TerrainType.LakeFloor,   0, 90,   -50,   -10);
-            setType(TerrainType.OceanFloor,  0, 90, -maxA,   -50);
+            setType(TerrainType.LakeFloor,   0, 90,  -100,   -50);
+            setType(TerrainType.OceanFloor,  0, 90, -maxA,  -100);
         }};
         
         float defaultCov = builder.getCoverage(TerrainType.Default);

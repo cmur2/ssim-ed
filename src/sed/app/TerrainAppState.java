@@ -17,6 +17,9 @@ import com.jme3.terrain.geomipmap.TerrainGridTileLoader;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
 import com.jme3.texture.Image;
+import com.jme3.texture.Texture;
+import com.jme3.texture.Texture.MagFilter;
+import com.jme3.texture.Texture.MinFilter;
 import com.jme3.texture.Texture2D;
 import com.jme3.util.BufferUtils;
 
@@ -46,7 +49,12 @@ public class TerrainAppState extends BasicAppState {
         
         // TODO: implement terrain shader(s)
         Material mat = new Material(getApp().getAssetManager(), "shaders/TerrainAtlas.j3md");
-        mat.setTexture("TextureTable", getApp().getAssetManager().loadTexture("textures/TerrainLUT.png"));
+        Texture lutTex = getApp().getAssetManager().loadTexture("textures/TerrainLUT.png");
+        lutTex.setMinFilter(MinFilter.NearestNoMipMaps);
+        lutTex.setMagFilter(MagFilter.Nearest);
+        mat.setTexture("TextureTable", lutTex);
+        Texture taTex = getApp().getAssetManager().loadTexture("textures/TerrainTA.png");
+        mat.setTexture("TextureAtlas", taTex);
         mat.setFloat("InvMaxAltitude", 1f/sed.pre.TerrainLUTGenerator.MaxAltitude);
         
 //        Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
