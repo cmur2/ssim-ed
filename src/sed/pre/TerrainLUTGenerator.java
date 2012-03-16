@@ -11,6 +11,8 @@ import sed.pre.terrain.TerrainType;
 
 public class TerrainLUTGenerator {
     
+    public static final float MaxAltitude = 7000f;
+    
     private static final int Width = 256;
     private static final int Height = 256;
     
@@ -22,14 +24,15 @@ public class TerrainLUTGenerator {
         
         System.out.println("Applying commands...");
         
-        TerrainLUTBuilder builder = new TerrainLUTBuilder(Width, Height, 7000f) {{
+        final float maxA = MaxAltitude;
+        TerrainLUTBuilder builder = new TerrainLUTBuilder(Width, Height, maxA) {{
             setTypeRect(TerrainType.Default, 0, 0, Width, Height);
             // real data
-            setType(TerrainType.Gras,        0, 20,    10,  7000);
-            setType(TerrainType.Mountain,   20, 90,    10,  7000);
+            setType(TerrainType.Gras,        0, 20,    10,  maxA);
+            setType(TerrainType.Mountain,   20, 90,    10,  maxA);
             // under water
             setType(TerrainType.LakeFloor,   0, 90,   -50,   -10);
-            setType(TerrainType.OceanFloor,  0, 90, -7000,   -50);
+            setType(TerrainType.OceanFloor,  0, 90, -maxA,   -50);
         }};
         
         float defaultCov = builder.getCoverage(TerrainType.Default);
