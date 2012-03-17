@@ -69,6 +69,7 @@ public class Main extends SimpleApplication {
         
         assetManager.registerLoader(XMLLoader.class, "xml");
         assetManager.registerLoader(MapLoader.class, "map");
+        assetManager.registerLoader(PropertiesLoader.class, "properties");
         
         int numWorker = (int) (1.5f * Runtime.getRuntime().availableProcessors());
         logger.info(String.format("Worker thread pool size: %d", numWorker));
