@@ -19,6 +19,9 @@ import sed.app.SunAppState;
 import sed.app.WeatherAppState;
 import sed.mission.Mission;
 import sed.mission.MissionParser;
+import sed.util.MapLoader;
+import sed.util.PropertiesLoader;
+import sed.util.XMLLoader;
 import ssim.sim.SimClock;
 import chlib.noise.NoiseUtil;
 

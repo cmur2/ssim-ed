@@ -2,11 +2,11 @@ package sed.app;
 
 import org.apache.log4j.Logger;
 
-import sed.TempVars;
 import sed.sky.CPUCloudProcessor;
 import sed.sky.CloudPlane;
 import sed.sky.CloudProcessor;
 import sed.sky.GPUCloudProcessor;
+import sed.util.TempVars;
 import sed.weather.Weather;
 
 import com.jme3.app.Application;

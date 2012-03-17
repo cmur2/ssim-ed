@@ -1,8 +1,10 @@
-package sed;
+package sed.util;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import sed.util.Util;
 
 public class UtilTest {
     

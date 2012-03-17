@@ -1,4 +1,4 @@
-package sed;
+package sed.util;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;

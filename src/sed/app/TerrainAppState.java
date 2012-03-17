@@ -1,7 +1,7 @@
 package sed.app;
 
-import sed.MapLoader;
-import sed.MapLoader.Map;
+import sed.util.MapLoader;
+import sed.util.MapLoader.Map;
 import jme3tools.converters.ImageToAwt;
 
 import com.jme3.app.Application;

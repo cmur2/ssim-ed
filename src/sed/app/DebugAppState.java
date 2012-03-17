@@ -1,7 +1,7 @@
 package sed.app;
 
 import sed.DebugGridMesh;
-import sed.TempVars;
+import sed.util.TempVars;
 import sed.weather.WindRose;
 
 import com.jme3.app.Application;

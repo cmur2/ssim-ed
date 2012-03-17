@@ -1,7 +1,7 @@
 package sed.app;
 
-import sed.TempVars;
-import sed.Util;
+import sed.util.TempVars;
+import sed.util.Util;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppState;

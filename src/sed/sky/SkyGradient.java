@@ -1,7 +1,7 @@
 package sed.sky;
 
-import sed.TempVars;
-import sed.Util;
+import sed.util.TempVars;
+import sed.util.Util;
 import ssim.util.MathExt;
 
 import com.jme3.math.ColorRGBA;

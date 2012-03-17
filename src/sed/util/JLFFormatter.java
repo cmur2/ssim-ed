@@ -1,4 +1,4 @@
-package sed;
+package sed.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

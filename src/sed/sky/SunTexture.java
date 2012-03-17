@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.log4j.Logger;
 
-import sed.TempVars;
+import sed.util.TempVars;
 import ssim.util.MathExt;
 
 import com.jme3.math.Vector2f;
