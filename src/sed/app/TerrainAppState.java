@@ -1,9 +1,6 @@
 package sed.app;
 
-import java.nio.ByteBuffer;
 import java.util.Arrays;
-
-import javax.vecmath.Color3f;
 
 import sed.terrain.BinaryMap;
 import sed.terrain.BinaryMapTileLoader;
@@ -12,16 +9,14 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetKey;
 import com.jme3.material.Material;
+import com.jme3.math.Vector3f;
 import com.jme3.terrain.geomipmap.TerrainGrid;
 import com.jme3.terrain.geomipmap.TerrainGridTileLoader;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
-import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.MagFilter;
 import com.jme3.texture.Texture.MinFilter;
-import com.jme3.texture.Texture2D;
-import com.jme3.util.BufferUtils;
 
 public class TerrainAppState extends BasicAppState {
     
@@ -59,6 +54,14 @@ public class TerrainAppState extends BasicAppState {
         taTex.setMinFilter(MinFilter.BilinearNoMipMaps);
         mat.setTexture("TextureAtlas", taTex);
         mat.setFloat("InvMaxAltitude", 1f/sed.pre.TerrainLUTGenerator.MaxAltitude);
+        Vector3f atlasParameters = new Vector3f();
+        // x: nTilesWidth (== nTilesHeight)
+        // y: 1 / nTilesWidth
+        // z: 1 / width (== 1/height)
+        atlasParameters.x = sed.pre.TerrainTAGenerator.NumTiles;
+        atlasParameters.y = 1f/atlasParameters.x;
+        atlasParameters.z = 1f/sed.pre.TerrainTAGenerator.TexSize;
+        mat.setVector3("AtlasParameters", atlasParameters);
         
 //        Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
 //        mat.setColor("Diffuse", com.jme3.math.ColorRGBA.Green);

@@ -3,6 +3,7 @@ MaterialDef TerrainGradient {
         Texture2D TextureTable
         Texture2D TextureAtlas
         Float InvMaxAltitude
+        Vector3 AtlasParameters
     }
     Technique {
         LightMode MultiPass

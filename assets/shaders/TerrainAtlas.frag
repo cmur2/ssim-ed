@@ -4,6 +4,7 @@ uniform vec4 g_LightColor;
 uniform sampler2D m_TextureTable;
 uniform sampler2D m_TextureAtlas;
 uniform float m_InvMaxAltitude;
+uniform vec3 m_AtlasParameters;
 
 varying vec3 varNormal;
 varying vec2 varTexCoord;
@@ -15,15 +16,18 @@ void main() {
     vec2 terrainTypeCoord = vec2(varSlope, varZ * m_InvMaxAltitude * 0.5 + 0.5);
     int id = int(texture2D(m_TextureTable, terrainTypeCoord).r * 256.0);
 
-    vec2 offset = vec2(mod(float(id), 4.0), id / 4);
+    vec2 offset = vec2(mod(float(id), m_AtlasParameters.x), id / int(m_AtlasParameters.x));
 
-    //vec2 texCoord = offset * 0.25 + 0.125;
-    vec2 texCoord = offset * 0.25 + 0.5/256.0 + fract(varTexCoord) * (0.25-1.0/256.0);
+    // always use the center of each tile, ignore varTexCoord:
+    //vec2 texCoord = (offset + 0.5) * m_AtlasParameters.y;
 
-    //vec4 material_diffuse = vec4(0.1,0.1,0.1,1.0);
+    // use offset, add a border to prevent false wrapping/bilinear filtering and
+    // schrink the amount to which varTexCoord is expanded to tile width-2*border
+    vec2 texCoord =
+        offset * m_AtlasParameters.y + m_AtlasParameters.z +
+        fract(varTexCoord) * (m_AtlasParameters.y - 2.0 * m_AtlasParameters.z);
+
     vec4 material_diffuse = texture2D(m_TextureAtlas, texCoord);
-    //float x = float(id)/16.0;
-    //material_diffuse.r = offset.x;
 
     vec3 vNormal = normalize(varNormal);
 
