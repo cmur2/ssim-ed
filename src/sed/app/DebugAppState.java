@@ -22,6 +22,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.control.BillboardControl;
 import com.jme3.scene.debug.Arrow;
+import com.jme3.scene.shape.Sphere;
 
 public class DebugAppState extends BasicAppState {
     
@@ -57,6 +58,8 @@ public class DebugAppState extends BasicAppState {
         buildTheFourWinds();
         
         buildWindRose(1f);
+        
+        //buildLightDebugSphere();
         
         intervalUpdate();
         
@@ -154,6 +157,22 @@ public class DebugAppState extends BasicAppState {
         geom.setLocalTranslation(0, StandardRadius/2, 0);
         windRoseGeom = geom;
         debugNode.attachChild(geom);
+    }
+    
+    private void buildLightDebugSphere() {
+        Sphere rockSphere = new Sphere(32,32, 2f);
+        Geometry rockGeom = new Geometry("LightSphere", rockSphere);
+        rockSphere.setTextureMode(Sphere.TextureMode.Projected);
+        com.jme3.util.TangentBinormalGenerator.generate(rockSphere);
+        Material rockMat = new Material(getApp().getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
+        rockMat.setColor("Diffuse", ColorRGBA.White);
+        rockMat.setTexture("DiffuseMap", getApp().getAssetManager().loadTexture("Textures/Terrain/Pond/Pond.jpg"));
+        rockMat.setTexture("NormalMap", getApp().getAssetManager().loadTexture("Textures/Terrain/Pond/Pond_normal.png"));
+        rockMat.setFloat("Shininess", 5f); // [1,128]
+        rockGeom.setMaterial(rockMat);
+        rockGeom.rotate(1.6f, 0, 0);
+        rockGeom.scale(10f);
+        debugNode.attachChild(rockGeom);
     }
     
     @Override
