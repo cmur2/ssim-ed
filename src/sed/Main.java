@@ -23,6 +23,7 @@ import sed.mission.MissionParser;
 import sed.settings.FileLayer;
 import sed.settings.LayeredSettingsManager;
 import sed.settings.PropertiesLayer;
+import sed.settings.SettingsManager;
 import sed.util.MapLoader;
 import sed.util.PropertiesLoader;
 import sed.util.XMLLoader;
@@ -61,8 +62,13 @@ public class Main extends SimpleApplication {
         AppSettings as = new AppSettings(true);
         as.setTitle("SSim Environment Demo");
         as.setVSync(settings.getBoolean("display.vsync"));
+        {
+            String[] wh = settings.getString("display.resolution").split("x");
+            as.setResolution(Integer.parseInt(wh[0]), Integer.parseInt(wh[1]));
+        }
+        as.setFullscreen(settings.getBoolean("display.fullscreen"));
         
-        Main main = new Main();
+        Main main = new Main(settings);
         main.setSettings(as);
         main.setShowSettings(false);
         main.start();
@@ -70,13 +76,18 @@ public class Main extends SimpleApplication {
     
     private float time = 0;
     
+    private SettingsManager settingsManager;
     private ScheduledExecutorService executor;
     private Mission mission;
     private SimClock simClock;
     
+    public Main(SettingsManager settingsManager) {
+        this.settingsManager = settingsManager;
+    }
+    
     @Override
     public void simpleInitApp() {
-        // TODO: Settings system
+        setDisplayStatView(settingsManager.getBoolean("debug.stats"));
         
         // TODO: Initialize NoiseUtil with random seed
         NoiseUtil.reinitialize(DebugSeed);
