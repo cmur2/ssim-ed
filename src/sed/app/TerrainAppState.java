@@ -54,6 +54,9 @@ public class TerrainAppState extends BasicAppState {
         lutTex.setMagFilter(MagFilter.Nearest);
         mat.setTexture("TextureTable", lutTex);
         Texture taTex = getApp().getAssetManager().loadTexture("textures/TerrainTA.png");
+        // Temporary hack to prevent mip map usage on GPU, we could use
+        // NearestNoMipMaps too:
+        taTex.setMinFilter(MinFilter.BilinearNoMipMaps);
         mat.setTexture("TextureAtlas", taTex);
         mat.setFloat("InvMaxAltitude", 1f/sed.pre.TerrainLUTGenerator.MaxAltitude);
         
