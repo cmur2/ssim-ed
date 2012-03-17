@@ -12,8 +12,8 @@ import sed.pre.terrain.TerrainType;
 
 public class TerrainTAGenerator {
 
-    private static final int Width = 256;
-    private static final int Height = 256;
+    public static final int TexSize = 256;
+    public static final int NumTiles = 4;
     
     public static void main(String[] args) {
         System.out.println("Terrain TA Generator");
@@ -23,7 +23,7 @@ public class TerrainTAGenerator {
         
         System.out.println("Applying commands...");
         
-        TerrainTABuilder taBuilder = new TerrainTABuilder(Width, Height) {{
+        TerrainTABuilder taBuilder = new TerrainTABuilder(TexSize, TexSize, NumTiles, NumTiles) {{
             setAll(Color.magenta);
             setType(TerrainType.Default, Color.red);
             // real data

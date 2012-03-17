@@ -6,11 +6,13 @@ import sed.pre.TextureMapBuilder;
 
 public class TerrainTABuilder extends TextureMapBuilder {
 
-    private static final int nTilesWidth = 4;
-    private static final int nTilesHeight = 4;
+    private int nTilesWidth;
+    private int nTilesHeight;
     
-    public TerrainTABuilder(int width, int height) {
+    public TerrainTABuilder(int width, int height, int nTilesWidth, int nTilesHeight) {
         super(width, height);
+        this.nTilesWidth = nTilesWidth;
+        this.nTilesHeight = nTilesHeight;
     }
     
     public void setAll(Color color) {
