@@ -1,5 +1,6 @@
 package sed;
 
+import java.io.File;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -19,6 +20,9 @@ import sed.app.SunAppState;
 import sed.app.WeatherAppState;
 import sed.mission.Mission;
 import sed.mission.MissionParser;
+import sed.settings.FileLayer;
+import sed.settings.LayeredSettingsManager;
+import sed.settings.PropertiesLayer;
 import sed.util.MapLoader;
 import sed.util.PropertiesLoader;
 import sed.util.XMLLoader;
@@ -46,9 +50,17 @@ public class Main extends SimpleApplication {
         }
         JLFBridge.installBridge();
         
+        // initialize settings manager
+        LayeredSettingsManager settings = new LayeredSettingsManager();
+        // add layer
+        logger.info("Loading default properties");
+        settings.addLayer(PropertiesLayer.fromStream(Main.class.getResourceAsStream("default.properties")));
+        settings.addLayer(new FileLayer(new File("sed.properties"), false));
+        settings.addLayer(new FileLayer(new File(System.getProperty("user.home")+"/sed.properties"), true));
+        
         AppSettings as = new AppSettings(true);
         as.setTitle("SSim Environment Demo");
-        //as.setVSync(true);
+        as.setVSync(settings.getBoolean("display.vsync"));
         
         Main main = new Main();
         main.setSettings(as);
