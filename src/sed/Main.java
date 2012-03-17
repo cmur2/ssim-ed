@@ -26,6 +26,7 @@ import ssim.sim.SimClock;
 import chlib.noise.NoiseUtil;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.system.AppSettings;
 
 import de.altimos.util.logger.JLFBridge;
 
@@ -45,7 +46,12 @@ public class Main extends SimpleApplication {
         }
         JLFBridge.installBridge();
         
+        AppSettings as = new AppSettings(true);
+        as.setTitle("SSim Environment Demo");
+        //as.setVSync(true);
+        
         Main main = new Main();
+        main.setSettings(as);
         main.setShowSettings(false);
         main.start();
     }
