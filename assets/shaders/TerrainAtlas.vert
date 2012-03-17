@@ -9,8 +9,10 @@ uniform vec4 g_LightPosition;
 
 attribute vec3 inPosition;
 attribute vec3 inNormal;
+attribute vec2 inTexCoord;
 
 varying vec3 varNormal;
+varying vec2 varTexCoord;
 varying float varSlope;
 varying float varZ;
 varying vec4 varLightDir;
@@ -28,6 +30,7 @@ vec4 lightComputeDir(in vec3 worldPos, in vec4 color, in vec4 position) {
 
 void main() {
     varNormal = normalize(g_NormalMatrix * inNormal);
+    varTexCoord = inTexCoord;
     varSlope = dot(inNormal, vec3(0.0,1.0,0.0));
     varZ = inPosition.y;
 
