@@ -2,7 +2,7 @@ package sed.settings;
 
 import java.util.ArrayList;
 
-public class LayeredSettingsManager implements Settings {
+public class LayeredSettingsManager implements SettingsManager {
 
     private ArrayList<Layer> layers = new ArrayList<Layer>();
     
