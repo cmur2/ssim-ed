@@ -68,4 +68,9 @@ public class FileLayer implements WritableLayer {
             throw new RuntimeIOException(ex);
         }
     }
+    
+    @Override
+    public String toString() {
+        return String.format("FileLayer(%s)", fileHandler.getFile().getAbsolutePath());
+    }
 }
