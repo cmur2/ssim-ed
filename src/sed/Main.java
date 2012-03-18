@@ -123,7 +123,6 @@ public class Main extends SimpleApplication {
         stateManager.attach(new LightingAppState());
         stateManager.attach(new StarAppState());
         stateManager.attach(new CloudAppState());
-        //stateManager.attach(new TerrainAppState());
         stateManager.attach(new GuiAppState());
         stateManager.attach(new DebugAppState());
     }
