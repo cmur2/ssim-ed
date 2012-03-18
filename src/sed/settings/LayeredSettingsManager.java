@@ -21,8 +21,6 @@ public class LayeredSettingsManager implements SettingsManager {
     private ArrayList<Layer> layers = new ArrayList<Layer>();
     private WritableLayer writableLayer;
     
-    // TODO: ensure that upper layers do not contain settings not existent in lowest layer
-    
     public LayeredSettingsManager() {
     }
     
@@ -89,6 +87,9 @@ public class LayeredSettingsManager implements SettingsManager {
         for(int i = layers.size()-1; i >= 0; i--) {
             String value = layers.get(i).getProperty(key);
             if(value != null) {
+                // We *could* assert here that the lowest layer (0) contains
+                // this setting too but this sounds like overkill:
+                //assert layers.get(0).getProperty(key) != null;
                 return value;
             }
         }
