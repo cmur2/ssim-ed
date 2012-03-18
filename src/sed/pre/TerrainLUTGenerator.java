@@ -27,13 +27,20 @@ public class TerrainLUTGenerator {
         final float maxA = MaxAltitude;
         TerrainLUTBuilder builder = new TerrainLUTBuilder(Width, Height, maxA) {{
             setTypeRect(TerrainType.Default, 0, 0, Width, Height);
-            // real data
-            setType(TerrainType.Beach,       0, 90,   -50,    50);
-            setType(TerrainType.Gras,        0, 90,    50,  2000);
-            setType(TerrainType.Mountain,    0, 90,  2000,  maxA);
-            // under water
-            setType(TerrainType.LakeFloor,   0, 90,  -100,   -50);
+            
             setType(TerrainType.OceanFloor,  0, 90, -maxA,  -100);
+            setType(TerrainType.LakeFloor,   0, 90,  -100,   -25);
+            
+            setType(TerrainType.Shore,       0, 10,   -25,    25);
+            setType(TerrainType.Cliff,      10, 90,   -25,    25);
+            
+            setType(TerrainType.Plain,       0,  5,    25,  1500);
+            setType(TerrainType.HighPlain,   0,  5,  1500,  3000);
+            setType(TerrainType.Hill,        5, 90,    25,  3000);
+            
+            setType(TerrainType.MountainTop,   0,  3,  3000,  maxA);
+            setType(TerrainType.Mountains,     3, 90,  3000,  5000);
+            setType(TerrainType.HighMountains, 3, 90,  5000,  maxA);
         }};
         
         float defaultCov = builder.getCoverage(TerrainType.Default);

@@ -26,13 +26,20 @@ public class TerrainTAGenerator {
         TerrainTABuilder taBuilder = new TerrainTABuilder(TexSize, TexSize, NumTiles, NumTiles) {{
             setAll(Color.magenta);
             setType(TerrainType.Default, Color.red);
-            // real data
-            setType(TerrainType.Beach, new Color(240, 192, 64, 255));
-            setType(TerrainType.Gras, new Color(144, 208, 64, 255));
-            setType(TerrainType.Mountain, new Color(96, 112, 128, 255));
-            // under water
-            setType(TerrainType.LakeFloor, new Color(96, 64, 0, 255));
-            setType(TerrainType.OceanFloor, new Color(48, 26, 16, 255));
+            
+            setType(TerrainType.OceanFloor, new Color(48, 26, 16));
+            setType(TerrainType.LakeFloor, new Color(96, 64, 0));
+            
+            setType(TerrainType.Shore, new Color(199, 168, 85));
+            setType(TerrainType.Cliff, new Color(170, 140, 60));
+            
+            setType(TerrainType.Plain, new Color(100, 188, 64));
+            setType(TerrainType.HighPlain, new Color(205, 255, 91));
+            setType(TerrainType.Hill, new Color(144, 208, 64));
+            
+            setType(TerrainType.MountainTop, new Color(245, 245, 245));
+            setType(TerrainType.Mountains, new Color(171, 124, 104));
+            setType(TerrainType.HighMountains, new Color(110, 120, 128));
         }};
         
         BufferedImage taTex = taBuilder.getTexture();

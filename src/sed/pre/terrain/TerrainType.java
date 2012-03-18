@@ -8,29 +8,54 @@ public enum TerrainType {
     Default(0),
     
     /**
-     * Shallow beach.
-     */
-    Beach(1),
-    
-    /**
-     * Green shallow grass lands.
-     */
-    Gras(2),
-    
-    /**
-     * High mountains.
-     */
-    Mountain(3),
-    
-    /**
      * Floor of shallow waters.
      */
-    LakeFloor(8),
+    LakeFloor(1),
     
     /**
      * Floor of deep waters.
      */
-    OceanFloor(9);
+    OceanFloor(2),
+    
+    /**
+     * Shallow shore.
+     */
+    Shore(3),
+    
+    /**
+     * Steep coast.
+     */
+    Cliff(4),
+    
+    /**
+     * Flat plains.
+     */
+    Plain(5),
+    
+    /**
+     * High flat plains.
+     */
+    HighPlain(6),
+    
+    /**
+     * Small hills.
+     */
+    Hill(7),
+    
+    /**
+     * Flat mountain tops.
+     */
+    MountainTop(8),
+    
+    /**
+     * High mountains.
+     */
+    Mountains(9),
+    
+    /**
+     * Very high mountains.
+     */
+    HighMountains(10);
     
     private int id;
     
