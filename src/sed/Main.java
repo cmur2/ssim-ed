@@ -89,8 +89,11 @@ public class Main extends SimpleApplication {
     public void simpleInitApp() {
         setDisplayStatView(settingsManager.getBoolean("debug.stats"));
         
-        // TODO: Initialize NoiseUtil with random seed
-        NoiseUtil.reinitialize(DebugSeed);
+        if(settingsManager.getBoolean("debug.noise.seed")) {
+            NoiseUtil.reinitialize(DebugSeed);
+        } else {
+            NoiseUtil.reinitialize();
+        }
         
         assetManager.registerLoader(XMLLoader.class, "xml");
         assetManager.registerLoader(MapLoader.class, "map");
