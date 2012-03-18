@@ -51,7 +51,10 @@ public class Main extends SimpleApplication {
         }
         JLFBridge.installBridge();
         
-        // TODO: CLI
+        CLI cli = new CLI(args);
+        if(!cli.parse()) {
+            return;
+        }
         
         // initialize settings manager
         LayeredSettingsManager settings = new LayeredSettingsManager();
@@ -60,6 +63,7 @@ public class Main extends SimpleApplication {
         settings.addLayer(PropertiesLayer.fromStream(Main.class.getResourceAsStream("default.properties")));
         settings.addLayer(new FileLayer(new File("sed.properties"), false));
         settings.addLayer(new FileLayer(new File(System.getProperty("user.home")+"/sed.properties"), true));
+        settings.addLayer(new PropertiesLayer(cli.getCmdLineProperties()));
         
         AppSettings as = new AppSettings(true);
         as.setTitle("SSim Environment Demo");

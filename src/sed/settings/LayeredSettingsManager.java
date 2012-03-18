@@ -21,6 +21,8 @@ public class LayeredSettingsManager implements SettingsManager {
     private ArrayList<Layer> layers = new ArrayList<Layer>();
     private WritableLayer writableLayer;
     
+    // TODO: ensure that upper layers do not contain settings not existent in lowest layer
+    
     public LayeredSettingsManager() {
     }
     

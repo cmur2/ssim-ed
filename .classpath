@@ -11,5 +11,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jME3_2011-11-19"/>
 	<classpathentry kind="lib" path="libs/vecmath-1.5.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="libs/commons-cli-1.2.jar" sourcepath="libs/commons-cli-1.2-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
