@@ -51,6 +51,8 @@ public class Main extends SimpleApplication {
         }
         JLFBridge.installBridge();
         
+        // TODO: CLI
+        
         // initialize settings manager
         LayeredSettingsManager settings = new LayeredSettingsManager();
         // add layer

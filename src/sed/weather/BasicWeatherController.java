@@ -7,8 +7,6 @@ import com.jme3.math.Vector3f;
 
 public abstract class BasicWeatherController implements WeatherController {
     
-    // TODO: TriggerWeatherController -> trigger subsystem
-    
     private Map<String, Entry> entries = new HashMap<String, Entry>();
     private Map<Class<?>, WeatherInterpolator> classInterpolators =
         new HashMap<Class<?>, WeatherInterpolator>();
