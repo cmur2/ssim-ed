@@ -34,13 +34,13 @@ public class TerrainLUTGenerator {
             setType(TerrainType.Shore,       0, 10,   -25,    25);
             setType(TerrainType.Cliff,      10, 90,   -25,    25);
             
-            setType(TerrainType.Plain,       0,  5,    25,  1500);
-            setType(TerrainType.HighPlain,   0,  5,  1500,  3000);
-            setType(TerrainType.Hill,        5, 90,    25,  3000);
+            setType(TerrainType.Plain,       0, 20,    25,  1500);
+            setType(TerrainType.HighPlain,   0, 20,  1500,  3000);
+            setType(TerrainType.Hill,       20, 90,    25,  3000);
             
-            setType(TerrainType.MountainTop,   0,  3,  3000,  maxA);
-            setType(TerrainType.Mountains,     3, 90,  3000,  5000);
-            setType(TerrainType.HighMountains, 3, 90,  5000,  maxA);
+            setType(TerrainType.MountainTop,    0, 20,  3000,  maxA);
+            setType(TerrainType.Mountains,     20, 90,  3000,  5000);
+            setType(TerrainType.HighMountains, 20, 90,  5000,  maxA);
         }};
         
         float defaultCov = builder.getCoverage(TerrainType.Default);
