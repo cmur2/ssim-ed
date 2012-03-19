@@ -12,12 +12,14 @@ import com.jme3.terrain.heightmap.HeightMap;
 public class BinaryMapTileLoader implements TerrainGridTileLoader {
 
     private BinaryMap map;
+    private float sampleDistance;
     
     private int patchSize;
     private int quadSize;
     
-    public BinaryMapTileLoader(BinaryMap map) {
+    public BinaryMapTileLoader(BinaryMap map, float sampleDistance) {
         this.map = map;
+        this.sampleDistance = sampleDistance;
     }
     
     @Override
@@ -51,7 +53,7 @@ public class BinaryMapTileLoader implements TerrainGridTileLoader {
     
     private HeightMap getHeightMapAt(Vector3f location) {
         BinaryMapBasedHeightMap heightmap =
-            new BinaryMapBasedHeightMap(map, location, quadSize);
+            new BinaryMapBasedHeightMap(map, location, quadSize, sampleDistance);
         try {
             heightmap.load();
         } catch(Exception ex) {

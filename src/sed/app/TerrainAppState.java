@@ -22,9 +22,9 @@ public class TerrainAppState extends BasicAppState {
     
     private static final float UpdateInterval = 30f; // in seconds
     
-    private static final int PatchSize = 129;
-    private static final int MaxVisibleSize = 257;
-    private static final float LODMultiplier = 5f;
+    private static final int PatchSize = 128 + 1;
+    private static final int MaxVisibleSize = 4 * (PatchSize-1) + 1;
+    private static final float LODMultiplier = 2.7f;
     
     // exists only while AppState is attached
     private TerrainGrid terrainGrid;
@@ -42,7 +42,6 @@ public class TerrainAppState extends BasicAppState {
         AssetKey<BinaryMap> mapKey = new AssetKey<BinaryMap>(path);
         BinaryMap map = getApp().getAssetManager().loadAsset(mapKey);
         
-        // TODO: implement terrain shader(s)
         Material mat = new Material(getApp().getAssetManager(), "shaders/TerrainAtlas.j3md");
         Texture lutTex = getApp().getAssetManager().loadTexture("textures/TerrainLUT.png");
         lutTex.setMinFilter(MinFilter.NearestNoMipMaps);
@@ -63,16 +62,14 @@ public class TerrainAppState extends BasicAppState {
         atlasParameters.z = 1f/sed.pre.TerrainTAGenerator.TexSize;
         mat.setVector3("AtlasParameters", atlasParameters);
         
-//        Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
-//        mat.setColor("Diffuse", com.jme3.math.ColorRGBA.Green);
-//        mat.setBoolean("UseMaterialColors", true);
+        final float sampleDistance = (float) (map.weDiff + map.nsNum)/2f * 0.5f;
         
-        TerrainGridTileLoader loader = new BinaryMapTileLoader(map);
+        TerrainGridTileLoader loader = new BinaryMapTileLoader(map, sampleDistance);
         
         terrainGrid = new TerrainGrid("TerrainGrid", PatchSize, MaxVisibleSize, loader);
         terrainGrid.setMaterial(mat);
         terrainGrid.setLocalTranslation(0, 0, 0);
-        terrainGrid.setLocalScale((float) map.weDiff, 1f, (float) map.nsDiff);
+        terrainGrid.setLocalScale(sampleDistance);
         
         lodControl = new TerrainLodControl(terrainGrid, Arrays.asList(getApp().getCamera()));
         lodControl.setLodCalculator(new DistanceLodCalculator(PatchSize, LODMultiplier));

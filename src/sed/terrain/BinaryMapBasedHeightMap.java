@@ -1,13 +1,17 @@
 package sed.terrain;
 
+import ssim.util.MathExt;
+
 import com.jme3.math.Vector3f;
 import com.jme3.terrain.heightmap.HeightMap;
 
 public class BinaryMapBasedHeightMap implements HeightMap {
 
     private BinaryMap map;
-    private Vector3f offset;
+    private int offsetx;
+    private int offsetz;
     private int quadSize;
+    private float sampleDistance;
 
     private float[] heightMap = null;
     private int size = 0;
@@ -17,10 +21,14 @@ public class BinaryMapBasedHeightMap implements HeightMap {
     /** The filter is used to erode the terrain. */
     private float filter = 0.5f;
     
-    public BinaryMapBasedHeightMap(BinaryMap map, Vector3f offset, int quadSize) {
+    public BinaryMapBasedHeightMap(BinaryMap map,
+            Vector3f offset, int quadSize, float sampleDistance)
+    {
         this.map = map;
-        this.offset = offset;
+        this.offsetx = (int) offset.x;
+        this.offsetz = (int) offset.z;
         this.quadSize = quadSize;
+        this.sampleDistance = sampleDistance;
     }
     
     /** {@inheritDoc} */
@@ -97,7 +105,7 @@ public class BinaryMapBasedHeightMap implements HeightMap {
     /** {@inheritDoc} */
     @Override
     public boolean load() {
-        heightMap = BinaryMapManipulator.crop(map, offset, quadSize);
+        heightMap = generateHeightMapSampled(sampleDistance);
         size = quadSize;
         return true;
     }
@@ -106,5 +114,66 @@ public class BinaryMapBasedHeightMap implements HeightMap {
     @Override
     public void unloadHeightMap() {
         heightMap = null;
+    }
+    
+    private float[] generateHeightMap() {
+        float[] data = new float[quadSize*quadSize];
+        for(int z = 0; z < quadSize; z++) {
+            for(int x = 0; x < quadSize; x++) {
+                int iz = offsetz * (quadSize-1) + z;
+                int ix = offsetx * (quadSize-1) + x;
+                if(iz >= 0 && ix >= 0 && iz < map.nsNum && ix < map.weNum) {
+                    data[x + z*quadSize] = map.elevs[iz][ix];
+                } else {
+                    data[x + z*quadSize] = 0;
+                }
+            }
+        }
+        return data;
+    }
+    
+    private float[] generateHeightMapSampled(float sampleDist) {
+        float[] data = new float[quadSize*quadSize];
+        for(int z = 0; z < quadSize; z++) {
+            for(int x = 0; x < quadSize; x++) {
+                int iz = offsetz * (quadSize-1) + z;
+                int ix = offsetx * (quadSize-1) + x;
+                // scale sample point coordinates by sampleDist, divide elevation
+                // by sampleDist to allow uniform scale of whole geometry by
+                // sampleDist
+                data[x + z*quadSize] = getElevation(iz*sampleDist, ix*sampleDist)/sampleDist;
+            }
+        }
+        return data;
+    }
+    
+    private float getElevation(float z, float x) {
+        int x0 = (int) (x / map.weDiff);
+        int z0 = (int) (z / map.nsDiff);
+        int x1 = x0 + 1;
+        int z1 = z0 + 1;
+        // y00 --- y01
+        //  |       |
+        // y10 --- y11
+        float y00 = getElevation(z0, x0);
+        float y01 = getElevation(z0, x1);
+        float y10 = getElevation(z1, x0);
+        float y11 = getElevation(z1, x1);
+        float r1 = MathExt.frac(x / (float) map.weDiff);
+        float r2 = MathExt.frac(z / (float) map.nsDiff);
+        double y1 = MathExt.interpolateLinear(y00, y01, r1);
+        double y2 = MathExt.interpolateLinear(y10, y11, r1);
+        return (float) MathExt.interpolateLinear(y1, y2, r2);
+//        double y1 = MathExt.interpolateCosine(y00, y01, r1);
+//        double y2 = MathExt.interpolateCosine(y10, y11, r1);
+//        return (float) MathExt.interpolateCosine(y1, y2, r2);
+    }
+    
+    private float getElevation(int iz, int ix) {
+        if(iz >= 0 && ix >= 0 && iz < map.nsNum && ix < map.weNum) {
+            return map.elevs[iz][ix];
+        } else {
+            return 0;
+        }
     }
 }
