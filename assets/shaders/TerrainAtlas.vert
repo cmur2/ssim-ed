@@ -3,6 +3,7 @@ uniform mat4 g_WorldViewProjectionMatrix;
 uniform mat4 g_WorldViewMatrix;
 uniform mat3 g_NormalMatrix;
 uniform mat4 g_ViewMatrix;
+uniform mat4 g_WorldMatrix;
 
 uniform vec4 g_LightColor;
 uniform vec4 g_LightPosition;
@@ -32,9 +33,9 @@ void main() {
     varNormal = normalize(g_NormalMatrix * inNormal);
     varTexCoord = inTexCoord;
     varSlope = dot(inNormal, vec3(0.0,1.0,0.0));
-    varZ = inPosition.y;
-
+    
     vec4 pos = vec4(inPosition, 1.0);
+    varZ = (g_WorldMatrix * pos).y;
     gl_Position = g_WorldViewProjectionMatrix * pos;
 
     //-------------------------

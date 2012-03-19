@@ -22,7 +22,7 @@ void main() {
     //vec2 texCoord = (offset + 0.5) * m_AtlasParameters.y;
 
     // use offset, add a border to prevent false wrapping/bilinear filtering and
-    // schrink the amount to which varTexCoord is expanded to tile width-2*border
+    // shrink the amount to which varTexCoord is expanded to tile width-2*border
     vec2 texCoord =
         offset * m_AtlasParameters.y + m_AtlasParameters.z +
         fract(varTexCoord) * (m_AtlasParameters.y - 2.0 * m_AtlasParameters.z);

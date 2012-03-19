@@ -14,6 +14,7 @@ MaterialDef TerrainGradient {
             NormalMatrix
             WorldViewMatrix
             ViewMatrix
+            WorldMatrix
         }
     }
     Technique FixedFunc {
