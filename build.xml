@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Use this script with 'ant -f build.xml' or simply 'ant'.
+-->
+<project name="SSim Environment Demo" default="default" basedir=".">
+    <description>Builds the SSim Environment Demo.</description>
+    
+    <fail message="Please build using Ant 1.7.1 or higher.">
+        <condition>
+            <not>
+                <antversion atleast="1.7.1"/>
+            </not>
+        </condition>
+    </fail>
+    
+    <target name="default" depends="build" description="Builds the whole project"/>
+    
+    <target name="init">
+        <property name="build.dir" value="bin"/>
+        <property name="dist.dir" value="dist"/>
+        <property name="lib.dir" value="libs"/>
+        <property name="src.dir" value="src"/>
+        <property name="asset.dir" value="assets"/>
+        
+        <property name="pregen-log.file" value="pregen.log"/>
+        
+        <property file="build.properties"/>
+        
+        <path id="classpath">
+            <fileset dir="${lib.dir}">
+                <include name="*.jar"/>
+            </fileset>
+            <pathelement path="${sed.jme3-jar.file}"/>
+        </path>
+        <path id="classpath-build">
+            <dirset dir="${build.dir}"/>
+        </path>
+    </target>
+    
+    <target name="build" depends="init,clean" description="Builds application">
+        <mkdir dir="${build.dir}"/>
+        
+        <javac srcdir="${src.dir}"
+               destdir="${build.dir}"
+               debug="false"
+               deprecation="true"
+               optimize="true"
+               includeAntRuntime="false">
+            <classpath refid="classpath"/>
+        </javac>
+        
+        <copy todir="${build.dir}">
+            <fileset dir="${src.dir}">
+                <include name="**/*.properties"/>
+                <include name="**/*.xml"/>
+            </fileset>
+            <fileset dir="${asset.dir}">
+                <include name="**/*.properties"/>
+                <include name="**/*.xml"/>
+                <include name="**/*.map"/>
+                <include name="**/*.j3md"/>
+                <include name="**/*.vert"/>
+                <include name="**/*.frag"/>
+                <include name="**/*.png"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="pre" depends="pre-terrain-lut,pre-terrain-atlas,pre-terrain-noise" description="Pre-generates assets">
+        <echo>Pre-generation successful!</echo>
+    </target>
+    
+    <target name="pre-terrain-lut" depends="build" description="Generates TerrainLUT.png">
+        <java classname="sed.pre.TerrainLUTGenerator" failonerror="true" output="${pregen-log.file}">
+            <arg value="assets/textures/TerrainLUT.png"/>
+            <classpath refid="classpath"/>
+            <classpath refid="classpath-build"/>
+        </java>
+    </target>
+    
+    <target name="pre-terrain-atlas" depends="build" description="Generates TerrainAtlas.png">
+        <java classname="sed.pre.TerrainAtlasGenerator" failonerror="true" output="${pregen-log.file}">
+            <arg value="assets/textures/TerrainAtlas.png"/>
+        	<classpath refid="classpath"/>
+            <classpath refid="classpath-build"/>
+        </java>
+    </target>
+    
+    <target name="pre-terrain-noise" depends="build" description="Generates TerrainNoise.png">
+        <java classname="sed.pre.TileableNoiseGenerator" failonerror="true" output="${pregen-log.file}">
+            <arg value="assets/textures/TerrainNoise.png"/>
+            <classpath refid="classpath"/>
+            <classpath refid="classpath-build"/>
+        </java>
+    </target>
+    
+    <target name="clean" depends="init" description="Removes build files">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+</project>
