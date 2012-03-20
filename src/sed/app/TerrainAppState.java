@@ -9,6 +9,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetKey;
 import com.jme3.material.Material;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.terrain.geomipmap.TerrainGrid;
 import com.jme3.terrain.geomipmap.TerrainGridTileLoader;
@@ -62,6 +63,9 @@ public class TerrainAppState extends BasicAppState {
             taTex.setMinFilter(MinFilter.BilinearNoMipMaps);
             mat.setTexture("TerrainAtlas", taTex);
         }
+        // Attach a noise texture (in only 1 channel, Red) to allow shader access
+        // to pseudo random noise data
+        mat.setTexture("TerrainNoise", getApp().getAssetManager().loadTexture("textures/TerrainNoise.png"));
         // The inverse maximum altitude (same as used in TerrainLUT generation!)
         // is needed to bring the altitude (in m) down to [0,1]
         mat.setFloat("InvMaxAltitude", 1f/sed.pre.TerrainLUTGenerator.MaxAltitude);
@@ -76,6 +80,13 @@ public class TerrainAppState extends BasicAppState {
             atlasParameters.y = 1f/atlasParameters.x;
             atlasParameters.z = 1f/sed.pre.TerrainAtlasGenerator.TexSize;
             mat.setVector3("AtlasParameters", atlasParameters);
+        }
+        // Pass factors for noise influence on (slope, altitude)
+        {
+            Vector2f noiseParameters = new Vector2f(0.2f, 0.3f);
+            // x: slope weight
+            // y: altitude weight
+            mat.setVector2("NoiseParameters", noiseParameters);
         }
         
         final float sampleDistance = (float) (map.weDiff + map.nsNum)/2f * 0.5f;

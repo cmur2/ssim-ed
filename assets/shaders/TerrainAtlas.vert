@@ -32,7 +32,7 @@ vec4 lightComputeDir(in vec3 worldPos, in vec4 color, in vec4 position) {
 void main() {
     varNormal = normalize(g_NormalMatrix * inNormal);
     varTexCoord = inTexCoord;
-    varSlope = dot(inNormal, vec3(0.0,1.0,0.0));
+    varSlope = acos(dot(inNormal, vec3(0.0,1.0,0.0)));
     
     vec4 pos = vec4(inPosition, 1.0);
     varZ = (g_WorldMatrix * pos).y;
