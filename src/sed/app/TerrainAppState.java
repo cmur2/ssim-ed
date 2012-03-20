@@ -43,24 +43,40 @@ public class TerrainAppState extends BasicAppState {
         BinaryMap map = getApp().getAssetManager().loadAsset(mapKey);
         
         Material mat = new Material(getApp().getAssetManager(), "shaders/TerrainAtlas.j3md");
-        Texture lutTex = getApp().getAssetManager().loadTexture("textures/TerrainLUT.png");
-        lutTex.setMinFilter(MinFilter.NearestNoMipMaps);
-        lutTex.setMagFilter(MagFilter.Nearest);
-        mat.setTexture("TextureTable", lutTex);
-        Texture taTex = getApp().getAssetManager().loadTexture("textures/TerrainTA.png");
-        // Temporary hack to prevent mip map usage on GPU, we could use
-        // NearestNoMipMaps too:
-        taTex.setMinFilter(MinFilter.BilinearNoMipMaps);
-        mat.setTexture("TextureAtlas", taTex);
+        // Attach a lookup table texture that maps (slope,altitude) tuples to
+        // TerrainType IDs. Therefore no filtering/interpolation to the textures
+        // values should be done since they represent discrete ID integers.
+        {
+            Texture lutTex = getApp().getAssetManager().loadTexture("textures/TerrainLUT.png");
+            lutTex.setMinFilter(MinFilter.NearestNoMipMaps);
+            lutTex.setMagFilter(MagFilter.Nearest);
+            mat.setTexture("TerrainLUT", lutTex);
+        }
+        // Attach a texture atlas that contains multiple textures via sub-tiling.
+        // The TerrainType ID will be used to select the matching texture for
+        // the given TerrainType.
+        {
+            Texture taTex = getApp().getAssetManager().loadTexture("textures/TerrainAtlas.png");
+            // Temporary hack to prevent mipmap usage on GPU, we could use
+            // NearestNoMipMaps too:
+            taTex.setMinFilter(MinFilter.BilinearNoMipMaps);
+            mat.setTexture("TerrainAtlas", taTex);
+        }
+        // The inverse maximum altitude (same as used in TerrainLUT generation!)
+        // is needed to bring the altitude (in m) down to [0,1]
         mat.setFloat("InvMaxAltitude", 1f/sed.pre.TerrainLUTGenerator.MaxAltitude);
-        Vector3f atlasParameters = new Vector3f();
-        // x: nTilesWidth (== nTilesHeight)
-        // y: 1 / nTilesWidth
-        // z: 1 / width (== 1/height)
-        atlasParameters.x = sed.pre.TerrainTAGenerator.NumTiles;
-        atlasParameters.y = 1f/atlasParameters.x;
-        atlasParameters.z = 1f/sed.pre.TerrainTAGenerator.TexSize;
-        mat.setVector3("AtlasParameters", atlasParameters);
+        // Pass some additional parameters describing the atlas properties to
+        // the shader that it needs to perform valid texture lookups on the atlas
+        {
+            Vector3f atlasParameters = new Vector3f();
+            // x: nTilesWidth (== nTilesHeight)
+            // y: 1 / nTilesWidth
+            // z: 1 / width (== 1/height)
+            atlasParameters.x = sed.pre.TerrainAtlasGenerator.NumTiles;
+            atlasParameters.y = 1f/atlasParameters.x;
+            atlasParameters.z = 1f/sed.pre.TerrainAtlasGenerator.TexSize;
+            mat.setVector3("AtlasParameters", atlasParameters);
+        }
         
         final float sampleDistance = (float) (map.weDiff + map.nsNum)/2f * 0.5f;
         

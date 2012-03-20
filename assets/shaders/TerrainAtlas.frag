@@ -1,8 +1,8 @@
 
 uniform vec4 g_LightColor;
 
-uniform sampler2D m_TextureTable;
-uniform sampler2D m_TextureAtlas;
+uniform sampler2D m_TerrainLUT;
+uniform sampler2D m_TerrainAtlas;
 uniform float m_InvMaxAltitude;
 uniform vec3 m_AtlasParameters;
 
@@ -14,7 +14,7 @@ varying vec4 varLightDir;
 
 void main() {
     vec2 terrainTypeCoord = vec2(varSlope, varZ * m_InvMaxAltitude * 0.5 + 0.5);
-    int id = int(texture2D(m_TextureTable, terrainTypeCoord).r * 256.0);
+    int id = int(texture2D(m_TerrainLUT, terrainTypeCoord).r * 256.0);
 
     vec2 offset = vec2(mod(float(id), m_AtlasParameters.x), id / int(m_AtlasParameters.x));
 
@@ -27,7 +27,7 @@ void main() {
         offset * m_AtlasParameters.y + m_AtlasParameters.z +
         fract(varTexCoord) * (m_AtlasParameters.y - 2.0 * m_AtlasParameters.z);
 
-    vec4 material_diffuse = texture2D(m_TextureAtlas, texCoord);
+    vec4 material_diffuse = texture2D(m_TerrainAtlas, texCoord);
 
     vec3 vNormal = normalize(varNormal);
 

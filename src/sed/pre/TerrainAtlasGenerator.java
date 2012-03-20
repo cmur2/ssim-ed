@@ -10,13 +10,13 @@ import javax.imageio.ImageIO;
 import sed.pre.terrain.TerrainTABuilder;
 import sed.pre.terrain.TerrainType;
 
-public class TerrainTAGenerator {
+public class TerrainAtlasGenerator {
 
     public static final int TexSize = 256;
     public static final int NumTiles = 4;
     
     public static void main(String[] args) {
-        System.out.println("Terrain TA Generator");
+        System.out.println("Terrain Atlas Generator");
         
         File outputFile = new File(args.length > 0 ? args[0] : "ta.png");
         System.out.format("Using output (.png) file: %s\n", outputFile.getAbsolutePath());
