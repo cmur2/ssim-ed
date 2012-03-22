@@ -1,0 +1,24 @@
+MaterialDef TerrainGradient {
+    MaterialParameters {
+        Texture2D TerrainLUT
+        Texture2D TerrainAtlas
+        Texture2D TerrainNoise
+        Float InvMaxAltitude
+        Vector3 AtlasParameters
+        Vector2 NoiseParameters
+    }
+    Technique {
+        LightMode MultiPass
+        VertexShader GLSL100:   shaders/TerrainAtlas.vert
+        FragmentShader GLSL100: shaders/TerrainAtlas.frag
+        WorldParameters {
+            WorldViewProjectionMatrix
+            NormalMatrix
+            WorldViewMatrix
+            ViewMatrix
+            WorldMatrix
+        }
+    }
+    Technique FixedFunc {
+    }
+}

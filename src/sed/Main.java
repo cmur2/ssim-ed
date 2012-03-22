@@ -17,6 +17,7 @@ import sed.app.SkyAppState;
 import sed.app.SkyDomeAppState;
 import sed.app.StarAppState;
 import sed.app.SunAppState;
+import sed.app.TerrainAppState;
 import sed.app.WeatherAppState;
 import sed.mission.Mission;
 import sed.mission.MissionParser;
@@ -50,6 +51,8 @@ public class Main extends SimpleApplication {
             root.addAppender(new ConsoleAppender(new PatternLayout("%-3r [%t] %-5p %c: %m%n")));
         }
         JLFBridge.installBridge();
+        // prevent NPE in VertexBuffer.toString() during NativeObjectManager.deleteUnused()
+        java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.FINER);
         
         CLI cli = new CLI(args);
         if(!cli.parse()) {
@@ -129,6 +132,7 @@ public class Main extends SimpleApplication {
         stateManager.attach(new LightingAppState());
         stateManager.attach(new StarAppState());
         stateManager.attach(new CloudAppState());
+        stateManager.attach(new TerrainAppState());
         stateManager.attach(new GuiAppState());
         stateManager.attach(new DebugAppState());
     }

@@ -2,4 +2,7 @@ syntax: glob
 bin
 *.dll
 *.jnilib
+*.log
 scrap.jpage
+.DS_Store
+build.properties

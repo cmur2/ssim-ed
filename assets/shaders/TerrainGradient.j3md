@@ -1,0 +1,21 @@
+MaterialDef TerrainGradient {
+    MaterialParameters {
+        //Color Diffuse
+        Texture2D HeightGradient
+        Float InvHeightGradientTexWidth
+        Float InvMeterPerTexel
+    }
+    Technique {
+        LightMode MultiPass
+        VertexShader GLSL100:   shaders/TerrainGradient.vert
+        FragmentShader GLSL100: shaders/TerrainGradient.frag
+        WorldParameters {
+            WorldViewProjectionMatrix
+            NormalMatrix
+            WorldViewMatrix
+            ViewMatrix
+        }
+    }
+    Technique FixedFunc {
+    }
+}
