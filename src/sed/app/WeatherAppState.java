@@ -47,6 +47,11 @@ public class WeatherAppState extends BasicAppState {
         builder.putFloat("wind.strength");
         PropertySet[] ps = builder.getResults();
         
+        // TODO: sky.turbidity should be used to determine fog thickness, aerial parameters
+        // TODO: sky.turbidity -> sky.air?
+        // TODO: add precipitation parameters
+        // TODO: add air temperature and maybe air pressure
+        
         weatherController = new RandomWeatherController(5 * 60f, ps);
         weatherController.registerInterpolator(new Interpolators.FloatInterpolator(), Float.class);
         weatherController.registerInterpolator(new Interpolators.BoolInterpolator(), Boolean.class);
