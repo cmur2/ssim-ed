@@ -7,6 +7,8 @@ import com.jme3.terrain.heightmap.HeightMap;
 
 public class BinaryMapBasedHeightMap implements HeightMap {
 
+    private static final float DefaultY = -100f; // in m
+    
     private BinaryMap map;
     private int offsetx;
     private int offsetz;
@@ -116,17 +118,14 @@ public class BinaryMapBasedHeightMap implements HeightMap {
         heightMap = null;
     }
     
+    /** Unused */
     private float[] generateHeightMap() {
         float[] data = new float[quadSize*quadSize];
         for(int z = 0; z < quadSize; z++) {
             for(int x = 0; x < quadSize; x++) {
                 int iz = offsetz * (quadSize-1) + z;
                 int ix = offsetx * (quadSize-1) + x;
-                if(iz >= 0 && ix >= 0 && iz < map.nsNum && ix < map.weNum) {
-                    data[x + z*quadSize] = map.elevs[iz][ix];
-                } else {
-                    data[x + z*quadSize] = 0;
-                }
+                data[x + z*quadSize] = getElevation(iz, ix);
             }
         }
         return data;
@@ -173,7 +172,7 @@ public class BinaryMapBasedHeightMap implements HeightMap {
         if(iz >= 0 && ix >= 0 && iz < map.nsNum && ix < map.weNum) {
             return map.elevs[iz][ix];
         } else {
-            return 0;
+            return DefaultY;
         }
     }
 }
