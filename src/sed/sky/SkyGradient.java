@@ -158,7 +158,7 @@ public class SkyGradient {
     /**
      * Adapter to {@link #getSkycolor(float[], double, double, double)}.
      * 
-     * @param p point (j3d coords)
+     * @param p point
      * @param store a float[] to store the result
      * @return the sky color at the given point as RGBA (alpha is 1) in float[]
      */
@@ -169,9 +169,9 @@ public class SkyGradient {
     /**
      * Adapter to {@link #getSkycolor(float[], double, double, double)}.
      * 
-     * @param px point's x coordinate (j3d coords)
-     * @param py point's y coordinate (j3d coords)
-     * @param pz point's z coordinate (j3d coords)
+     * @param px point's x coordinate
+     * @param py point's y coordinate
+     * @param pz point's z coordinate
      * @param store a float[] to store the result
      * @return the sky color at the given point as RGBA (alpha is 1) in float[]
      */
@@ -189,9 +189,9 @@ public class SkyGradient {
      * based on Perez' model and fills the results in the given color array.
      * 
      * @param colors the array the result is filled in
-     * @param pointx point's x coordinate (j3d coords)
-     * @param pointy point's y coordinate (j3d coords)
-     * @param pointz point's z coordinate (j3d coords)
+     * @param pointx point's x coordinate
+     * @param pointy point's y coordinate
+     * @param pointz point's z coordinate
      */
     public void getSkycolor(float[] colors,
         double pointx, double pointy, double pointz)
