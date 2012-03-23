@@ -1,4 +1,6 @@
 
+#import "shaders/Fog.glsllib"
+
 uniform vec4 g_LightColor;
 
 uniform sampler2D m_TerrainLUT;
@@ -13,6 +15,8 @@ varying vec2 varTexCoord;
 varying float varSlope;
 varying float varZ;
 varying vec4 varLightDir;
+
+varying vec3 varFogCoord;
 
 void main() {
     // unpacked noise in [-1,+1]
@@ -52,4 +56,5 @@ void main() {
     // final color calculations
     //--------------------------
     gl_FragColor = material_diffuse * diffuse;
+    applyFoggedColorByFragmentOnly(gl_FragColor, varFogCoord);
 }

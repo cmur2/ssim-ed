@@ -6,6 +6,8 @@ MaterialDef TerrainGradient {
         Float InvMaxAltitude
         Vector3 AtlasParameters
         Vector2 NoiseParameters
+        Vector3 FogColor
+        Float FogDensity
     }
     Technique {
         LightMode MultiPass
@@ -17,6 +19,9 @@ MaterialDef TerrainGradient {
             WorldViewMatrix
             ViewMatrix
             WorldMatrix
+        }
+        Defines {
+            FOG : FogColor
         }
     }
     Technique FixedFunc {

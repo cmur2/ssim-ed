@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import sed.terrain.BinaryMap;
 import sed.terrain.BinaryMapTileLoader;
+import sed.util.TempVars;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -23,7 +24,7 @@ public class TerrainAppState extends BasicAppState {
     
     // TODO: disable scene graph node attach logging
     
-    private static final float UpdateInterval = 30f; // in seconds
+    private static final float UpdateInterval = 10f; // in seconds
     
     private static final int PatchSize = 128 + 1;
     private static final int MaxVisibleSize = 4 * (PatchSize-1) + 1;
@@ -31,6 +32,7 @@ public class TerrainAppState extends BasicAppState {
     
     // exists only while AppState is attached
     private TerrainGrid terrainGrid;
+    private Material terrainMat;
     TerrainLodControl lodControl;
     
     public TerrainAppState() {
@@ -45,7 +47,7 @@ public class TerrainAppState extends BasicAppState {
         AssetKey<BinaryMap> mapKey = new AssetKey<BinaryMap>(path);
         BinaryMap map = getApp().getAssetManager().loadAsset(mapKey);
         
-        Material mat = new Material(getApp().getAssetManager(), "shaders/TerrainAtlas.j3md");
+        terrainMat = new Material(getApp().getAssetManager(), "shaders/TerrainAtlas.j3md");
         // Attach a lookup table texture that maps (slope,altitude) tuples to
         // TerrainType IDs. Therefore no filtering/interpolation to the textures
         // values should be done since they represent discrete ID integers.
@@ -53,7 +55,7 @@ public class TerrainAppState extends BasicAppState {
             Texture lutTex = getApp().getAssetManager().loadTexture("textures/TerrainLUT.png");
             lutTex.setMinFilter(MinFilter.NearestNoMipMaps);
             lutTex.setMagFilter(MagFilter.Nearest);
-            mat.setTexture("TerrainLUT", lutTex);
+            terrainMat.setTexture("TerrainLUT", lutTex);
         }
         // Attach a texture atlas that contains multiple textures via sub-tiling.
         // The TerrainType ID will be used to select the matching texture for
@@ -63,14 +65,14 @@ public class TerrainAppState extends BasicAppState {
             // Temporary hack to prevent mipmap usage on GPU, we could use
             // NearestNoMipMaps too:
             taTex.setMinFilter(MinFilter.BilinearNoMipMaps);
-            mat.setTexture("TerrainAtlas", taTex);
+            terrainMat.setTexture("TerrainAtlas", taTex);
         }
         // Attach a noise texture (in only 1 channel, Red) to allow shader access
         // to pseudo random noise data
-        mat.setTexture("TerrainNoise", getApp().getAssetManager().loadTexture("textures/TerrainNoise.png"));
+        terrainMat.setTexture("TerrainNoise", getApp().getAssetManager().loadTexture("textures/TerrainNoise.png"));
         // The inverse maximum altitude (same as used in TerrainLUT generation!)
         // is needed to bring the altitude (in m) down to [0,1]
-        mat.setFloat("InvMaxAltitude", 1f/sed.pre.TerrainLUTGenerator.MaxAltitude);
+        terrainMat.setFloat("InvMaxAltitude", 1f/sed.pre.TerrainLUTGenerator.MaxAltitude);
         // Pass some additional parameters describing the atlas properties to
         // the shader that it needs to perform valid texture lookups on the atlas
         {
@@ -81,22 +83,24 @@ public class TerrainAppState extends BasicAppState {
             atlasParameters.x = sed.pre.TerrainAtlasGenerator.NumTiles;
             atlasParameters.y = 1f/atlasParameters.x;
             atlasParameters.z = 1f/sed.pre.TerrainAtlasGenerator.TexSize;
-            mat.setVector3("AtlasParameters", atlasParameters);
+            terrainMat.setVector3("AtlasParameters", atlasParameters);
         }
         // Pass factors for noise influence on (slope, altitude)
         {
             Vector2f noiseParameters = new Vector2f(0.2f, 0.3f);
             // x: slope weight
             // y: altitude weight
-            mat.setVector2("NoiseParameters", noiseParameters);
+            terrainMat.setVector2("NoiseParameters", noiseParameters);
         }
+        // Pass fog parameters into shader necessary for Fog.glsllib
+        updateFog();
         
         final float sampleDistance = (float) (map.weDiff + map.nsNum)/2f * 0.5f;
         
         TerrainGridTileLoader loader = new BinaryMapTileLoader(map, sampleDistance);
         
         terrainGrid = new TerrainGrid("TerrainGrid", PatchSize, MaxVisibleSize, loader);
-        terrainGrid.setMaterial(mat);
+        terrainGrid.setMaterial(terrainMat);
         terrainGrid.setLocalTranslation(0, 0, 0);
         terrainGrid.setLocalScale(sampleDistance);
         
@@ -110,6 +114,11 @@ public class TerrainAppState extends BasicAppState {
     }
     
     @Override
+    protected void intervalUpdate() {
+        updateFog();
+    }
+    
+    @Override
     public void cleanup() {
         super.cleanup();
         
@@ -117,5 +126,40 @@ public class TerrainAppState extends BasicAppState {
         getApp().getRootNode().detachChild(terrainGrid);
         
         terrainGrid = null;
+    }
+    
+    private void updateFog() {
+        TempVars vars = TempVars.get();
+        float[] color = getSkyAppState().getSkyGradient().getSkyColor(0,0,-1, vars.float1);
+        //System.out.println(java.util.Arrays.toString(color));
+        terrainMat.setVector3("FogColor", new Vector3f(color[0], color[1], color[2]));
+        
+        float maxDist = getSkyAppState().getHemisphereRadius();
+        // fogFactor:
+        //   1.0 - full original color
+        //   0.0 - full fog color
+        // TODO: modify via sky.turbidity later
+        float density = getFogDensity(0.75f, maxDist);
+        terrainMat.setFloat("FogDensity", density);
+        vars.release();
+    }
+    
+    /**
+     * Calculates the necessary distance value so that EXP2 fog has the given
+     * targetFogFactor at the given distance.
+     * 
+     * @param targetFogFactor wished fog factor
+     * @param maxDist at this distance
+     * @return necessary fog density
+     */
+    private float getFogDensity(float targetFogFactor, float maxDist) {
+        return (float) (
+            Math.sqrt(1.0 / (maxDist*maxDist)) *
+            Math.sqrt(Math.log(1.0 / targetFogFactor))
+            );
+    }
+    
+    private SkyAppState getSkyAppState() {
+        return getState(SkyAppState.class);
     }
 }

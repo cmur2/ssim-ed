@@ -18,6 +18,8 @@ varying float varSlope;
 varying float varZ;
 varying vec4 varLightDir;
 
+varying vec3 varFogCoord;
+
 // JME3 lights in world space
 vec4 lightComputeDir(in vec3 worldPos, in vec4 color, in vec4 position) {
     float posLight = step(0.5, color.w);
@@ -46,4 +48,7 @@ void main() {
 
     vec3 vPosition = (g_WorldViewMatrix * pos).xyz;
     varLightDir = lightComputeDir(vPosition, g_LightColor, wvLightPos);
+
+    // fog
+    varFogCoord = vPosition;
 }
