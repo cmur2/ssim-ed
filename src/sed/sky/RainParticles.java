@@ -154,7 +154,7 @@ public class RainParticles extends Mesh {
             // reinitialize drop if it's below minY
             if(curY < minY) {
                 float x = random.nextFloat() * size;
-                float y = maxY;
+                float y = maxY + (curY-minY);
                 float z = random.nextFloat() * size;
                 
                 float length = getVaryingLength();
