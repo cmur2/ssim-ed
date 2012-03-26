@@ -30,7 +30,8 @@ public class DebugAppState extends BasicAppState {
     
     private static final float UpdateInterval = 0.5f; // in seconds
     
-    private static final float StandardRadius = 50f;
+    private static final float StandardRadius = 50f; // in m
+    private static final float GridStep = 100f; // in m
     
     private boolean showGrid;
     private Node debugNode;
@@ -51,7 +52,7 @@ public class DebugAppState extends BasicAppState {
         debugNode.setCullHint(showGrid ? CullHint.Never : CullHint.Always);
         getApp().getRootNode().attachChild(debugNode);
         
-        buildDebugGrid();
+        buildDebugGrid(GridStep);
         
         buildTheThreeArrows(StandardRadius);
         
@@ -80,9 +81,9 @@ public class DebugAppState extends BasicAppState {
         handler = null;
     }
     
-    private void buildDebugGrid() {
+    private void buildDebugGrid(float gridStep) {
         float gridSize = getState(SkyAppState.class).getHemisphereRadius();
-        int gridWH = Math.round(gridSize/100f);
+        int gridWH = Math.round(gridSize/gridStep);
         
         DebugGridMesh debugGrid = new DebugGridMesh(gridSize, gridWH, gridWH);
         Geometry debugGridGeom = new Geometry("DebugGrid", debugGrid);
