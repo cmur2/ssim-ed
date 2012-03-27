@@ -35,6 +35,7 @@ public class RainParticles extends Mesh {
     private float dropVelocityVar;
     private float minY;
     private float maxY;
+    private float initY;
     
     public RainParticles(int numDrops, float size) {
         this.numDrops = numDrops;
@@ -108,6 +109,14 @@ public class RainParticles extends Mesh {
     public void setMaxY(float maxY) {
         this.maxY = maxY;
     }
+    
+    public float getInitY() {
+        return initY;
+    }
+
+    public void setInitY(float initY) {
+        this.initY = initY;
+    }
 
     public void initFirstDrops() {
         TempVars vars = TempVars.get();
@@ -115,7 +124,7 @@ public class RainParticles extends Mesh {
         for(int i = 0; i < numDrops; i++) {
             // position (upper end)
             float x = random.nextFloat() * size;
-            float y = random.nextFloat() * (maxY-minY) + minY;
+            float y = random.nextFloat() * (maxY-minY) + initY;
             float z = random.nextFloat() * size;
             // drop length in m, will displace lower end with this
             float length = getVaryingLength();
