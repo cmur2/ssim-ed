@@ -46,7 +46,7 @@ public class Interpolators {
         }
     }
 
-    public static class BoolInterpolator implements WeatherInterpolator {
+    public static class DiscreteValueInterpolator implements WeatherInterpolator {
         @Override
         public Object interpolate(Object valueA, Object valueB, float ratio) {
             return ratio < 0.5f ? valueA : valueB;

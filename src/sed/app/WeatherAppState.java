@@ -54,7 +54,7 @@ public class WeatherAppState extends BasicAppState {
         
         weatherController = new RandomWeatherController(5 * 60f, ps);
         weatherController.registerInterpolator(new Interpolators.FloatInterpolator(), Float.class);
-        weatherController.registerInterpolator(new Interpolators.BoolInterpolator(), Boolean.class);
+        weatherController.registerInterpolator(new Interpolators.DiscreteValueInterpolator(), Boolean.class);
         weatherController.registerInterpolator(new Interpolators.Vec3Interpolator(), Vector3f.class);
         weatherController.registerInterpolator(new Interpolators.IntInterpolator(), Integer.class);
         
