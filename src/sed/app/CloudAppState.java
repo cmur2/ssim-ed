@@ -37,7 +37,11 @@ public class CloudAppState extends BasicAppState {
     private static final float CloudPlaneSize = 1500f; // in m
     private static final float CloudPlaneHeightScale = 50f; // in m
     
-    private static final Vector2f WindScale = new Vector2f(0.001f, 0.003f);
+    /**
+     * x: scale the wind/displacement component of cloudShift
+     * y: scale the time component of cloudShift
+     */
+    private static final Vector2f ShiftScale = new Vector2f(0.001f, 0.003f);
     
     /**
      * Describes the virtual origin of the cloud heightfield (in pixels).
@@ -164,7 +168,7 @@ public class CloudAppState extends BasicAppState {
             // the change over time
             Vector3f cloudShiftAdd = vars.vect2.set(windVelo.x, -windVelo.z, 1f);
             cloudShiftAdd.multLocal(UpdateInterval);
-            cloudShiftAdd.multLocal(WindScale.x, WindScale.x, WindScale.y);
+            cloudShiftAdd.multLocal(ShiftScale.x, ShiftScale.x, ShiftScale.y);
             cloudShift.addLocal(cloudShiftAdd);
         }
         
