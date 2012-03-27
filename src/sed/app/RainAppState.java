@@ -39,7 +39,7 @@ public class RainAppState extends BasicAppState {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        rain = new RainParticles(200, 100f);
+        rain = new RainParticles(200, GridStep);
         rain.setDropLength(5.5f); // in m
         rain.setDropLengthVar(0.5f); // in m
         rain.setDropColor(new ColorRGBA(0.4f, 0.4f, 0.5f, 1.0f));
