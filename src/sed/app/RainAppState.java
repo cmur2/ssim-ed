@@ -2,12 +2,14 @@ package sed.app;
 
 import sed.sky.RainParticles;
 import sed.util.TempVars;
+import sed.weather.Weather;
 import ssim.util.MathExt;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -15,7 +17,7 @@ import com.jme3.scene.Spatial.CullHint;
 
 public class RainAppState extends BasicAppState {
     
-    private static final float UpdateInterval = 2f; // in seconds
+    private static final float UpdateInterval = 5f; // in seconds
     
     private static final float GridStep = 100f; // in m
     private static final int NumGridTiles = 5; // should be odd
@@ -26,6 +28,8 @@ public class RainAppState extends BasicAppState {
     // exists only while AppState is attached
     private Node rainNode;
     private RainParticles rain;
+    
+    public Vector3f windVelocity;
     
     public RainAppState() {
         super(UpdateInterval);
@@ -45,6 +49,7 @@ public class RainAppState extends BasicAppState {
         rain.setMinY( -50f);
         rain.setMaxY(+200f);
         rain.setInitY(+400f);
+        updateWindVelo();
         rain.initFirstDrops();
         
         rainNode = new Node("RainNode");
@@ -87,6 +92,7 @@ public class RainAppState extends BasicAppState {
     
     @Override
     protected void intervalUpdate() {
+        updateWindVelo();
     }
     
     @Override
@@ -104,5 +110,26 @@ public class RainAppState extends BasicAppState {
         geom.setMaterial(mat);
         geom.setLocalTranslation(offset);
         return geom;
+    }
+    
+    private void updateWindVelo() {
+        if(windVelocity == null) {
+            windVelocity = new Vector3f();
+        }
+        float direction = getWeather().getFloat("wind.direction");
+        float strength = getWeather().getFloat("wind.strength");
+        // windVelocity will be: direction into which wind is blowing and magnitude
+        // reflects strength of wind
+        windVelocity.set(
+            (float) Math.sin(direction * FastMath.DEG_TO_RAD),
+            0,
+            -(float) Math.cos(direction * FastMath.DEG_TO_RAD));
+        windVelocity.negateLocal();
+        windVelocity.multLocal(strength*0.514f); // in m/s
+        rain.setWindVelocity(windVelocity);
+    }
+    
+    private Weather getWeather() {
+        return getState(WeatherAppState.class).getWeather();
     }
 }

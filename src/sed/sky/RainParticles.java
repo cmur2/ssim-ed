@@ -16,6 +16,8 @@ import com.jme3.util.BufferUtils;
 
 public class RainParticles extends Mesh {
     
+    private static final float DeviationScale = 0.075f;
+    
     private int numDrops;
     private float size;
     private Random random;
@@ -33,9 +35,12 @@ public class RainParticles extends Mesh {
     private ColorRGBA dropColorVar;
     private float dropVelocity;
     private float dropVelocityVar;
+    
     private float minY;
     private float maxY;
     private float initY;
+    
+    private Vector3f windVelocity;
     
     public RainParticles(int numDrops, float size) {
         this.numDrops = numDrops;
@@ -118,30 +123,36 @@ public class RainParticles extends Mesh {
         this.initY = initY;
     }
 
+    public Vector3f getWindVelocity() {
+        return windVelocity;
+    }
+
+    public void setWindVelocity(Vector3f windVelocity) {
+        this.windVelocity = windVelocity;
+    }
+
     public void initFirstDrops() {
         TempVars vars = TempVars.get();
         
         for(int i = 0; i < numDrops; i++) {
+            Vector3f dir = getVaryingDirection(vars.vect1);
             // position (upper end)
             float x = random.nextFloat() * size;
             float y = random.nextFloat() * (maxY-minY) + initY;
             float z = random.nextFloat() * size;
             // drop length in m, will displace lower end with this
             float length = getVaryingLength();
+            Vector3f disp = vars.vect2.set(dir).multLocal(length);
             positionBuffer.put(x).put(y).put(z);
-            positionBuffer.put(x).put(y-length).put(z);
+            positionBuffer.put(x + disp.x).put(y + disp.y).put(z + disp.z);
             // color (both ends)
-            // TODO: use small color palette and random color index if possible
             ColorRGBA c = getVaryingColor(vars.color1);
             colorBuffer.put(c.r).put(c.g).put(c.b).put(c.a);
             colorBuffer.put(c.r).put(c.g).put(c.b).put(c.a);
             // velocity (no shader parameter, only used on CPU)
-            // TODO: wind influence
-            velocities[i] = new Vector3f(
-                0,
-                -getVaryingVelocity(),
-                0
-                );
+            // This needs new Vector3f instance since velocities[i] might be
+            // uninitialized.
+            velocities[i] = dir.mult(getVaryingVelocity());
         }
         positionBuffer.rewind();
         colorBuffer.rewind();
@@ -162,18 +173,25 @@ public class RainParticles extends Mesh {
             float curY = positionBuffer.get((i*2+1)*3 + 1);
             // reinitialize drop if it's below minY
             if(curY < minY) {
+                Vector3f dir = getVaryingDirection(vars.vect1);
+                
                 float x = random.nextFloat() * size;
                 float y = maxY + (curY-minY);
                 float z = random.nextFloat() * size;
                 
                 float length = getVaryingLength();
+                Vector3f disp = vars.vect2.set(dir).multLocal(length);
                 
                 positionBuffer.put(n, x); n++;
                 positionBuffer.put(n, y); n++;
                 positionBuffer.put(n, z); n++;
-                positionBuffer.put(n, x); n++;
-                positionBuffer.put(n, y-length); n++;
-                positionBuffer.put(n, z); n++;
+                positionBuffer.put(n, x + disp.x); n++;
+                positionBuffer.put(n, y + disp.y); n++;
+                positionBuffer.put(n, z + disp.z); n++;
+
+                // reuse old Vector3f
+                velocities[i].set(dir);
+                velocities[i].multLocal(getVaryingVelocity());
             } else {
                 Vector3f dist = vars.vect1.set(velocities[i]);
                 dist.multLocal(dt);
@@ -213,6 +231,19 @@ public class RainParticles extends Mesh {
         setMode(Mode.Lines);
     }
 
+    private Vector3f getVaryingDirection(Vector3f store) {
+        if(store == null) {
+            store = new Vector3f();
+        }
+        // take sum of weighted windVelocity (in m/s) and -UNIT_Y, then
+        // normalize, no random variation included atm
+        store.set(windVelocity);
+        store.multLocal(DeviationScale);
+        store.addLocal(0f, -1f, 0f);
+        store.normalizeLocal();
+        return store;
+    }
+    
     private float getVaryingVelocity() {
         return dropVelocity + random.nextFloat() * dropVelocityVar;
     }
