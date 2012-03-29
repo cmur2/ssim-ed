@@ -13,6 +13,7 @@ import sed.app.CloudAppState;
 import sed.app.DebugAppState;
 import sed.app.GuiAppState;
 import sed.app.LightingAppState;
+import sed.app.RainAppState;
 import sed.app.SkyAppState;
 import sed.app.SkyDomeAppState;
 import sed.app.StarAppState;
@@ -133,6 +134,7 @@ public class Main extends SimpleApplication {
         stateManager.attach(new StarAppState());
         stateManager.attach(new CloudAppState());
         stateManager.attach(new TerrainAppState());
+        stateManager.attach(new RainAppState());
         stateManager.attach(new GuiAppState());
         stateManager.attach(new DebugAppState());
     }
