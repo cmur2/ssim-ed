@@ -71,7 +71,7 @@
     </target>
     
     <target name="pre-terrain-lut" depends="build" description="Generates TerrainLUT.png">
-        <java classname="sed.pre.TerrainLUTGenerator" failonerror="true" output="${pregen-log.file}">
+        <java classname="de.mycrobase.ssim.ed.pre.TerrainLUTGenerator" failonerror="true" output="${pregen-log.file}">
             <arg value="assets/textures/TerrainLUT.png"/>
             <classpath refid="classpath"/>
             <classpath refid="classpath-build"/>
@@ -79,7 +79,7 @@
     </target>
     
     <target name="pre-terrain-atlas" depends="build" description="Generates TerrainAtlas.png">
-        <java classname="sed.pre.TerrainAtlasGenerator" failonerror="true" output="${pregen-log.file}">
+        <java classname="de.mycrobase.ssim.ed.pre.TerrainAtlasGenerator" failonerror="true" output="${pregen-log.file}">
             <arg value="assets/textures/TerrainAtlas.png"/>
         	<classpath refid="classpath"/>
             <classpath refid="classpath-build"/>
@@ -87,7 +87,7 @@
     </target>
     
     <target name="pre-terrain-noise" depends="build" description="Generates TerrainNoise.png">
-        <java classname="sed.pre.TileableNoiseGenerator" failonerror="true" output="${pregen-log.file}">
+        <java classname="de.mycrobase.ssim.ed.pre.TileableNoiseGenerator" failonerror="true" output="${pregen-log.file}">
             <arg value="assets/textures/TerrainNoise.png"/>
             <classpath refid="classpath"/>
             <classpath refid="classpath-build"/>
