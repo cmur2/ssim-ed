@@ -106,15 +106,9 @@ public class RainAppState extends BasicAppState {
             }
         }
         
-        //if(oldType == PrecipitationType.None && curType != PrecipitationType.None) {
-        // if there was no precipitation before and now there is some, it
-        // must have "started" again
-        // TODO: smooth fade without hard restart
-        
-        // currently on every change (even from precipitation to another form
-        // of precipitation) restart the particles - not so good looking but
-        // working
-        if(oldType != curType) {
+        if(oldType == PrecipitationType.None && curType != PrecipitationType.None) {
+            // if there was no precipitation before and now there is some, it
+            // must have "started" again
             rain.initFirstDrops();
         }
     }

@@ -188,7 +188,18 @@ public class RainParticles extends Mesh {
                 positionBuffer.put(n, x + disp.x); n++;
                 positionBuffer.put(n, y + disp.y); n++;
                 positionBuffer.put(n, z + disp.z); n++;
-
+                
+                ColorRGBA c = getVaryingColor(vars.color1);
+                int nc = i*2*4;
+                colorBuffer.put(nc+0, c.r);
+                colorBuffer.put(nc+1, c.g);
+                colorBuffer.put(nc+2, c.b);
+                colorBuffer.put(nc+3, c.a);
+                colorBuffer.put(nc+4, c.r);
+                colorBuffer.put(nc+5, c.g);
+                colorBuffer.put(nc+6, c.b);
+                colorBuffer.put(nc+7, c.a);
+                
                 // reuse old Vector3f
                 velocities[i].set(dir);
                 velocities[i].multLocal(getVaryingVelocity());
@@ -208,7 +219,7 @@ public class RainParticles extends Mesh {
         vars.release();
         
         positionVBO.updateData(positionBuffer);
-//        colorVBO.updateData(colorBuffer);
+        colorVBO.updateData(colorBuffer);
 //        updateBound();
     }
     
