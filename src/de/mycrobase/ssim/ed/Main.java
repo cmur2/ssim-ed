@@ -54,6 +54,9 @@ public class Main extends SimpleApplication {
         JLFBridge.installBridge();
         // prevent NPE in VertexBuffer.toString() during NativeObjectManager.deleteUnused()
         java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.FINER);
+        // disable scene graph Node attach/detach logging for performance
+        // (an issue mostly for terrain)
+        java.util.logging.Logger.getLogger("com.jme3.scene.Node").setLevel(java.util.logging.Level.OFF);
         
         CLI cli = new CLI(args);
         if(!cli.parse()) {

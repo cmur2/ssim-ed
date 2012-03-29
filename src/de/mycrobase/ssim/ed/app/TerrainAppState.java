@@ -23,8 +23,6 @@ import de.mycrobase.ssim.ed.util.TempVars;
 
 public class TerrainAppState extends BasicAppState {
     
-    // TODO: disable scene graph node attach logging
-    
     private static final float UpdateInterval = 10f; // in seconds
     
     private static final int PatchSize = 128 + 1;
