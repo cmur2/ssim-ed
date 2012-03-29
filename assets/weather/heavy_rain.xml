@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sed:weather id="snowy" xmlns:sed="http://mycrobase.de/sed-weather-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mycrobase.de/sed-weather-1.0 sed-weather-1.0.xsd">
+<sed:weather id="heavy_rain" xmlns:sed="http://mycrobase.de/sed-weather-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mycrobase.de/sed-weather-1.0 sed-weather-1.0.xsd">
     <sky>
-        <turbidity>10.0</turbidity>
+        <turbidity>4.0</turbidity>
         <light>(0.2, 0.2, 0.2)</light>
     </sky>
     <sun>
@@ -18,12 +18,12 @@
         <zoom>40</zoom> <!-- static value -->
     </cloud>
     <precipitation>
-        <form>3</form>
-        <intensity>0.5</intensity>
+        <form>1</form>
+        <intensity>1.0</intensity>
     </precipitation>
     <wind>
         <!-- from south -->
-        <direction>180</direction>
+        <direction>90</direction>
         <strength>5</strength>
     </wind>
 </sed:weather>

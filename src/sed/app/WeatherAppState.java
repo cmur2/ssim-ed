@@ -43,6 +43,8 @@ public class WeatherAppState extends BasicAppState {
         builder.putFloat("cloud.sharpness");
         builder.putFloat("cloud.way-factor");
         builder.putInt("cloud.zoom");
+        builder.putInt("precipitation.form");
+        builder.putFloat("precipitation.intensity");
         builder.putFloat("wind.direction");
         builder.putFloat("wind.strength");
         PropertySet[] ps = builder.getResults();
@@ -58,6 +60,7 @@ public class WeatherAppState extends BasicAppState {
         weatherController.registerInterpolator(new Interpolators.Vec3Interpolator(), Vector3f.class);
         weatherController.registerInterpolator(new Interpolators.IntInterpolator(), Integer.class);
         
+        weatherController.registerInterpolator(new Interpolators.DiscreteValueInterpolator(), "precipitation.form");
         weatherController.registerInterpolator(new WindInterpolator(), "wind.direction");
     }
     

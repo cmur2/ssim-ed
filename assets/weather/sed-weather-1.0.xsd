@@ -8,6 +8,7 @@
     		<xs:element name="sun" type="sunType"></xs:element>
     		<xs:element name="ocean" type="oceanType"></xs:element>
     		<xs:element name="cloud" type="cloudType"></xs:element>
+    		<xs:element name="precipitation" type="precipitationType"></xs:element>
     		<xs:element name="wind" type="windType"></xs:element>
     	</xs:sequence>
     	<xs:attribute name="id" type="xs:string" use="required"></xs:attribute>
@@ -106,16 +107,35 @@
     	</xs:sequence>
     </xs:complexType>
     
-
-
-
-
-
-
-
+    <xs:complexType name="precipitationType">
+        <xs:sequence>
+            <xs:element name="form">
+                <xs:annotation>
+                    <xs:documentation>Specifies the type of precipitation, valid values from this enumeration: 0 - none, 1 - rain (RA), 2 - ice pellets (PL), 3 - snow (SN)</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:int">
+                        <xs:enumeration value="0"></xs:enumeration>
+                        <xs:enumeration value="1"></xs:enumeration>
+                        <xs:enumeration value="2"></xs:enumeration>
+                        <xs:enumeration value="3"></xs:enumeration>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="intensity">
+                <xs:simpleType>
+                    <xs:restriction base="xs:float">
+                        <xs:minInclusive value="0"></xs:minInclusive>
+                        <xs:maxInclusive value="1"></xs:maxInclusive>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
     <xs:simpleType name="Vector3f">
         <xs:annotation>
-        	<xs:documentation>A Vector is a tupel made out of three float components.</xs:documentation>
+        	<xs:documentation>A Vector is a tuple made out of three float components.</xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
     		<xs:pattern value="\(.+,.+,.+\)"></xs:pattern>
