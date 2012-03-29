@@ -2,6 +2,7 @@ package sed.app;
 
 import sed.sky.RainParticles;
 import sed.util.TempVars;
+import sed.weather.PrecipitationType;
 import sed.weather.Weather;
 import ssim.util.MathExt;
 
@@ -29,7 +30,8 @@ public class RainAppState extends BasicAppState {
     private Node rainNode;
     private RainParticles rain;
     
-    public Vector3f windVelocity;
+    private PrecipitationType curType;
+    private Vector3f windVelocity;
     
     public RainAppState() {
         super(UpdateInterval);
@@ -39,18 +41,12 @@ public class RainAppState extends BasicAppState {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
+        curType = PrecipitationType.None;
+        
         rain = new RainParticles(200, GridStep);
-        rain.setDropLength(5.5f); // in m
-        rain.setDropLengthVar(0.5f); // in m
-        rain.setDropColor(new ColorRGBA(0.4f, 0.4f, 0.5f, 1.0f));
-        rain.setDropColorVar(new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f));
-        rain.setDropVelocity(90f); // in m/s
-        rain.setDropVelocityVar(15f); // in m/s
         rain.setMinY( -50f);
         rain.setMaxY(+200f);
         rain.setInitY(+400f);
-        updateWindVelo();
-        rain.initFirstDrops();
         
         rainNode = new Node("RainNode");
         rainNode.setCullHint(CullHint.Never);
@@ -67,7 +63,7 @@ public class RainAppState extends BasicAppState {
             }
         }
         
-        getApp().getRootNode().attachChild(rainNode);
+        intervalUpdate();
     }
     
     @Override
@@ -75,7 +71,9 @@ public class RainAppState extends BasicAppState {
         // we need the timed functionality too
         super.update(dt);
         
-        rain.update(dt);
+        if(curType != PrecipitationType.None) {
+            rain.update(dt);
+        }
         
         TempVars vars = TempVars.get();
         
@@ -92,7 +90,33 @@ public class RainAppState extends BasicAppState {
     
     @Override
     protected void intervalUpdate() {
+        PrecipitationType oldType = curType;
+        curType = PrecipitationType.fromId(getWeather().getInt("precipitation.form"));
+        
+        updateParticleProperties();
         updateWindVelo();
+        
+        if(curType == PrecipitationType.None) {
+            if(getApp().getRootNode().hasChild(rainNode)) {
+                getApp().getRootNode().detachChild(rainNode);
+            }
+        } else {
+            if(!getApp().getRootNode().hasChild(rainNode)) {
+                getApp().getRootNode().attachChild(rainNode);
+            }
+        }
+        
+        //if(oldType == PrecipitationType.None && curType != PrecipitationType.None) {
+        // if there was no precipitation before and now there is some, it
+        // must have "started" again
+        // TODO: smooth fade without hard restart
+        
+        // currently on every change (even from precipitation to another form
+        // of precipitation) restart the particles - not so good looking but
+        // working
+        if(oldType != curType) {
+            rain.initFirstDrops();
+        }
     }
     
     @Override
@@ -110,6 +134,49 @@ public class RainAppState extends BasicAppState {
         geom.setMaterial(mat);
         geom.setLocalTranslation(offset);
         return geom;
+    }
+    
+    private void updateParticleProperties() {
+        // TODO: use precipitation.intensity
+        
+        switch(curType) {
+        case None: {
+            rain.setDropLength(0);
+            rain.setDropLengthVar(0);
+            rain.setDropColor(ColorRGBA.Black);
+            rain.setDropColorVar(ColorRGBA.Black);
+            rain.setDropVelocity(0);
+            rain.setDropVelocityVar(0);
+            break;
+        }
+        case Rain: {
+            rain.setDropLength(5.5f); // in m
+            rain.setDropLengthVar(0.5f); // in m
+            rain.setDropColor(new ColorRGBA(0.4f, 0.4f, 0.5f, 1.0f));
+            rain.setDropColorVar(new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f));
+            rain.setDropVelocity(90f); // in m/s
+            rain.setDropVelocityVar(15f); // in m/s
+            break;
+        }
+        case IcePellets: {
+            rain.setDropLength(2.0f); // in m
+            rain.setDropLengthVar(0.5f); // in m
+            rain.setDropColor(new ColorRGBA(0.7f, 0.7f, 0.7f, 1.0f));
+            rain.setDropColorVar(new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f));
+            rain.setDropVelocity(75f); // in m/s
+            rain.setDropVelocityVar(10f); // in m/s
+            break;
+        }
+        case Snow: {
+            rain.setDropLength(0.5f); // in m
+            rain.setDropLengthVar(0.1f); // in m
+            rain.setDropColor(new ColorRGBA(0.9f, 0.9f, 0.9f, 1.0f));
+            rain.setDropColorVar(new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f));
+            rain.setDropVelocity(30f); // in m/s
+            rain.setDropVelocityVar(3f); // in m/s
+            break;
+        }
+        }
     }
     
     private void updateWindVelo() {
