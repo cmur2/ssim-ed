@@ -22,7 +22,8 @@ public class RainAppState extends BasicAppState {
     
     private static final float GridStep = 100f; // in m
     private static final int NumGridTiles = 5; // should be odd
-   
+    
+    // range in which the particles will follow the camera
     private static final float RainLowerY = 0f; // in m
     private static final float RainUpperY = 500f; // in m
     
@@ -43,6 +44,7 @@ public class RainAppState extends BasicAppState {
         
         curType = PrecipitationType.None;
         
+        // TODO: precipitation.intensity should influence numDrops
         rain = new RainParticles(200, GridStep);
         rain.setMinY( -50f);
         rain.setMaxY(+200f);
@@ -131,7 +133,7 @@ public class RainAppState extends BasicAppState {
     }
     
     private void updateParticleProperties() {
-        // TODO: use precipitation.intensity
+        float intensity = getWeather().getFloat("precipitation.intensity");
         
         switch(curType) {
         case None: {
@@ -144,7 +146,7 @@ public class RainAppState extends BasicAppState {
             break;
         }
         case Rain: {
-            rain.setDropLength(5.5f); // in m
+            rain.setDropLength(2.0f + 3.5f * intensity); // in m
             rain.setDropLengthVar(0.5f); // in m
             rain.setDropColor(new ColorRGBA(0.4f, 0.4f, 0.5f, 1.0f));
             rain.setDropColorVar(new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f));
@@ -153,7 +155,7 @@ public class RainAppState extends BasicAppState {
             break;
         }
         case IcePellets: {
-            rain.setDropLength(2.0f); // in m
+            rain.setDropLength(1.5f + 1.0f * intensity); // in m
             rain.setDropLengthVar(0.5f); // in m
             rain.setDropColor(new ColorRGBA(0.7f, 0.7f, 0.7f, 1.0f));
             rain.setDropColorVar(new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f));
@@ -162,7 +164,7 @@ public class RainAppState extends BasicAppState {
             break;
         }
         case Snow: {
-            rain.setDropLength(0.5f); // in m
+            rain.setDropLength(0.2f + 0.3f * intensity); // in m
             rain.setDropLengthVar(0.1f); // in m
             rain.setDropColor(new ColorRGBA(0.9f, 0.9f, 0.9f, 1.0f));
             rain.setDropColorVar(new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f));
