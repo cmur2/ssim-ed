@@ -11,6 +11,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
@@ -28,7 +29,8 @@ public class SunAppState extends BasicAppState {
     private static final Logger logger = Logger.getLogger(SunAppState.class);
     private static final float UpdateInterval = 30f; // in seconds
     
-    private static final float SunSize = 100f;
+    private static final float SunDistanceFactor = 1.0f;
+    private static final float SunSizeAngle = 6f; // in degree
     
     // exists only while AppState is attached
     private Geometry geom;
@@ -44,7 +46,14 @@ public class SunAppState extends BasicAppState {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        SunQuad sunQuad = new SunQuad(SunSize);
+        // effective sun size so that sun looks as big as usual (see
+        // SunSizeAngle) no matter at which distance/hemisphere radius
+        // NOTE: sunSize is actually only half of size
+        float sunSize = (float) (SunDistanceFactor *
+            getSkyAppState().getHemisphereRadius() *
+            Math.tan(SunSizeAngle*FastMath.DEG_TO_RAD));
+        
+        SunQuad sunQuad = new SunQuad(sunSize);
         geom = new Geometry("Sun", sunQuad);
         Material mat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         
@@ -95,7 +104,7 @@ public class SunAppState extends BasicAppState {
     
     private void updateSunTranslation() {
         sunTranslation = getSkyAppState().getSun().getSunPosition(sunTranslation);
-        sunTranslation.multLocal(1.0f * getSkyAppState().getHemisphereRadius());
+        sunTranslation.multLocal(SunDistanceFactor * getSkyAppState().getHemisphereRadius());
         sunTranslationNode.setLocalTranslation(sunTranslation);
     }
     
