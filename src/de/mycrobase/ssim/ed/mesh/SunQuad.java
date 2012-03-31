@@ -1,4 +1,4 @@
-package de.mycrobase.ssim.ed.sky;
+package de.mycrobase.ssim.ed.mesh;
 
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer.Type;

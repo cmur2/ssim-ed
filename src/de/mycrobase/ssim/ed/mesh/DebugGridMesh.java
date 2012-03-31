@@ -1,4 +1,4 @@
-package de.mycrobase.ssim.ed;
+package de.mycrobase.ssim.ed.mesh;
 
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;

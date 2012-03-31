@@ -11,8 +11,8 @@ import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 
 import de.mycrobase.ssim.ed.FixedOrderComparator;
+import de.mycrobase.ssim.ed.mesh.SkyDome;
 import de.mycrobase.ssim.ed.sky.SkyBoxTexture;
-import de.mycrobase.ssim.ed.sky.SkyDome;
 
 /**
  * <b>Higher layer</b> {@link AppState} responsible for rendering sky dome.

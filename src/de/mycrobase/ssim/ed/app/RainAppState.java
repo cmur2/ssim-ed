@@ -12,7 +12,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial.CullHint;
 
-import de.mycrobase.ssim.ed.sky.RainParticles;
+import de.mycrobase.ssim.ed.mesh.RainParticles;
 import de.mycrobase.ssim.ed.util.TempVars;
 import de.mycrobase.ssim.ed.weather.PrecipitationType;
 import de.mycrobase.ssim.ed.weather.Weather;

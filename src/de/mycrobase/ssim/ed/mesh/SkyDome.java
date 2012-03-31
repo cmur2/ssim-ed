@@ -1,4 +1,4 @@
-package de.mycrobase.ssim.ed.sky;
+package de.mycrobase.ssim.ed.mesh;
 
 import ssim.util.MathExt;
 

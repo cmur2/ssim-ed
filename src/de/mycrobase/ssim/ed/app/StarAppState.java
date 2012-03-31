@@ -12,7 +12,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
 import de.mycrobase.ssim.ed.FixedOrderComparator;
-import de.mycrobase.ssim.ed.sky.StarField;
+import de.mycrobase.ssim.ed.mesh.StarField;
 
 /**
  * <b>Higher layer</b> {@link AppState} responsible for rendering a star field.

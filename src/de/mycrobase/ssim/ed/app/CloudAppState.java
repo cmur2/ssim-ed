@@ -15,8 +15,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 
+import de.mycrobase.ssim.ed.mesh.CloudPlane;
 import de.mycrobase.ssim.ed.sky.CPUCloudProcessor;
-import de.mycrobase.ssim.ed.sky.CloudPlane;
 import de.mycrobase.ssim.ed.sky.CloudProcessor;
 import de.mycrobase.ssim.ed.sky.GPUCloudProcessor;
 import de.mycrobase.ssim.ed.util.TempVars;

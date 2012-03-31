@@ -21,9 +21,9 @@ import com.jme3.scene.control.BillboardControl;
 import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.shape.Sphere;
 
-import de.mycrobase.ssim.ed.DebugGridMesh;
+import de.mycrobase.ssim.ed.mesh.DebugGridMesh;
+import de.mycrobase.ssim.ed.mesh.WindRose;
 import de.mycrobase.ssim.ed.util.TempVars;
-import de.mycrobase.ssim.ed.weather.WindRose;
 
 public class DebugAppState extends BasicAppState {
     

@@ -15,7 +15,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.control.BillboardControl;
 
 import de.mycrobase.ssim.ed.FixedOrderComparator;
-import de.mycrobase.ssim.ed.sky.SunQuad;
+import de.mycrobase.ssim.ed.mesh.SunQuad;
 import de.mycrobase.ssim.ed.sky.SunTexture;
 import de.mycrobase.ssim.ed.weather.Weather;
 
