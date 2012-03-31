@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import com.jme3.math.Vector3f;
 
+import de.mycrobase.ssim.ed.weather.ext.PropertySet;
+
 public abstract class WeatherControllerTestBase {
     
     private static final float weakEps = 1e-4f;

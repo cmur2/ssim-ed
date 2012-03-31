@@ -1,6 +1,8 @@
-package de.mycrobase.ssim.ed.weather;
+package de.mycrobase.ssim.ed.weather.ext;
 
 import com.jme3.math.FastMath;
+
+import de.mycrobase.ssim.ed.weather.WeatherInterpolator;
 
 /**
  * Wind is modeled as an 3D vector always perpendicular to the Y axis

@@ -140,6 +140,8 @@ public class Main extends SimpleApplication {
         stateManager.attach(new RainAppState());
         stateManager.attach(new GuiAppState());
         stateManager.attach(new DebugAppState());
+        
+        // TODO: need LightScatteringFilter!
     }
     
     private void initMission() {

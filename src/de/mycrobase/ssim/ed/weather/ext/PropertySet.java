@@ -1,4 +1,4 @@
-package de.mycrobase.ssim.ed.weather;
+package de.mycrobase.ssim.ed.weather.ext;
 
 import java.util.HashMap;
 import java.util.Iterator;

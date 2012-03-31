@@ -1,8 +1,11 @@
-package de.mycrobase.ssim.ed.weather;
+package de.mycrobase.ssim.ed.weather.ext;
 
 import java.util.Random;
 
 import org.apache.log4j.Logger;
+
+import de.mycrobase.ssim.ed.weather.BasicWeatherController;
+import de.mycrobase.ssim.ed.weather.WeatherInterpolator;
 
 /**
  * 

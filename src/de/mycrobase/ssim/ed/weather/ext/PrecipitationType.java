@@ -1,4 +1,4 @@
-package de.mycrobase.ssim.ed.weather;
+package de.mycrobase.ssim.ed.weather.ext;
 
 /**
  * A mapping from the precipitation types defined in the weather XSD (as integers)

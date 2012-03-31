@@ -14,8 +14,8 @@ import com.jme3.scene.Spatial.CullHint;
 
 import de.mycrobase.ssim.ed.mesh.RainParticles;
 import de.mycrobase.ssim.ed.util.TempVars;
-import de.mycrobase.ssim.ed.weather.PrecipitationType;
 import de.mycrobase.ssim.ed.weather.Weather;
+import de.mycrobase.ssim.ed.weather.ext.PrecipitationType;
 
 public class RainAppState extends BasicAppState {
     

@@ -1,4 +1,7 @@
-package de.mycrobase.ssim.ed.weather;
+package de.mycrobase.ssim.ed.weather.ext;
+
+import de.mycrobase.ssim.ed.weather.WeatherController;
+import de.mycrobase.ssim.ed.weather.WeatherControllerTestBase;
 
 public class StaticWeatherControllerTest extends WeatherControllerTestBase {
     

@@ -6,13 +6,13 @@ import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Vector3f;
 
-import de.mycrobase.ssim.ed.weather.Interpolators;
-import de.mycrobase.ssim.ed.weather.PropertySet;
-import de.mycrobase.ssim.ed.weather.RandomWeatherController;
 import de.mycrobase.ssim.ed.weather.Weather;
 import de.mycrobase.ssim.ed.weather.WeatherController;
-import de.mycrobase.ssim.ed.weather.WindInterpolator;
-import de.mycrobase.ssim.ed.weather.XMLPropertySetBuilder;
+import de.mycrobase.ssim.ed.weather.ext.Interpolators;
+import de.mycrobase.ssim.ed.weather.ext.PropertySet;
+import de.mycrobase.ssim.ed.weather.ext.RandomWeatherController;
+import de.mycrobase.ssim.ed.weather.ext.WindInterpolator;
+import de.mycrobase.ssim.ed.weather.ext.XMLPropertySetBuilder;
 
 /**
  * <b>Base layer</b> {@link AppState} exposing the {@link Weather} interface
@@ -52,7 +52,6 @@ public class WeatherAppState extends BasicAppState {
         
         // TODO: sky.turbidity should be used to determine fog thickness, aerial parameters
         // TODO: sky.turbidity -> sky.air?
-        // TODO: add precipitation parameters
         // TODO: add air temperature and maybe air pressure
         
         weatherController = new RandomWeatherController(5 * 60f, ps);

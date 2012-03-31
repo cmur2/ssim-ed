@@ -1,4 +1,4 @@
-package de.mycrobase.ssim.ed.weather;
+package de.mycrobase.ssim.ed.weather.ext;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

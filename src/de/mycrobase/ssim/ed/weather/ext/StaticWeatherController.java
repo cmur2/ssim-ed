@@ -1,4 +1,7 @@
-package de.mycrobase.ssim.ed.weather;
+package de.mycrobase.ssim.ed.weather.ext;
+
+import de.mycrobase.ssim.ed.weather.BasicWeatherController;
+import de.mycrobase.ssim.ed.weather.WeatherController;
 
 /**
  * The simplest {@link WeatherController} controller possible. It just

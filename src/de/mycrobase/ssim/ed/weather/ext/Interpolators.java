@@ -1,7 +1,9 @@
-package de.mycrobase.ssim.ed.weather;
+package de.mycrobase.ssim.ed.weather.ext;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+
+import de.mycrobase.ssim.ed.weather.WeatherInterpolator;
 
 public class Interpolators {
     
