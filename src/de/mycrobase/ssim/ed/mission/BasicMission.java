@@ -23,7 +23,7 @@ public class BasicMission implements Mission {
     
     @Override
     public String getTitle() {
-        return null;
+        return title;
     }
     
     public void setTitle(String title) {
@@ -32,7 +32,7 @@ public class BasicMission implements Mission {
     
     @Override
     public String getDescription() {
-        return null;
+        return description;
     }
     
     public void setDescription(String description) {

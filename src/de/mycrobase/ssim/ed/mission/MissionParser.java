@@ -8,17 +8,13 @@ import com.jme3.asset.AssetManager;
 
 public class MissionParser {
     
-    //public MissionParser(AssetManager mgr, String name) {
-    //    Element missionXml = mgr.loadAsset(new AssetKey<Element>(name));
-    //}
-    
     public static Mission load(AssetManager mgr, String name) {
         Element missionXml = mgr.loadAsset(new AssetKey<Element>(name));
         
         BasicMission m = new BasicMission(missionXml.getAttributeValue("id"));
         
-        m.setDescription(missionXml.getChild("description").getValue());
-        m.setTitle(missionXml.getChild("title").getValue());
+        m.setDescription(missionXml.getChild("description").getText());
+        m.setTitle(missionXml.getChild("title").getText());
         m.setMapFile(missionXml.getChild("map").getAttributeValue("file"));
         try {
             m.setLatitude(missionXml.getChild("location").getAttribute("latitude").getFloatValue());
