@@ -51,18 +51,10 @@
         
         <copy todir="${build.dir}">
             <fileset dir="${src.dir}">
-                <include name="**/*.properties"/>
-                <include name="**/*.xml"/>
+                <!-- ignore source code -->
+                <exclude name="**/*.java"/>
             </fileset>
-            <fileset dir="${asset.dir}">
-                <include name="**/*.properties"/>
-                <include name="**/*.xml"/>
-                <include name="**/*.map"/>
-                <include name="**/*.j3md"/>
-                <include name="**/*.vert"/>
-                <include name="**/*.frag"/>
-                <include name="**/*.png"/>
-            </fileset>
+            <fileset dir="${asset.dir}" />
         </copy>
     </target>
     
