@@ -1,8 +1,8 @@
 syntax: glob
 bin
+dist
 *.dll
 *.jnilib
 *.log
-scrap.jpage
 .DS_Store
 build.properties
