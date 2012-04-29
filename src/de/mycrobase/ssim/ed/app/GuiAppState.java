@@ -65,7 +65,7 @@ public class GuiAppState extends BasicAppState {
     }
     
     private void updateClockLabel() {
-        clockLabel.setText(getApp().getSimClock().mixedTime(true));
+        clockLabel.setText(getState(SimClockAppState.class).getSimClock().mixedTime(true));
         clockLabel.setLocalTranslation(
             getApp().getCamera().getWidth()-clockLabel.getLineWidth()-1,
             clockLabel.getLineHeight(),

@@ -49,7 +49,7 @@ public class SkyAppState extends BasicAppState {
         
         // since the constructors shouldn't do anything related to processing
         // the delayed update should work
-        sun = new Sun(getApp().getSimClock(), mission);
+        sun = new Sun(getState(SimClockAppState.class).getSimClock(), mission);
         skyGradient = new SkyGradient(sun);
         intervalUpdate();
         

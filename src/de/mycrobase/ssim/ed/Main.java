@@ -11,7 +11,6 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
-import ssim.sim.SimClock;
 import chlib.noise.NoiseUtil;
 
 import com.jme3.app.SimpleApplication;
@@ -27,6 +26,7 @@ import de.mycrobase.ssim.ed.app.InputMappingAppState;
 import de.mycrobase.ssim.ed.app.LightingAppState;
 import de.mycrobase.ssim.ed.app.NiftyAppState;
 import de.mycrobase.ssim.ed.app.RainAppState;
+import de.mycrobase.ssim.ed.app.SimClockAppState;
 import de.mycrobase.ssim.ed.app.SkyAppState;
 import de.mycrobase.ssim.ed.app.SkyDomeAppState;
 import de.mycrobase.ssim.ed.app.StarAppState;
@@ -105,7 +105,6 @@ public class Main extends SimpleApplication implements GameModeListener {
     
     private SettingsManager settingsManager;
     private ScheduledExecutorService executor;
-    private SimClock simClock;
 
     private GameMode currentMode = GameMode.Stopped;
     private List<GameModeListener> gameModeListeners = new ArrayList<GameModeListener>();
@@ -170,10 +169,6 @@ public class Main extends SimpleApplication implements GameModeListener {
             //Util.printSceneGraph(rootNode);
         }
         
-        if(simClock != null) {
-            simClock.step(dt);
-        }
-        
         time += dt;
     }
     
@@ -200,10 +195,6 @@ public class Main extends SimpleApplication implements GameModeListener {
     }
     
     // simple getters
-    
-    public SimClock getSimClock() {
-        return simClock;
-    }
     
     public ScheduledExecutorService getExecutor() {
         return executor;
@@ -254,11 +245,9 @@ public class Main extends SimpleApplication implements GameModeListener {
     }
 
     public void doGameInit(Mission mission) {
-        simClock = SimClock.createClock(mission.getTimeOfDay());
-        assert simClock != null : "SimClock init failed - wrong parameters!";
-      
         // AppState base layer:
         // these serve as a common base for the higher AppStates
+        stateManager.attach(new SimClockAppState(mission));
         stateManager.attach(new CameraAppState(MaxVisibility));
         stateManager.attach(new WeatherAppState("clear"));
         stateManager.attach(new SkyAppState(0.5f*MaxVisibility, mission));
@@ -293,6 +282,7 @@ public class Main extends SimpleApplication implements GameModeListener {
     }
     
     public void doGameExit() {
+        stateManager.detach(stateManager.getState(SimClockAppState.class));
         stateManager.detach(stateManager.getState(CameraAppState.class));
         stateManager.detach(stateManager.getState(WeatherAppState.class));
         stateManager.detach(stateManager.getState(SkyAppState.class));
@@ -306,8 +296,6 @@ public class Main extends SimpleApplication implements GameModeListener {
         stateManager.detach(stateManager.getState(RainAppState.class));
         stateManager.detach(stateManager.getState(GuiAppState.class));
         stateManager.detach(stateManager.getState(DebugAppState.class));
-        
-        simClock = null;
         
         switchGameMode(GameMode.Stopped);
     }
