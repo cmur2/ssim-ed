@@ -55,11 +55,13 @@ public class GuiAppState extends BasicAppState {
         super.cleanup();
         
         getApp().getGuiNode().detachChild(clockLabel);
+        getApp().getGuiNode().detachChild(speedLabel);
         getApp().getInputManager().deleteMapping(INPUT_MAPPING_SPEED_UP);
         getApp().getInputManager().deleteMapping(INPUT_MAPPING_SPEED_DOWN);
         getApp().getInputManager().removeListener(handler);
         
         clockLabel = null;
+        speedLabel = null;
     }
     
     private void updateClockLabel() {
