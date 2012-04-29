@@ -7,7 +7,7 @@
 	<classpathentry kind="lib" path="libs/log4j-1.2.16.jar"/>
 	<classpathentry kind="lib" path="libs/chlib-v0.1.7.jar"/>
 	<classpathentry kind="lib" path="libs/jdom-1.1.1.jar"/>
-	<classpathentry kind="lib" path="libs/ajutil-1.0.2.jar"/>
+	<classpathentry kind="lib" path="libs/ajutil-1.0.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jME3_2011-11-19"/>
 	<classpathentry kind="lib" path="libs/vecmath-1.5.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
