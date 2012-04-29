@@ -19,8 +19,19 @@ import com.jme3.system.AppSettings;
 
 import de.altimos.util.logger.JLFBridge;
 import de.altimos.util.translator.Translator;
+import de.mycrobase.ssim.ed.app.CameraAppState;
+import de.mycrobase.ssim.ed.app.CloudAppState;
+import de.mycrobase.ssim.ed.app.DebugAppState;
+import de.mycrobase.ssim.ed.app.GuiAppState;
 import de.mycrobase.ssim.ed.app.InputMappingAppState;
+import de.mycrobase.ssim.ed.app.LightingAppState;
 import de.mycrobase.ssim.ed.app.NiftyAppState;
+import de.mycrobase.ssim.ed.app.RainAppState;
+import de.mycrobase.ssim.ed.app.SkyAppState;
+import de.mycrobase.ssim.ed.app.SkyDomeAppState;
+import de.mycrobase.ssim.ed.app.StarAppState;
+import de.mycrobase.ssim.ed.app.SunAppState;
+import de.mycrobase.ssim.ed.app.WeatherAppState;
 import de.mycrobase.ssim.ed.app.screen.CreditsScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.GameScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.IntroScreenAppState;
@@ -29,7 +40,6 @@ import de.mycrobase.ssim.ed.app.screen.OptionsScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.PauseScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.SingleScreenAppState;
 import de.mycrobase.ssim.ed.mission.Mission;
-import de.mycrobase.ssim.ed.mission.MissionParser;
 import de.mycrobase.ssim.ed.settings.FileLayer;
 import de.mycrobase.ssim.ed.settings.LayeredSettingsManager;
 import de.mycrobase.ssim.ed.settings.PropertiesLayer;
@@ -133,35 +143,10 @@ public class Main extends SimpleApplication implements GameModeListener {
                       .setListener(new TListener());
         }
         
-//        initMission();
-        
-//        simClock = SimClock.createClock(getMission().getTimeOfDay());
-//        assert simClock != null : "SimClock init failed - wrong parameters!";
-        
         speed = 1f;
 
         // manual call to avoid code duplication
         gameModeChanged(null, getCurrentMode());
-        
-        // AppState base layer:
-        // these serve as a common base for the higher AppStates
-//        stateManager.attach(new CameraAppState(MaxVisibility));
-//        stateManager.attach(new WeatherAppState("clear"));
-//        stateManager.attach(new SkyAppState(0.5f*MaxVisibility));
-        
-        // AppState higher layer:
-        // these have no dependencies to each other, just to the base layer
-//        stateManager.attach(new SkyDomeAppState());
-//        stateManager.attach(new SunAppState());
-//        stateManager.attach(new LightingAppState());
-//        stateManager.attach(new StarAppState());
-//        stateManager.attach(new CloudAppState());
-//        stateManager.attach(new TerrainAppState());
-//        stateManager.attach(new RainAppState());
-//        stateManager.attach(new GuiAppState());
-//        stateManager.attach(new DebugAppState());
-        
-        // TODO: need LightScatteringFilter!
         
         stateManager.attach(new IntroScreenAppState());
         stateManager.attach(new MainScreenAppState());
@@ -175,10 +160,6 @@ public class Main extends SimpleApplication implements GameModeListener {
         stateManager.attach(new InputMappingAppState());
         
         addGameModeListener(this);
-    }
-    
-    private void initMission() {
-        mission = MissionParser.load(assetManager, "missions/mission_01.xml");
     }
     
     @Override
@@ -275,19 +256,64 @@ public class Main extends SimpleApplication implements GameModeListener {
     }
 
     public void doGameInit(Mission m) {
-        // TODO: init mission
+        mission = m;
+
+        simClock = SimClock.createClock(getMission().getTimeOfDay());
+        assert simClock != null : "SimClock init failed - wrong parameters!";
+      
+        // AppState base layer:
+        // these serve as a common base for the higher AppStates
+        stateManager.attach(new CameraAppState(MaxVisibility));
+        stateManager.attach(new WeatherAppState("clear"));
+        stateManager.attach(new SkyAppState(0.5f*MaxVisibility));
+        
+        // AppState higher layer:
+        // these have no dependencies to each other, just to the base layer
+        stateManager.attach(new SkyDomeAppState());
+        stateManager.attach(new SunAppState());
+        stateManager.attach(new LightingAppState());
+        stateManager.attach(new StarAppState());
+        stateManager.attach(new CloudAppState());
+//        stateManager.attach(new TerrainAppState());
+        stateManager.attach(new RainAppState());
+        stateManager.attach(new GuiAppState());
+        stateManager.attach(new DebugAppState());
+        
+        // TODO: need LightScatteringFilter!
+        
         switchGameMode(GameMode.Running);
     }
     
     public void doGamePause() {
+        // TODO: doGamePause
+        
         switchGameMode(GameMode.Paused);
     }
     
     public void doGameResume() {
+        // TODO: doGameResume
+        
         switchGameMode(GameMode.Running);
     }
     
     public void doGameExit() {
+        stateManager.detach(stateManager.getState(CameraAppState.class));
+        stateManager.detach(stateManager.getState(WeatherAppState.class));
+        stateManager.detach(stateManager.getState(SkyAppState.class));
+        
+        stateManager.detach(stateManager.getState(SkyDomeAppState.class));
+        stateManager.detach(stateManager.getState(SunAppState.class));
+        stateManager.detach(stateManager.getState(LightingAppState.class));
+        stateManager.detach(stateManager.getState(StarAppState.class));
+        stateManager.detach(stateManager.getState(CloudAppState.class));
+//        stateManager.detach(stateManager.getState(TerrainAppState.class));
+        stateManager.detach(stateManager.getState(RainAppState.class));
+        stateManager.detach(stateManager.getState(GuiAppState.class));
+        stateManager.detach(stateManager.getState(DebugAppState.class));
+        
+        simClock = null;
+        mission = null;
+        
         switchGameMode(GameMode.Stopped);
     }
 }
