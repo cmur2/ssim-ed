@@ -6,7 +6,7 @@
     <useControls filename="nifty-default-controls.xml" />
     
     <screen id="single" controller="de.mycrobase.ssim.ed.app.screen.SingleScreenAppState"
-        inputMapping="de.mycrobase.ssim.ed.input.PreGameInputMapping" defaultFocusElement="mission_list">
+        inputMapping="de.mycrobase.ssim.ed.input.PreGameInputMapping" defaultFocusElement="game_button">
         <layer id="background" style="bgLayer">
             <!-- spacer -->
         </layer>

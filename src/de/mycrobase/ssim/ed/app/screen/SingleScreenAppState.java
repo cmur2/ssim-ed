@@ -62,6 +62,14 @@ public class SingleScreenAppState extends BasicScreenAppState implements KeyInpu
     }
     
     @Override
+    public void onStartScreen() {
+        super.onStartScreen();
+        
+        // try to select first item by default, fails silently if there are no items
+        missionList.selectItemByIndex(0);
+    }
+    
+    @Override
     public boolean keyEvent(NiftyInputEvent inputEvent) {
         if(inputEvent == NiftyInputEvent.Escape) {
             doReturn();
