@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd nifty-1.3.xsd">
+    
+    <useStyles filename="nifty-default-styles.xml" />
+    <useStyles filename="gui/styles.xml" />
+    <useControls filename="nifty-default-controls.xml" />
+    
+    <screen id="intro" controller="de.mycrobase.ssim.ed.app.screen.IntroScreenAppState"
+        inputMapping="de.mycrobase.ssim.ed.input.AnyKeyInputMapping">
+        <layer id="background" style="bgLayer">
+            <!-- spacer -->
+        </layer>
+        
+        <layer id="foreground" childLayout="vertical">
+            <panel height="100%" width="100%" align="center" childLayout="center">
+                <text text="${CALL.translate(intro)}" font="Interface/Fonts/Default.fnt" width="100%" height="100%" />
+            </panel>
+        </layer>
+        
+        <layer id="intro_skip" childLayout="vertical">
+            <panel height="100%" width="100%">
+                <interact onClick="doSkip()" />
+            </panel>
+        </layer>
+    </screen>
+    
+</nifty>

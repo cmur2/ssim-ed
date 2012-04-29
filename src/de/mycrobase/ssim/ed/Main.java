@@ -1,6 +1,9 @@
 package de.mycrobase.ssim.ed;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -15,18 +18,16 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;
 
 import de.altimos.util.logger.JLFBridge;
-import de.mycrobase.ssim.ed.app.CameraAppState;
-import de.mycrobase.ssim.ed.app.CloudAppState;
-import de.mycrobase.ssim.ed.app.DebugAppState;
-import de.mycrobase.ssim.ed.app.GuiAppState;
-import de.mycrobase.ssim.ed.app.LightingAppState;
-import de.mycrobase.ssim.ed.app.RainAppState;
-import de.mycrobase.ssim.ed.app.SkyAppState;
-import de.mycrobase.ssim.ed.app.SkyDomeAppState;
-import de.mycrobase.ssim.ed.app.StarAppState;
-import de.mycrobase.ssim.ed.app.SunAppState;
-import de.mycrobase.ssim.ed.app.TerrainAppState;
-import de.mycrobase.ssim.ed.app.WeatherAppState;
+import de.altimos.util.translator.Translator;
+import de.mycrobase.ssim.ed.app.InputMappingAppState;
+import de.mycrobase.ssim.ed.app.NiftyAppState;
+import de.mycrobase.ssim.ed.app.screen.CreditsScreenAppState;
+import de.mycrobase.ssim.ed.app.screen.GameScreenAppState;
+import de.mycrobase.ssim.ed.app.screen.IntroScreenAppState;
+import de.mycrobase.ssim.ed.app.screen.MainScreenAppState;
+import de.mycrobase.ssim.ed.app.screen.OptionsScreenAppState;
+import de.mycrobase.ssim.ed.app.screen.PauseScreenAppState;
+import de.mycrobase.ssim.ed.app.screen.SingleScreenAppState;
 import de.mycrobase.ssim.ed.mission.Mission;
 import de.mycrobase.ssim.ed.mission.MissionParser;
 import de.mycrobase.ssim.ed.settings.FileLayer;
@@ -36,8 +37,10 @@ import de.mycrobase.ssim.ed.settings.SettingsManager;
 import de.mycrobase.ssim.ed.util.MapLoader;
 import de.mycrobase.ssim.ed.util.PropertiesLoader;
 import de.mycrobase.ssim.ed.util.XMLLoader;
+import de.mycrobase.ssim.ed.util.lang.TListener;
+import de.mycrobase.ssim.ed.util.lang.XmlTranslation;
 
-public class Main extends SimpleApplication {
+public class Main extends SimpleApplication implements GameModeListener {
     
     private static final Logger logger = Logger.getLogger(Main.class);
     private static final float UpdateInterval = 5f; // in seconds
@@ -93,7 +96,10 @@ public class Main extends SimpleApplication {
     private ScheduledExecutorService executor;
     private Mission mission;
     private SimClock simClock;
-    
+
+    private GameMode currentMode = GameMode.Stopped;
+    private List<GameModeListener> gameModeListeners = new ArrayList<GameModeListener>();
+        
     public Main(SettingsManager settingsManager) {
         this.settingsManager = settingsManager;
     }
@@ -115,33 +121,60 @@ public class Main extends SimpleApplication {
         int numWorker = (int) (1.5f * Runtime.getRuntime().availableProcessors());
         logger.info(String.format("Worker thread pool size: %d", numWorker));
         executor = Executors.newScheduledThreadPool(numWorker);
+
+        logger.info("System locale: " + Locale.getDefault());
+        {
+            Translator translator = Translator.getGlobal();            
+            // make sure the default locale will be used:
+            translator.setLocale(Locale.getDefault())
+                      .setTranslation(new XmlTranslation(assetManager))
+                      .setSource(null)
+                      .setDomain("lang/ssim")
+                      .setListener(new TListener());
+        }
         
-        initMission();
+//        initMission();
         
-        simClock = SimClock.createClock(getMission().getTimeOfDay());
-        assert simClock != null : "SimClock init failed - wrong parameters!";
+//        simClock = SimClock.createClock(getMission().getTimeOfDay());
+//        assert simClock != null : "SimClock init failed - wrong parameters!";
         
         speed = 1f;
+
+        // manual call to avoid code duplication
+        gameModeChanged(null, getCurrentMode());
         
         // AppState base layer:
         // these serve as a common base for the higher AppStates
-        stateManager.attach(new CameraAppState(MaxVisibility));
-        stateManager.attach(new WeatherAppState("clear"));
-        stateManager.attach(new SkyAppState(0.5f*MaxVisibility));
+//        stateManager.attach(new CameraAppState(MaxVisibility));
+//        stateManager.attach(new WeatherAppState("clear"));
+//        stateManager.attach(new SkyAppState(0.5f*MaxVisibility));
         
         // AppState higher layer:
         // these have no dependencies to each other, just to the base layer
-        stateManager.attach(new SkyDomeAppState());
-        stateManager.attach(new SunAppState());
-        stateManager.attach(new LightingAppState());
-        stateManager.attach(new StarAppState());
-        stateManager.attach(new CloudAppState());
-        stateManager.attach(new TerrainAppState());
-        stateManager.attach(new RainAppState());
-        stateManager.attach(new GuiAppState());
-        stateManager.attach(new DebugAppState());
+//        stateManager.attach(new SkyDomeAppState());
+//        stateManager.attach(new SunAppState());
+//        stateManager.attach(new LightingAppState());
+//        stateManager.attach(new StarAppState());
+//        stateManager.attach(new CloudAppState());
+//        stateManager.attach(new TerrainAppState());
+//        stateManager.attach(new RainAppState());
+//        stateManager.attach(new GuiAppState());
+//        stateManager.attach(new DebugAppState());
         
         // TODO: need LightScatteringFilter!
+        
+        stateManager.attach(new IntroScreenAppState());
+        stateManager.attach(new MainScreenAppState());
+        stateManager.attach(new CreditsScreenAppState());
+        stateManager.attach(new OptionsScreenAppState());
+        stateManager.attach(new SingleScreenAppState());
+        stateManager.attach(new GameScreenAppState());
+        stateManager.attach(new PauseScreenAppState());
+        
+        stateManager.attach(new NiftyAppState());
+        stateManager.attach(new InputMappingAppState());
+        
+        addGameModeListener(this);
     }
     
     private void initMission() {
@@ -156,7 +189,7 @@ public class Main extends SimpleApplication {
             //Util.printSceneGraph(rootNode);
         }
         
-        simClock.step(dt);
+//        simClock.step(dt);
         
         time += dt;
     }
@@ -167,6 +200,20 @@ public class Main extends SimpleApplication {
         
         // shutdown all (non daemon) worker pool threads
         executor.shutdown();
+    }
+
+    @Override
+    public void gameModeChanged(GameMode oldMode, GameMode newMode) {
+        if(newMode == GameMode.Running) {
+            flyCam.setEnabled(true);
+            flyCam.setDragToRotate(false);
+            inputManager.setCursorVisible(false);
+        } else {
+            // disable for nifty
+            flyCam.setEnabled(false);
+            flyCam.setDragToRotate(true);
+            inputManager.setCursorVisible(true);
+        }
     }
     
     // simple getters
@@ -189,5 +236,58 @@ public class Main extends SimpleApplication {
     
     public void setSpeed(float speed) {
         this.speed = speed;
+    }
+    
+    // public API
+    
+    public GameMode getCurrentMode() {
+        return currentMode;
+    }
+    
+    public void addGameModeListener(GameModeListener lis) {
+        if(!gameModeListeners.contains(lis)) {
+            gameModeListeners.add(lis);
+        }
+    }
+    
+    public void removeGameModeListener(GameModeListener lis) {
+        if(gameModeListeners.contains(lis)) {
+            gameModeListeners.remove(lis);
+        }
+    }
+
+    /**
+     * Triggers switch if old and new {@link GameMode}s are different and
+     * notifies all {@link GameModeListener}s about change.
+     * 
+     * @param newMode
+     */
+    public void switchGameMode(GameMode newMode) {
+        GameMode oldMode = currentMode;
+        
+        if(oldMode != newMode) {
+            for(GameModeListener lis : gameModeListeners) {
+                lis.gameModeChanged(oldMode, newMode);
+            }
+        }
+        
+        currentMode = newMode;
+    }
+
+    public void doGameInit(Mission m) {
+        // TODO: init mission
+        switchGameMode(GameMode.Running);
+    }
+    
+    public void doGamePause() {
+        switchGameMode(GameMode.Paused);
+    }
+    
+    public void doGameResume() {
+        switchGameMode(GameMode.Running);
+    }
+    
+    public void doGameExit() {
+        switchGameMode(GameMode.Stopped);
     }
 }

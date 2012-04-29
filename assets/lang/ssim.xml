@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<translation>
+    <!-- screens -->
+    <intro>
+        <intro>your intro here</intro>
+    </intro>
+    <main>
+        <title>SSim</title>
+        <start>Start</start>
+        <options>Options</options>
+        <credits>Credits</credits>
+        <quit>Quit</quit>
+        <footer>SSim</footer>
+    </main>
+    <credits>
+        <title>Credits</title>
+        <return>Return</return>
+    </credits>
+    <options>
+        <title>Options</title>
+        <abort>Abort</abort>
+        <apply>Apply</apply>
+    </options>
+    <single>
+        <title>Single</title>
+        <missions>Missions:</missions>
+        <mission>
+            <text>
+                <empty></empty>
+            </text>
+        </mission>
+        <return>Return</return>
+        <game>Start Game</game>
+    </single>
+    <pause>
+        <title>Pause</title>
+        <continue>Continue</continue>
+        <quit>Quit</quit>
+    </pause>
+    
+    <!-- missions -->
+    <mission_01>
+        <title>Mission 1</title>
+        <description>Hello!</description>
+    </mission_01>
+    <mission_02>
+        <title>Mission 2</title>
+        <description>The mission's description will go here...
+manually wrapped on long texts since Nifty's
+wrap=true doesn't work with dynamic label
+changes.</description>
+    </mission_02>
+</translation>

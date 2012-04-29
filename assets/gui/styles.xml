@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-styles xmlns="http://nifty-gui.sourceforge.net/nifty-styles-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-styles-1.3.xsd nifty-styles-1.3.xsd">
+    
+    <style id="bgLayer">
+        <attributes backgroundColor="#444c" />
+    </style>
+    
+    <style id="single#mission_text">
+        <attributes backgroundColor="#666f" font="Interface/Fonts/Default.fnt" textHAlign="left" textVAlign="top" />
+        <effect>
+            <onActive name="border" border="1px" color="#7a1414ff" timeType="infinte" />
+        </effect>
+    </style>
+    
+</nifty-styles>

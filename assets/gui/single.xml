@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd nifty-1.3.xsd">
+    
+    <useStyles filename="nifty-default-styles.xml" />
+    <useStyles filename="gui/styles.xml" />
+    <useControls filename="nifty-default-controls.xml" />
+    
+    <screen id="single" controller="de.mycrobase.ssim.ed.app.screen.SingleScreenAppState"
+        inputMapping="de.mycrobase.ssim.ed.input.PreGameInputMapping" defaultFocusElement="mission_list">
+        <layer id="background" style="bgLayer">
+            <!-- spacer -->
+        </layer>
+        
+        <layer id="foreground" childLayout="vertical">
+            <panel height="15%" width="100%" align="center" childLayout="center">
+                <text text="${CALL.translate(title)}" font="Interface/Fonts/Default.fnt" width="100%" height="66%" />
+            </panel>
+            
+            <panel height="75%" width="100%" align="left" childLayout="horizontal">
+                <panel width="50%" childLayout="vertical">
+                    <text text="${CALL.translate(missions)}" font="Interface/Fonts/Default.fnt" height="10%" />
+                    
+                    <panel width="80%" align="center" childLayout="center">
+                        <control id="mission_list" name="listBox" displayItems="8" horizontal="optional" vertical="optional">
+                        </control>
+                    </panel>
+                    
+                    <panel height="10%" />
+                </panel>
+                
+                <panel width="50%" childLayout="vertical">
+                    <panel height="10%" />
+                    
+                    <panel width="80%" align="center" childLayout="center">
+                        <control id="mission_text" name="label" text="${CALL.translate(mission.text.empty)}" style="single#mission_text" width="100%" height="100%">
+                        </control>
+                    </panel>
+                    
+                    <panel height="10%" />
+                </panel>
+            </panel>
+            
+            <panel height="10%" width="50%" align="center" childLayout="horizontal">
+                <panel height="50%" width="50%" valign="center" childLayout="center">
+                    <control id="return_button" name="button" label="${CALL.translate(return)}" align="center" valign="center" visibleToMouse="true">
+                        <interact onClick="doReturn()" />
+                    </control>
+                </panel>
+                
+                <panel height="50%" width="50%" valign="center" childLayout="center">
+                    <control id="game_button" name="button" label="${CALL.translate(game)}" align="center" valign="center" visibleToMouse="true">
+                        <interact onClick="doGame()" />
+                    </control>
+                </panel>
+            </panel>
+        </layer>
+    </screen>
+    
+</nifty>

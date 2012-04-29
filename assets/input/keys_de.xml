@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sed:mappings id="de" xmlns:sed="http://mycrobase.de/sed-mapping-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mycrobase.de/sed-mapping-1.0 sed-mapping-1.0.xsd">
+    
+    <!--<map key="ESCAPE" action="SIMPLEAPP_Exit" />-->
+    <map key="C" action="SIMPLEAPP_CameraPos" />
+    <map key="M" action="SIMPLEAPP_Memory" />
+    <map key="F5" action="SIMPLEAPP_HideStats" />
+    
+    <map key="LEFT" action="FLYCAM_Left" />
+    <map key="RIGHT" action="FLYCAM_Right" />
+    <map key="UP" action="FLYCAM_Up" />
+    <map key="DOWN" action="FLYCAM_Down" />
+    
+    <map key="A" action="FLYCAM_StrafeLeft" />
+    <map key="D" action="FLYCAM_StrafeRight" />
+    <map key="W" action="FLYCAM_Forward" />
+    <map key="S" action="FLYCAM_Backward" />
+    
+    <map key="Q" action="FLYCAM_Rise" />
+    <map key="Y" action="FLYCAM_Lower" />
+    
+    <map button="LEFT" action="FLYCAM_RotateDrag" />
+    
+</sed:mappings>

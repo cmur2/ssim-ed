@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sed:mission id="mission-01" xmlns:sed="http://mycrobase.de/sed-mission-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mycrobase.de/sed-mission-1.0 sed-mission-1.0.xsd">
-    <title>mission_01.title</title>
-    <description>mission_01.description</description>
+    <title>mission_02.title</title>
+    <description>mission_02.description</description>
     <location latitude="36.4" longitude="-11.8" /> <!-- N 36.4 W 11.8 -->
     <datetime dayOfYear="180" timeOfDay="15.00" />
     <map file="Florida.map" />

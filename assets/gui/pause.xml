@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd nifty-1.3.xsd">
+    
+    <useStyles filename="nifty-default-styles.xml" />
+    <useStyles filename="gui/styles.xml" />
+    <useControls filename="nifty-default-controls.xml" />
+    
+    <screen id="pause" controller="de.mycrobase.ssim.ed.app.screen.PauseScreenAppState"
+        inputMapping="de.mycrobase.ssim.ed.input.PreGameInputMapping" defaultFocusElement="return_button">
+        <layer id="background" style="bgLayer">
+            <!-- spacer -->
+        </layer>
+        
+        <layer id="foreground" childLayout="vertical">
+            <panel height="20%" />
+            
+            <panel height="10%" width="100%" align="center" childLayout="center">
+                <text text="${CALL.translate(title)}" font="Interface/Fonts/Default.fnt" width="100%" height="100%" />
+            </panel>
+            
+            <panel height="5%" />
+            
+            <panel width="100%" align="center" childLayout="vertical">
+            
+                <panel height="25%" align="center" valign="center" childLayout="center">
+                    <control id="continue_button" name="button" label="${CALL.translate(continue)}" align="center" valign="center" visibleToMouse="true">
+                        <interact onClick="doContinue()" />
+                    </control>
+                </panel>
+                
+                <!--<panel height="25%" align="center" valign="center" childLayout="center">
+                    <control id="options_button" name="button" label="${CALL.translate(options)}" align="center" valign="center" visibleToMouse="true">
+                        <interact onClick="doOptions()" />
+                    </control>
+                </panel>-->
+                
+                <panel height="25%" align="center" valign="center" childLayout="center">
+                    <control id="quit_button" name="button" label="${CALL.translate(quit)}" align="center" valign="center" visibleToMouse="true">
+                        <interact onClick="doQuit()" />
+                    </control>
+                </panel>
+            </panel>
+            
+            <panel height="20%" />
+        </layer>
+    </screen>
+    
+</nifty>

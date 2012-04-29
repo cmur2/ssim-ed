@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd nifty-1.3.xsd">
+    
+    <useStyles filename="nifty-default-styles.xml" />
+    <useStyles filename="gui/styles.xml" />
+    <useControls filename="nifty-default-controls.xml" />
+    
+    <screen id="credits" controller="de.mycrobase.ssim.ed.app.screen.CreditsScreenAppState"
+        inputMapping="de.mycrobase.ssim.ed.input.PreGameInputMapping" defaultFocusElement="return_button">
+        <layer id="background" style="bgLayer">
+            <!-- spacer -->
+        </layer>
+        
+        <layer id="foreground" childLayout="vertical">
+            <panel height="90%" width="60%" align="center" childLayout="center">
+                <text text="${CALL.translate(title)}" font="Interface/Fonts/Default.fnt" width="100%" height="100%" wrap="true" />
+            </panel>
+            
+            <panel height="10%" width="50%" align="center" childLayout="center">
+                <panel height="50%" width="100%" valign="center" childLayout="center">
+                    <control id="return_button" name="button" label="${CALL.translate(return)}" align="center" valign="center" visibleToMouse="true">
+                        <interact onClick="doReturn()" />
+                    </control>
+                </panel>
+            </panel>
+        </layer>
+    </screen>
+    
+</nifty>
