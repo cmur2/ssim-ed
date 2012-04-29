@@ -57,7 +57,7 @@ public class StarAppState extends BasicAppState {
     public void cleanup() {
         super.cleanup();
         
-        if(getSkyAppState().getSkyNode() != null) {
+        if(getSkyAppState() != null && getSkyAppState().getSkyNode() != null) {
             getSkyNode().detachChild(geom);
         }
         

@@ -61,7 +61,7 @@ public class SkyDomeAppState extends BasicAppState {
     public void cleanup() {
         super.cleanup();
         
-        if(getSkyAppState().getSkyNode() != null) {
+        if(getSkyAppState() != null && getSkyAppState().getSkyNode() != null) {
             getSkyAppState().getSkyNode().detachChild(geom);
         }
         

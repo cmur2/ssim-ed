@@ -102,7 +102,7 @@ public class CloudAppState extends BasicAppState {
     public void cleanup() {
         super.cleanup();
         
-        if(getSkyAppState().getSkyNode() != null) {
+        if(getSkyAppState() != null && getSkyAppState().getSkyNode() != null) {
             getSkyAppState().getSkyNode().detachChild(geom);
         }
         getApp().getViewPort().removeProcessor(cloudProcessor);
