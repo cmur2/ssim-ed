@@ -10,6 +10,7 @@ import com.jme3.scene.Spatial.CullHint;
 
 import de.mycrobase.ssim.ed.FixedOrderComparator;
 import de.mycrobase.ssim.ed.SurfaceCameraControl;
+import de.mycrobase.ssim.ed.mission.Mission;
 import de.mycrobase.ssim.ed.sky.SkyGradient;
 import de.mycrobase.ssim.ed.sky.Sun;
 
@@ -25,15 +26,17 @@ public class SkyAppState extends BasicAppState {
     private static final float UpdateInterval = 1f; // in seconds
     
     private float hemisphereRadius;
+    private Mission mission;
     
     // exists only while AppState is attached
     private Node skyNode;
     private Sun sun;
     private SkyGradient skyGradient;
     
-    public SkyAppState(float hemisphereRadius) {
+    public SkyAppState(float hemisphereRadius, Mission mission) {
         super(UpdateInterval);
         this.hemisphereRadius = hemisphereRadius;
+        this.mission = mission;
     }
     
     @Override
@@ -46,7 +49,7 @@ public class SkyAppState extends BasicAppState {
         
         // since the constructors shouldn't do anything related to processing
         // the delayed update should work
-        sun = new Sun(getApp().getSimClock(), getApp().getMission());
+        sun = new Sun(getApp().getSimClock(), mission);
         skyGradient = new SkyGradient(sun);
         intervalUpdate();
         

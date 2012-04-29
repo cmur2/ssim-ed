@@ -17,6 +17,7 @@ import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.MagFilter;
 import com.jme3.texture.Texture.MinFilter;
 
+import de.mycrobase.ssim.ed.mission.Mission;
 import de.mycrobase.ssim.ed.terrain.BinaryMap;
 import de.mycrobase.ssim.ed.terrain.BinaryMapTileLoader;
 import de.mycrobase.ssim.ed.util.TempVars;
@@ -29,20 +30,23 @@ public class TerrainAppState extends BasicAppState {
     private static final int MaxVisibleSize = 4 * (PatchSize-1) + 1;
     private static final float LODMultiplier = 2.7f;
     
+    private Mission mission;
+    
     // exists only while AppState is attached
     private TerrainGrid terrainGrid;
     private Material terrainMat;
     TerrainLodControl lodControl;
     
-    public TerrainAppState() {
+    public TerrainAppState(Mission mission) {
         super(UpdateInterval);
+        this.mission = mission;
     }
     
     @Override
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        String path = String.format("maps/%s", getApp().getMission().getMapFile());
+        String path = String.format("maps/%s", mission.getMapFile());
         AssetKey<BinaryMap> mapKey = new AssetKey<BinaryMap>(path);
         BinaryMap map = getApp().getAssetManager().loadAsset(mapKey);
         

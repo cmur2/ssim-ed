@@ -31,6 +31,7 @@ import de.mycrobase.ssim.ed.app.SkyAppState;
 import de.mycrobase.ssim.ed.app.SkyDomeAppState;
 import de.mycrobase.ssim.ed.app.StarAppState;
 import de.mycrobase.ssim.ed.app.SunAppState;
+import de.mycrobase.ssim.ed.app.TerrainAppState;
 import de.mycrobase.ssim.ed.app.WeatherAppState;
 import de.mycrobase.ssim.ed.app.screen.CreditsScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.GameScreenAppState;
@@ -104,7 +105,6 @@ public class Main extends SimpleApplication implements GameModeListener {
     
     private SettingsManager settingsManager;
     private ScheduledExecutorService executor;
-    private Mission mission;
     private SimClock simClock;
 
     private GameMode currentMode = GameMode.Stopped;
@@ -170,7 +170,9 @@ public class Main extends SimpleApplication implements GameModeListener {
             //Util.printSceneGraph(rootNode);
         }
         
-//        simClock.step(dt);
+        if(simClock != null) {
+            simClock.step(dt);
+        }
         
         time += dt;
     }
@@ -198,10 +200,6 @@ public class Main extends SimpleApplication implements GameModeListener {
     }
     
     // simple getters
-    
-    public Mission getMission() {
-        return mission;
-    }
     
     public SimClock getSimClock() {
         return simClock;
@@ -255,17 +253,15 @@ public class Main extends SimpleApplication implements GameModeListener {
         currentMode = newMode;
     }
 
-    public void doGameInit(Mission m) {
-        mission = m;
-
-        simClock = SimClock.createClock(getMission().getTimeOfDay());
+    public void doGameInit(Mission mission) {
+        simClock = SimClock.createClock(mission.getTimeOfDay());
         assert simClock != null : "SimClock init failed - wrong parameters!";
       
         // AppState base layer:
         // these serve as a common base for the higher AppStates
         stateManager.attach(new CameraAppState(MaxVisibility));
         stateManager.attach(new WeatherAppState("clear"));
-        stateManager.attach(new SkyAppState(0.5f*MaxVisibility));
+        stateManager.attach(new SkyAppState(0.5f*MaxVisibility, mission));
         
         // AppState higher layer:
         // these have no dependencies to each other, just to the base layer
@@ -274,7 +270,7 @@ public class Main extends SimpleApplication implements GameModeListener {
         stateManager.attach(new LightingAppState());
         stateManager.attach(new StarAppState());
         stateManager.attach(new CloudAppState());
-//        stateManager.attach(new TerrainAppState());
+        stateManager.attach(new TerrainAppState(mission));
         stateManager.attach(new RainAppState());
         stateManager.attach(new GuiAppState());
         stateManager.attach(new DebugAppState());
@@ -306,13 +302,12 @@ public class Main extends SimpleApplication implements GameModeListener {
         stateManager.detach(stateManager.getState(LightingAppState.class));
         stateManager.detach(stateManager.getState(StarAppState.class));
         stateManager.detach(stateManager.getState(CloudAppState.class));
-//        stateManager.detach(stateManager.getState(TerrainAppState.class));
+        stateManager.detach(stateManager.getState(TerrainAppState.class));
         stateManager.detach(stateManager.getState(RainAppState.class));
         stateManager.detach(stateManager.getState(GuiAppState.class));
         stateManager.detach(stateManager.getState(DebugAppState.class));
         
         simClock = null;
-        mission = null;
         
         switchGameMode(GameMode.Stopped);
     }
