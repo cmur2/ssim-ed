@@ -3,7 +3,7 @@
     <title>mission_02.title</title>
     <description>mission_02.description</description>
     <location latitude="36.4" longitude="-11.8" /> <!-- N 36.4 W 11.8 -->
-    <datetime dayOfYear="180" timeOfDay="15.00" />
+    <datetime dayOfYear="180" timeOfDay="19.50" />
     <map file="Florida.map" />
     <win>
         <Const value="false" />
