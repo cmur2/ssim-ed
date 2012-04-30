@@ -92,15 +92,17 @@ public class NiftyAppState extends BasicAppState implements GameModeListener {
             }
         }
         
-        // implement central screen switch on mode change
-        if(oldMode != GameMode.Running && newMode == GameMode.Running) {
-            nifty.gotoScreen("game");
-        }
-        if(oldMode != GameMode.Paused && newMode == GameMode.Paused) {
-            nifty.gotoScreen("pause");
-        }
-        if(oldMode != GameMode.Stopped && newMode == GameMode.Stopped) {
-            nifty.gotoScreen("single");
+        if(oldMode != null) {
+            // implement central screen switch on mode change
+            if(oldMode != GameMode.Running && newMode == GameMode.Running) {
+                nifty.gotoScreen("game");
+            }
+            if(oldMode != GameMode.Paused && newMode == GameMode.Paused) {
+                nifty.gotoScreen("pause");
+            }
+            if(oldMode != GameMode.Stopped && newMode == GameMode.Stopped) {
+                nifty.gotoScreen("single");
+            }
         }
     }
     
