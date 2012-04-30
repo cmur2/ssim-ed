@@ -1,6 +1,8 @@
 package de.mycrobase.ssim.ed.app;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
@@ -63,15 +65,37 @@ public class InputMappingAppState extends BasicAppState {
     }
     
     private MappingSet getCurrentMappingSet() {
-        String name = "default";
-        if(Locale.getDefault().getCountry().length() > 0) {
-            name = Locale.getDefault().getCountry().toLowerCase();
+        LinkedList<String> nameFallbacks = new LinkedList<String>();
+        // default is default
+        nameFallbacks.add("default");
+        // eval default Locale
+        {
+            String name = Locale.getDefault().getCountry().toLowerCase();
+            if(name.length() > 0) {
+                logger.info("Deriving mapping set from default Locale: " + name);
+                nameFallbacks.add(name);
+            }
         }
-        if(!mappingSets.containsKey(name)) {
-            name = "default";
+        // eval locale.input setting
+        {
+            String name = getApp().getSettingsManager().getString("locale.input").toLowerCase();
+            if(!name.equals("auto")) {
+                logger.info("Deriving mapping set from locale.input setting: " + name);
+                nameFallbacks.add(name);
+            } else {
+                logger.info("locale.input setting is 'auto'");
+            }
         }
-        // TODO: select default after locale, allow change via setting, allow user specific
-        return mappingSets.get(name);
+        // reject unknown mapping sets
+        for(Iterator<String> iter = nameFallbacks.iterator(); iter.hasNext(); ) {
+            String name = iter.next();
+            if(!mappingSets.containsKey(name)) {
+                logger.info("Removing unknown mapping set name from fallback list: " + name);
+                iter.remove();
+            }
+        }
+        // return best survivor (default at least)
+        return mappingSets.get(nameFallbacks.getLast());
     }
     
     private void switchMappings(MappingSet oldMap, MappingSet newMap) {

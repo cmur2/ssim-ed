@@ -134,7 +134,17 @@ public class Main extends SimpleApplication implements GameModeListener {
         logger.info(String.format("Worker thread pool size: %d", numWorker));
         executor = Executors.newScheduledThreadPool(numWorker);
 
-        logger.info("System locale: " + Locale.getDefault());
+        logger.info("System default locale: " + Locale.getDefault());
+        {
+            String localeSetting = settingsManager.getString("locale.ui");
+            if(!localeSetting.equals("auto")) {
+                String[] lc = localeSetting.split("_");
+                Locale.setDefault(new Locale(lc[0].toLowerCase(), lc[1].toUpperCase()));
+                logger.info("System new locale: " + Locale.getDefault());
+            } else {
+                logger.info("locale.ui setting is 'auto'");
+            }
+        }
         {
             Translator translator = Translator.getGlobal();            
             // make sure the default locale will be used:
