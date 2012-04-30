@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<translation>
+    <!-- screens -->
+    <intro>
+        <intro>your intro here</intro>
+    </intro>
+    <main>
+        <title>SSim</title>
+        <start>Start</start>
+        <options>Optionen</options>
+        <credits>Credits</credits>
+        <quit>Beenden</quit>
+        <footer>SSim</footer>
+    </main>
+    <credits>
+        <title>Credits</title>
+        <return>Zurück</return>
+    </credits>
+    <options>
+        <title>Optionen</title>
+        <abort>Abbrechen</abort>
+        <apply>Anwenden</apply>
+    </options>
+    <single>
+        <title>Einzel</title>
+        <missions>Missionen:</missions>
+        <mission>
+            <text>
+                <empty></empty>
+            </text>
+        </mission>
+        <return>Zurück</return>
+        <game>Spiel starten</game>
+    </single>
+    <pause>
+        <title>Pause</title>
+        <continue>Fortsetzen</continue>
+        <quit>Beenden</quit>
+    </pause>
+    
+    <!-- missions -->
+    <mission_01>
+        <title>Mission 1</title>
+        <description>Hello!</description>
+    </mission_01>
+    <mission_02>
+        <title>Mission 2</title>
+        <description>Hier wird die Missionsbeschreibung stehen...
+manuell umgebrochen bei langen Texten da Nifty's
+wrap=true bei dynamischen Label-Updates nicht
+funktioniert.</description>
+    </mission_02>
+</translation>
