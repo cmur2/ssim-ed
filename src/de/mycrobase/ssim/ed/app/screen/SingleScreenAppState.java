@@ -112,7 +112,9 @@ public class SingleScreenAppState extends BasicScreenAppState implements KeyInpu
         if(selection.size() > 0) {
             Mission m = selection.get(0).getMission();
             String text = translator.translate(m.getDescription());
-            missionText.setText(formatText(text, 20));
+            missionText.setText(formatText(text));
+            // relayout for wrapping
+            missionText.getElement().getParent().layoutElements();
         }
     }
     
@@ -131,29 +133,18 @@ public class SingleScreenAppState extends BasicScreenAppState implements KeyInpu
         return list;
     }
 
-    private static String formatText(String text, int maxLimit) {
+    private static String formatText(String text) {
         StringBuffer s = new StringBuffer();
         String[] lines = text.split("\\n");
         for(int i = 0; i < lines.length; i++) {
             int len = lines[i].length();
+            // preserve double newlines
             if(len == 0) {
                 s.append('\n');
                 continue;
             }
-            int n = 0;
-            while(n < lines[i].length()) {
-                boolean wrap = n+maxLimit >= len;
-                int newn = wrap ? len : n+maxLimit;
-                s.append(lines[i].substring(n, newn));
-                if(!wrap) {
-                    s.append('\n');
-                } else {
-                    s.append(' ');
-                }
-                n = newn;
-            }
+            s.append(lines[i]);
         }
-        
         return s.toString();
     }
     

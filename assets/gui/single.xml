@@ -32,7 +32,7 @@
                     <panel height="10%" />
                     
                     <panel width="80%" align="center" childLayout="center">
-                        <control id="mission_text" name="label" text="${CALL.translate(mission.text.empty)}" style="single#mission_text" width="100%" height="100%">
+                        <control id="mission_text" name="label" text="${CALL.translate(mission.text.empty)}" style="single#mission_text" width="100%" height="100%" wrap="true">
                         </control>
                     </panel>
                     

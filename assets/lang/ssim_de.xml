@@ -45,9 +45,12 @@
     </mission_01>
     <mission_02>
         <title>Mission 2</title>
-        <description>Hier wird die Missionsbeschreibung stehen...
-manuell umgebrochen bei langen Texten da Nifty's
-wrap=true bei dynamischen Label-Updates nicht
-funktioniert.</description>
+        <description>
+The mission's description will go here...
+automatically wrapped by Nifty, finally, yey!
+
+It supports paragraphs by ignoring doubled line
+breaks but eliminating single newlines.
+</description>
     </mission_02>
 </translation>
