@@ -78,24 +78,27 @@ public class Main extends SimpleApplication implements GameModeListener {
         }
         
         // initialize settings manager
-        LayeredSettingsManager settings = new LayeredSettingsManager();
+        LayeredSettingsManager settingsManager = new LayeredSettingsManager();
         // add layer
         logger.info("Loading default properties");
-        settings.addLayer(PropertiesLayer.fromStream(Main.class.getResourceAsStream("default.properties")));
-        settings.addLayer(new FileLayer(new File("sed.properties"), false));
-        settings.addLayer(new FileLayer(new File(System.getProperty("user.home")+"/sed.properties"), true));
-        settings.addLayer(new PropertiesLayer(cli.getCmdLineProperties()));
+        settingsManager.addLayer(PropertiesLayer.fromStream(Main.class.getResourceAsStream("default.properties")));
+        settingsManager.addLayer(new FileLayer(new File("sed.properties"), false));
+        settingsManager.addLayer(new FileLayer(new File(System.getProperty("user.home")+"/sed.properties"), true));
+        settingsManager.addLayer(new PropertiesLayer(cli.getCmdLineProperties()));
         
+        // derive AppSettings for jME and LWJGL (mostly regarding display
+        // options) from our SettingsManager
         AppSettings as = new AppSettings(true);
         as.setTitle("SSim Environment Demo");
-        as.setVSync(settings.getBoolean("display.vsync"));
+        as.setVSync(settingsManager.getBoolean("display.vsync"));
         {
-            String[] wh = settings.getString("display.resolution").split("x");
+            String[] wh = settingsManager.getString("display.resolution").split("x");
             as.setResolution(Integer.parseInt(wh[0]), Integer.parseInt(wh[1]));
         }
-        as.setFullscreen(settings.getBoolean("display.fullscreen"));
+        as.setFullscreen(settingsManager.getBoolean("display.fullscreen"));
         
-        Main main = new Main(settings);
+        // initialize Main
+        Main main = new Main(settingsManager);
         main.setSettings(as);
         main.setShowSettings(false);
         main.start();
@@ -194,7 +197,7 @@ public class Main extends SimpleApplication implements GameModeListener {
         }
     }
     
-    // simple getters
+    // public API
     
     public ScheduledExecutorService getExecutor() {
         return executor;
@@ -208,7 +211,9 @@ public class Main extends SimpleApplication implements GameModeListener {
         this.speed = speed;
     }
     
-    // public API
+    public SettingsManager getSettingsManager() {
+        return settingsManager;
+    }
     
     public GameMode getCurrentMode() {
         return currentMode;
