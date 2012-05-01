@@ -12,6 +12,8 @@ import com.jme3.app.state.AppStateManager;
 
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
+import de.lessvoid.nifty.controls.CheckBox;
+import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
 import de.lessvoid.nifty.controls.DropDown;
 import de.lessvoid.nifty.controls.DropDownSelectionChangedEvent;
 import de.lessvoid.nifty.input.NiftyInputEvent;
@@ -23,11 +25,13 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
     private static final Logger logger = Logger.getLogger(OptionsScreenAppState.class);
     
     // exists only while AppState is attached
-    private HashMap<String,String> changedSettings;
+    private HashMap<String,Object> changedSettings;
     
     // exists only while Controller is bound
     private DropDown<InternalDataListModel> localeUIDropDown;
     private DropDown<InternalDataListModel> localeInputDropDown;
+    private CheckBox fullscreenCheckBox;
+    private CheckBox vsyncCheckBox;
     
     // needed by Nifty
     public OptionsScreenAppState() {
@@ -37,7 +41,7 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        changedSettings = new HashMap<String, String>();
+        changedSettings = new HashMap<String,Object>();
     }
     
     @Override
@@ -57,6 +61,10 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         
         localeInputDropDown = getScreen().findNiftyControl("opt_locale_input_dropdown", DropDown.class);
         localeInputDropDown.addAllItems(loadLocaleInputList());
+        
+        fullscreenCheckBox = getScreen().findNiftyControl("opt_fullscreen_checkbox", CheckBox.class);
+        
+        vsyncCheckBox = getScreen().findNiftyControl("opt_vsync_checkbox", CheckBox.class);
     }
     
     @Override
@@ -80,6 +88,10 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
                 break;
             }
         }
+        
+        fullscreenCheckBox.setChecked(getApp().getSettingsManager().getBoolean("display.fullscreen"));
+        
+        vsyncCheckBox.setChecked(getApp().getSettingsManager().getBoolean("display.vsync"));
     }
     
     @Override
@@ -103,6 +115,17 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         changedSettings.put("locale.input", localeSetting);
     }
     
+    @NiftyEventSubscriber(id="opt_fullscreen_checkbox")
+    public void onFullscreenCheckBoxStateChanged(String id, CheckBoxStateChangedEvent event) {
+        changedSettings.put("display.fullscreen", fullscreenCheckBox.isChecked());
+    }
+
+    
+    @NiftyEventSubscriber(id="opt_vsync_checkbox")
+    public void onVSyncCheckBoxStateChanged(String id, CheckBoxStateChangedEvent event) {
+        changedSettings.put("display.vsync", fullscreenCheckBox.isChecked());
+    }
+    
     @Override
     public String translate(String key) {
         return super.translate("options." + key);
@@ -113,8 +136,15 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
     public void doApply() {
         logger.debug("doApply");
         
-        for(Map.Entry<String, String> entry : changedSettings.entrySet()) {
-            getApp().getSettingsManager().setString(entry.getKey(), entry.getValue());
+        for(Map.Entry<String,Object> entry : changedSettings.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            // TODO: persist only "real" changes
+            if(value instanceof String) {
+                getApp().getSettingsManager().setString(key, (String) value);
+            } else if(value instanceof Boolean) {
+                getApp().getSettingsManager().setBoolean(key, (Boolean) value);
+            }
         }
         getApp().getSettingsManager().flush();
         changedSettings.clear();
