@@ -39,7 +39,12 @@
                 
                 <panel height="100%" width="50%" align="center" childLayout="vertical">
                     <!-- resolution dropdown -->
-                    
+                    <panel height="10%" width="90%" align="center" childLayout="horizontal">
+                        <text text="${CALL.translate(opt.resolution)}" font="Interface/Fonts/Default.fnt" valign="center" />
+                        <panel width="10%" />
+                        <control id="opt_resolution_dropdown" name="dropDown" valign="center">
+                        </control>
+                    </panel>
                 
                     <!-- fullscreen checkbox -->
                     <panel height="10%" width="90%" align="center" childLayout="horizontal">

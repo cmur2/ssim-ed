@@ -30,6 +30,7 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
     // exists only while Controller is bound
     private DropDown<InternalDataListModel> localeUIDropDown;
     private DropDown<InternalDataListModel> localeInputDropDown;
+    private DropDown<InternalDataListModel> resolutionDropDown;
     private CheckBox fullscreenCheckBox;
     private CheckBox vsyncCheckBox;
     
@@ -62,6 +63,9 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         localeInputDropDown = getScreen().findNiftyControl("opt_locale_input_dropdown", DropDown.class);
         localeInputDropDown.addAllItems(loadLocaleInputList());
         
+        resolutionDropDown = getScreen().findNiftyControl("opt_resolution_dropdown", DropDown.class);
+        resolutionDropDown.addAllItems(loadResolutionList());
+        
         fullscreenCheckBox = getScreen().findNiftyControl("opt_fullscreen_checkbox", CheckBox.class);
         
         vsyncCheckBox = getScreen().findNiftyControl("opt_vsync_checkbox", CheckBox.class);
@@ -79,12 +83,21 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
                 break;
             }
         }
-        
+
         // select current active after setting
         String localeInputSetting = getApp().getSettingsManager().getString("locale.input");
         for(InternalDataListModel m : localeInputDropDown.getItems()) {
             if(m.getInternalData().equals(localeInputSetting)) {
                 localeInputDropDown.selectItem(m);
+                break;
+            }
+        }
+
+        // select current active after setting
+        String resolutionSetting = getApp().getSettingsManager().getString("display.resolution");
+        for(InternalDataListModel m : resolutionDropDown.getItems()) {
+            if(m.getInternalData().equals(resolutionSetting)) {
+                resolutionDropDown.selectItem(m);
                 break;
             }
         }
@@ -108,11 +121,17 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         String localeSetting = localeUIDropDown.getSelection().getInternalData();
         changedSettings.put("locale.ui", localeSetting);
     }
-    
+
     @NiftyEventSubscriber(id="opt_locale_input_dropdown")
     public void onLocaleInputDropDownSelectionChanged(String id, DropDownSelectionChangedEvent<String> event) {
         String localeSetting = localeInputDropDown.getSelection().getInternalData();
         changedSettings.put("locale.input", localeSetting);
+    }
+    
+    @NiftyEventSubscriber(id="opt_resolution_dropdown")
+    public void onResolutionDropDownSelectionChanged(String id, DropDownSelectionChangedEvent<String> event) {
+        String resolutionSetting = resolutionDropDown.getSelection().getInternalData();
+        changedSettings.put("display.resolution", resolutionSetting);
     }
     
     @NiftyEventSubscriber(id="opt_fullscreen_checkbox")
@@ -175,6 +194,13 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         list.add(new InternalDataListModel("auto", "auto"));
         list.add(new InternalDataListModel("US", "us"));
         list.add(new InternalDataListModel("Deutsch", "de"));
+        return list;
+    }
+    
+    private List<InternalDataListModel> loadResolutionList() {
+        ArrayList<InternalDataListModel> list = new ArrayList<InternalDataListModel>();
+        list.add(new InternalDataListModel("640x480", "640x480"));
+        list.add(new InternalDataListModel("800x600", "800x600"));
         return list;
     }
     
