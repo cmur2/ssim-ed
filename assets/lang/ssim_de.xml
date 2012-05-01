@@ -20,6 +20,10 @@
         <title>Optionen</title>
         <abort>Abbrechen</abort>
         <apply>Anwenden</apply>
+        <opt>
+            <locale_ui>Sprache:</locale_ui>
+            <locale_input>Tastenbelegung:</locale_input>
+        </opt>
     </options>
     <single>
         <title>Einzel</title>

@@ -20,6 +20,10 @@
         <title>Options</title>
         <abort>Abort</abort>
         <apply>Apply</apply>
+        <opt>
+            <locale_ui>Language:</locale_ui>
+            <locale_input>Keyboard Layout:</locale_input>
+        </opt>
     </options>
     <single>
         <title>Single</title>

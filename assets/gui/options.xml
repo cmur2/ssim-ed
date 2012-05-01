@@ -18,6 +18,22 @@
             
             <panel height="80%" width="100%" align="left" childLayout="horizontal">
                 <panel height="100%" width="50%" align="center" childLayout="vertical">
+                    <!-- locale_ui dropdown -->
+                    <panel height="10%" width="90%" align="center" childLayout="horizontal">
+                        <text text="${CALL.translate(opt.locale_ui)}" font="Interface/Fonts/Default.fnt" valign="center" />
+                        <panel width="10%" />
+                        <control id="opt_locale_ui_dropdown" name="dropDown" valign="center">
+                        </control>
+                    </panel>
+                    
+                    <!-- locale_input dropdown -->
+                    <panel height="10%" width="90%" align="center" childLayout="horizontal">
+                        <text text="${CALL.translate(opt.locale_input)}" font="Interface/Fonts/Default.fnt" valign="center" />
+                        <panel width="10%" />
+                        <control id="opt_locale_input_dropdown" name="dropDown" valign="center">
+                        </control>
+                    </panel>
+                    
                     
                 </panel>
                 
