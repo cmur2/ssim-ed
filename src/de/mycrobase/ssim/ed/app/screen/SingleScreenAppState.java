@@ -163,7 +163,7 @@ public class SingleScreenAppState extends BasicScreenAppState implements KeyInpu
         @Override
         public String toString() {
             // TODO: maybe cache
-            return String.format("%s", translator.translate(mission.getTitle()));
+            return String.format(" %s", translator.translate(mission.getTitle()));
         }
     }
 }

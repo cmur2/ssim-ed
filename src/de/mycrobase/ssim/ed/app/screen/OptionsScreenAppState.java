@@ -225,7 +225,7 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         
         @Override
         public String toString() {
-            return label;
+            return String.format(" %s", label);
         }
     }
 }
