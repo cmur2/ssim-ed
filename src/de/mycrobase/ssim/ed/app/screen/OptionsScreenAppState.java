@@ -201,6 +201,7 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         ArrayList<InternalDataListModel> list = new ArrayList<InternalDataListModel>();
         list.add(new InternalDataListModel("640x480", "640x480"));
         list.add(new InternalDataListModel("800x600", "800x600"));
+        // TODO: what is the minimum? and provide native resolution!
         return list;
     }
     

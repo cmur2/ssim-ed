@@ -23,6 +23,9 @@
         <opt>
             <locale_ui>Language:</locale_ui>
             <locale_input>Keyboard Layout:</locale_input>
+            <resolution>Resolution:</resolution>
+            <vsync>VSync:</vsync>
+            <fullscreen>Fullscreen:</fullscreen>
         </opt>
     </options>
     <single>
