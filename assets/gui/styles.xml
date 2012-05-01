@@ -8,7 +8,7 @@
     <style id="single#mission_text">
         <attributes backgroundColor="#666f" font="Interface/Fonts/Default.fnt" textHAlign="left" textVAlign="top" />
         <effect>
-            <onActive name="border" border="1px" color="#7a1414ff" timeType="infinte" />
+            <onActive name="border" border="1px" color="#222f" />
         </effect>
     </style>
     
