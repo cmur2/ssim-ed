@@ -23,6 +23,7 @@ import de.lessvoid.nifty.screen.Screen;
 public class OptionsScreenAppState extends BasicScreenAppState implements KeyInputHandler {
     
     private static final Logger logger = Logger.getLogger(OptionsScreenAppState.class);
+    private static final String UserSettingFormat = "<%s>";
     
     // exists only while AppState is attached
     private HashMap<String,Object> changedSettings;
@@ -75,35 +76,11 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
     public void onStartScreen() {
         super.onStartScreen();
         
-        // select current active after setting
-        String localeUISetting = getApp().getSettingsManager().getString("locale.ui");
-        for(InternalDataListModel m : localeUIDropDown.getItems()) {
-            if(m.getInternalData().equals(localeUISetting)) {
-                localeUIDropDown.selectItem(m);
-                break;
-            }
-        }
-
-        // select current active after setting
-        String localeInputSetting = getApp().getSettingsManager().getString("locale.input");
-        for(InternalDataListModel m : localeInputDropDown.getItems()) {
-            if(m.getInternalData().equals(localeInputSetting)) {
-                localeInputDropDown.selectItem(m);
-                break;
-            }
-        }
-
-        // select current active after setting
-        String resolutionSetting = getApp().getSettingsManager().getString("display.resolution");
-        for(InternalDataListModel m : resolutionDropDown.getItems()) {
-            if(m.getInternalData().equals(resolutionSetting)) {
-                resolutionDropDown.selectItem(m);
-                break;
-            }
-        }
+        selectItemBySetting(localeUIDropDown, "locale.ui");
+        selectItemBySetting(localeInputDropDown, "locale.input");
         
+        selectItemBySetting(resolutionDropDown, "display.resolution");
         fullscreenCheckBox.setChecked(getApp().getSettingsManager().getBoolean("display.fullscreen"));
-        
         vsyncCheckBox.setChecked(getApp().getSettingsManager().getBoolean("display.vsync"));
     }
     
@@ -216,6 +193,29 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         list.add(new InternalDataListModel("800x600", "800x600"));
         // TODO: what is the minimum? and provide native resolution!
         return list;
+    }
+    
+    private void selectItemBySetting(DropDown<InternalDataListModel> dropDown, String key) {
+        boolean found = false;
+        String value = getApp().getSettingsManager().getString(key);
+        
+        for(InternalDataListModel m : dropDown.getItems()) {
+            if(m.getInternalData().equals(value)) {
+                dropDown.selectItem(m);
+                found = true;
+                break;
+            }
+        }
+        
+        // if settings contains a value not yet in the list (may occur with
+        // user specified values e.g. for screen resolution), add it and mark it
+        // as one
+        if(!found) {
+            InternalDataListModel item = new InternalDataListModel(
+                String.format(UserSettingFormat, value), value);
+            dropDown.addItem(item);
+            dropDown.selectItem(item);
+        }
     }
     
     private static class InternalDataListModel {
