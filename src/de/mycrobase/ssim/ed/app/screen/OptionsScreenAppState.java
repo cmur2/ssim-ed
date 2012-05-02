@@ -138,7 +138,6 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
     public void onFullscreenCheckBoxStateChanged(String id, CheckBoxStateChangedEvent event) {
         changedSettings.put("display.fullscreen", fullscreenCheckBox.isChecked());
     }
-
     
     @NiftyEventSubscriber(id="opt_vsync_checkbox")
     public void onVSyncCheckBoxStateChanged(String id, CheckBoxStateChangedEvent event) {
@@ -158,11 +157,25 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         for(Map.Entry<String,Object> entry : changedSettings.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            // TODO: persist only "real" changes
+            
+            // on continue the current property is not saved because it does not
+            // differ from saved value
             if(value instanceof String) {
-                getApp().getSettingsManager().setString(key, (String) value);
+                String s = (String) value;
+                if(s.equals(getApp().getSettingsManager().getString(key))) {
+                    logger.debug(String.format(
+                        "Skipping unchanged value %s on property %s", s, key));
+                    continue;
+                }
+                getApp().getSettingsManager().setString(key, s);
             } else if(value instanceof Boolean) {
-                getApp().getSettingsManager().setBoolean(key, (Boolean) value);
+                Boolean b = (Boolean) value;
+                if(b.equals(getApp().getSettingsManager().getBoolean(key))) {
+                    logger.debug(String.format(
+                        "Skipping unchanged value %s on property %s", b, key));
+                    continue;
+                }
+                getApp().getSettingsManager().setBoolean(key, b);
             }
         }
         getApp().getSettingsManager().flush();
