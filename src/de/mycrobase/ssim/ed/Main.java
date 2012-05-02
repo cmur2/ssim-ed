@@ -2,6 +2,7 @@ package de.mycrobase.ssim.ed;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executors;
@@ -14,6 +15,7 @@ import org.apache.log4j.PatternLayout;
 import chlib.noise.NoiseUtil;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.AppState;
 import com.jme3.system.AppSettings;
 
 import de.altimos.util.logger.JLFBridge;
@@ -111,7 +113,9 @@ public class Main extends SimpleApplication implements GameModeListener {
 
     private GameMode currentMode = GameMode.Stopped;
     private List<GameModeListener> gameModeListeners = new ArrayList<GameModeListener>();
-        
+    
+    private List<AppState> gameAppStates = new LinkedList<AppState>();
+    
     public Main(SettingsManager settingsManager) {
         this.settingsManager = settingsManager;
     }
@@ -262,22 +266,26 @@ public class Main extends SimpleApplication implements GameModeListener {
     public void doGameInit(Mission mission) {
         // AppState base layer:
         // these serve as a common base for the higher AppStates
-        stateManager.attach(new SimClockAppState(mission));
-        stateManager.attach(new CameraAppState(MaxVisibility));
-        stateManager.attach(new WeatherAppState("clear"));
-        stateManager.attach(new SkyAppState(0.5f*MaxVisibility, mission));
+        gameAppStates.add(new SimClockAppState(mission));
+        gameAppStates.add(new CameraAppState(MaxVisibility));
+        gameAppStates.add(new WeatherAppState("clear"));
+        gameAppStates.add(new SkyAppState(0.5f*MaxVisibility, mission));
         
         // AppState higher layer:
         // these have no dependencies to each other, just to the base layer
-        stateManager.attach(new SkyDomeAppState());
-        stateManager.attach(new SunAppState());
-        stateManager.attach(new LightingAppState());
-        stateManager.attach(new StarAppState());
-        stateManager.attach(new CloudAppState());
-        stateManager.attach(new TerrainAppState(mission));
-        stateManager.attach(new RainAppState());
-        stateManager.attach(new GuiAppState());
-        stateManager.attach(new DebugAppState());
+        gameAppStates.add(new SkyDomeAppState());
+        gameAppStates.add(new SunAppState());
+        gameAppStates.add(new LightingAppState());
+        gameAppStates.add(new StarAppState());
+        gameAppStates.add(new CloudAppState());
+        gameAppStates.add(new TerrainAppState(mission));
+        gameAppStates.add(new RainAppState());
+        gameAppStates.add(new GuiAppState());
+        gameAppStates.add(new DebugAppState());
+        
+        for(AppState state : gameAppStates) {
+            stateManager.attach(state);
+        }
         
         // TODO: need LightScatteringFilter!
         
@@ -285,32 +293,26 @@ public class Main extends SimpleApplication implements GameModeListener {
     }
     
     public void doGamePause() {
-        // TODO: doGamePause
+        for(AppState state : gameAppStates) {
+            state.setEnabled(false);
+        }
         
         switchGameMode(GameMode.Paused);
     }
     
     public void doGameResume() {
-        // TODO: doGameResume
+        for(AppState state : gameAppStates) {
+            state.setEnabled(true);
+        }
         
         switchGameMode(GameMode.Running);
     }
     
     public void doGameExit() {
-        stateManager.detach(stateManager.getState(SimClockAppState.class));
-        stateManager.detach(stateManager.getState(CameraAppState.class));
-        stateManager.detach(stateManager.getState(WeatherAppState.class));
-        stateManager.detach(stateManager.getState(SkyAppState.class));
-        
-        stateManager.detach(stateManager.getState(SkyDomeAppState.class));
-        stateManager.detach(stateManager.getState(SunAppState.class));
-        stateManager.detach(stateManager.getState(LightingAppState.class));
-        stateManager.detach(stateManager.getState(StarAppState.class));
-        stateManager.detach(stateManager.getState(CloudAppState.class));
-        stateManager.detach(stateManager.getState(TerrainAppState.class));
-        stateManager.detach(stateManager.getState(RainAppState.class));
-        stateManager.detach(stateManager.getState(GuiAppState.class));
-        stateManager.detach(stateManager.getState(DebugAppState.class));
+        for(AppState state : gameAppStates) {
+            stateManager.detach(state);
+        }
+        gameAppStates.clear();
         
         switchGameMode(GameMode.Stopped);
     }
