@@ -141,7 +141,7 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
     
     @NiftyEventSubscriber(id="opt_vsync_checkbox")
     public void onVSyncCheckBoxStateChanged(String id, CheckBoxStateChangedEvent event) {
-        changedSettings.put("display.vsync", fullscreenCheckBox.isChecked());
+        changedSettings.put("display.vsync", vsyncCheckBox.isChecked());
     }
     
     @Override
