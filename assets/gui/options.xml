@@ -82,4 +82,18 @@
         </layer>
     </screen>
     
+    <popup id="popupApply" controller="de.mycrobase.ssim.ed.app.screen.OptionsScreenAppState"
+        backgroundColor="#000a" childLayout="center">
+        <panel style="nifty-panel-red" width="40%" align="center" valign="center" childLayout="vertical">
+            
+            <text text="${CALL.translate(popup_apply.message)}" font="Interface/Fonts/Default.fnt" align="center" textHAlign="left" textVAlign="top" width="80%" wrap="true" />
+            
+            <panel height="10px" />
+            
+            <control id="popup_ok_button" name="button" label="${CALL.translate(popup_apply.ok)}" align="center" visibleToMouse="true">
+                <interact onClick="doPopupOk()" />
+            </control>
+        </panel>
+    </popup>
+    
 </nifty>

@@ -27,6 +27,11 @@
             <vsync>VSync:</vsync>
             <fullscreen>Vollbild:</fullscreen>
         </opt>
+        <popup_apply>
+            <message>Änderungen wirklich übernehmen?
+Hinweis: Einige Änderungen könnten erst nach einem Neustart wirksam werden!</message>
+            <ok>Ok</ok>
+        </popup_apply>
     </options>
     <single>
         <title>Einzel</title>

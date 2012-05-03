@@ -99,6 +99,8 @@ public class Main extends SimpleApplication implements GameModeListener {
         }
         as.setFullscreen(settingsManager.getBoolean("display.fullscreen"));
         
+        // TODO: use nice logos/icons for window
+        
         // initialize Main
         Main main = new Main(settingsManager);
         main.setSettings(as);

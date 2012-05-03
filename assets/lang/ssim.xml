@@ -27,6 +27,11 @@
             <vsync>VSync:</vsync>
             <fullscreen>Fullscreen:</fullscreen>
         </opt>
+        <popup_apply>
+            <message>Do you really want to apply your changes?
+Please note that some settings may require a restart to take effect!</message>
+            <ok>Ok</ok>
+        </popup_apply>
     </options>
     <single>
         <title>Single</title>
