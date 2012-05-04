@@ -18,7 +18,8 @@
             
             <panel height="75%" width="100%" align="left" childLayout="horizontal">
                 <panel width="50%" childLayout="vertical">
-                    <text text="${CALL.translate(missions)}" font="Interface/Fonts/Default.fnt" height="10%" />
+                    <!-- <text text="${CALL.translate(missions)}" font="Interface/Fonts/Default.fnt" height="10%" /> -->
+                    <panel height="10%" />
                     
                     <panel width="80%" align="center" childLayout="center">
                         <control id="mission_list" name="listBox" displayItems="8" horizontal="optional" vertical="optional">
