@@ -35,9 +35,9 @@ public class CameraAppState extends BasicAppState {
         flyCam.setMoveSpeed(3e2f);
         //flyCam.setDragToRotate(true);
         
-        cam.setLocation(new Vector3f(0, -450f, 0));
+        //cam.setLocation(new Vector3f(0, -450f, 0));
         //cam.setRotation(new Quaternion(new float[] {-90*FastMath.DEG_TO_RAD,0,0}));
-        cam.lookAtDirection(Vector3f.UNIT_Y, Vector3f.UNIT_Z);
+        //cam.lookAtDirection(Vector3f.UNIT_Y, Vector3f.UNIT_Z);
         //cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Z);
         cam.setFrustumPerspective(60f, (float)cam.getWidth() / cam.getHeight(), 1f, maxVisibility);
         
