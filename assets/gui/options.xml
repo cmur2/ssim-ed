@@ -21,7 +21,7 @@
                     <!-- locale_ui dropdown -->
                     <panel height="10%" width="90%" align="center" childLayout="horizontal">
                         <text text="${CALL.translate(opt.locale_ui)}" font="Interface/Fonts/Default.fnt" valign="center" />
-                        <panel width="10%" />
+                        <panel width="20px" />
                         <control id="opt_locale_ui_dropdown" name="dropDown" valign="center">
                         </control>
                     </panel>
@@ -29,7 +29,7 @@
                     <!-- locale_input dropdown -->
                     <panel height="10%" width="90%" align="center" childLayout="horizontal">
                         <text text="${CALL.translate(opt.locale_input)}" font="Interface/Fonts/Default.fnt" valign="center" />
-                        <panel width="10%" />
+                        <panel width="20px" />
                         <control id="opt_locale_input_dropdown" name="dropDown" valign="center">
                         </control>
                     </panel>
@@ -41,7 +41,7 @@
                     <!-- resolution dropdown -->
                     <panel height="10%" width="90%" align="center" childLayout="horizontal">
                         <text text="${CALL.translate(opt.resolution)}" font="Interface/Fonts/Default.fnt" valign="center" />
-                        <panel width="10%" />
+                        <panel width="20px" />
                         <control id="opt_resolution_dropdown" name="dropDown" valign="center">
                         </control>
                     </panel>
@@ -49,7 +49,7 @@
                     <!-- multisample dropdown -->
                     <panel height="10%" width="90%" align="center" childLayout="horizontal">
                         <text text="${CALL.translate(opt.multisample)}" font="Interface/Fonts/Default.fnt" valign="center" />
-                        <panel width="10%" />
+                        <panel width="20px" />
                         <control id="opt_multisample_dropdown" name="dropDown" valign="center">
                         </control>
                     </panel>
@@ -57,7 +57,7 @@
                     <!-- fullscreen checkbox -->
                     <panel height="10%" width="90%" align="center" childLayout="horizontal">
                         <text text="${CALL.translate(opt.fullscreen)}" font="Interface/Fonts/Default.fnt" valign="center" />
-                        <panel width="10%" />
+                        <panel width="20px" />
                         <control id="opt_fullscreen_checkbox" name="checkbox" valign="center">
                         </control>
                     </panel>
@@ -65,7 +65,7 @@
                     <!-- vsync checkbox -->
                     <panel height="10%" width="90%" align="center" childLayout="horizontal">
                         <text text="${CALL.translate(opt.vsync)}" font="Interface/Fonts/Default.fnt" valign="center" />
-                        <panel width="10%" />
+                        <panel width="20px" />
                         <control id="opt_vsync_checkbox" name="checkbox" valign="center">
                         </control>
                     </panel>

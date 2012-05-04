@@ -21,25 +21,25 @@
             </panel>
             
             <panel height="25%" width="75%" align="center" childLayout="horizontal">
-                <panel height="50%" width="25%" valign="center" childLayout="center">
+                <panel width="25%" valign="center" childLayout="center">
                     <control id="start_button" name="button" label="${CALL.translate(start)}" align="center" valign="center" visibleToMouse="true">
                         <interact onClick="doStart()" />
                     </control>
                 </panel>
                 
-                <panel height="50%" width="25%" valign="center" childLayout="center">
+                <panel width="25%" valign="center" childLayout="center">
                     <control id="options_button" name="button" label="${CALL.translate(options)}" align="center" valign="center" visibleToMouse="true">
                         <interact onClick="doOptions()" />
                     </control>
                 </panel>
                 
-                <panel height="50%" width="25%" valign="center" childLayout="center">
+                <panel width="25%" valign="center" childLayout="center">
                     <control id="credits_button" name="button" label="${CALL.translate(credits)}" align="center" valign="center" visibleToMouse="true">
                         <interact onClick="doCredits()" />
                     </control>
                 </panel>
                 
-                <panel height="50%" width="25%" valign="center" childLayout="center">
+                <panel width="25%" valign="center" childLayout="center">
                     <control id="quit_button" name="button" label="${CALL.translate(quit)}" align="center" valign="center" visibleToMouse="true">
                         <interact onClick="doQuit()" />
                     </control>
