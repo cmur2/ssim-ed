@@ -24,7 +24,7 @@
             <locale_ui>Language:</locale_ui>
             <locale_input>Keyboard Layout:</locale_input>
             <resolution>Resolution:</resolution>
-            <multisample>Antialising:</multisample>
+            <multisample>Antialiasing:</multisample>
             <vsync>VSync:</vsync>
             <fullscreen>Fullscreen:</fullscreen>
         </opt>
