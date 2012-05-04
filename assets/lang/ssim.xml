@@ -2,7 +2,7 @@
 <translation>
     <!-- screens -->
     <intro>
-        <intro>your intro here</intro>
+        <intro>Welcome!</intro>
     </intro>
     <main>
         <title>SSim</title>
@@ -10,7 +10,7 @@
         <options>Options</options>
         <credits>Credits</credits>
         <quit>Quit</quit>
-        <footer>SSim</footer>
+        <footer>sed-0.0.1</footer>
     </main>
     <credits>
         <title>Credits</title>
@@ -26,7 +26,7 @@
             <resolution>Resolution:</resolution>
             <multisample>Antialiasing:</multisample>
             <vsync>VSync:</vsync>
-            <fullscreen>Fullscreen:</fullscreen>
+            <fullscreen>Vollbild:</fullscreen>
         </opt>
         <popup_apply>
             <message>Do you really want to apply your changes?
@@ -35,7 +35,7 @@ Please note that some settings may require a restart to take effect!</message>
         </popup_apply>
     </options>
     <single>
-        <title>Single</title>
+        <title>Singleplayer</title>
         <missions>Missions:</missions>
         <mission>
             <text>
@@ -53,17 +53,23 @@ Please note that some settings may require a restart to take effect!</message>
     
     <!-- missions -->
     <mission_01>
-        <title>Mission 1</title>
-        <description>Hello!</description>
+        <title>Scenario 1</title>
+        <description>
+Season: summer
+
+Time: noon
+
+Weather: cloudy
+</description>
     </mission_01>
     <mission_02>
-        <title>Mission 2</title>
+        <title>Scenario 2</title>
         <description>
-The mission's description will go here...
-automatically wrapped by Nifty, finally, yey!
+Season: summer
 
-It supports paragraphs by ignoring doubled line
-breaks but eliminating single newlines.
+Time: dusk
+
+Weather: cloudy
 </description>
     </mission_02>
 </translation>

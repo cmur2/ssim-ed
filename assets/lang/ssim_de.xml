@@ -2,7 +2,7 @@
 <translation>
     <!-- screens -->
     <intro>
-        <intro>your intro here</intro>
+        <!-- <intro>Welcome!</intro> -->
     </intro>
     <main>
         <title>SSim</title>
@@ -10,7 +10,7 @@
         <options>Optionen</options>
         <credits>Credits</credits>
         <quit>Beenden</quit>
-        <footer>SSim</footer>
+        <footer>sed-0.0.1</footer>
     </main>
     <credits>
         <title>Credits</title>
@@ -22,7 +22,7 @@
         <apply>Anwenden</apply>
         <opt>
             <locale_ui>Sprache:</locale_ui>
-            <locale_input>Tastenbelegung:</locale_input>
+            <locale_input>Tastaturbelegung:</locale_input>
             <resolution>Auflösung:</resolution>
             <multisample>Antialiasing:</multisample>
             <vsync>VSync:</vsync>
@@ -35,7 +35,7 @@ Hinweis: Einige Änderungen könnten erst nach einem Neustart wirksam werden!</m
         </popup_apply>
     </options>
     <single>
-        <title>Einzel</title>
+        <title>Einzelspieler</title>
         <missions>Missionen:</missions>
         <mission>
             <text>
@@ -53,17 +53,23 @@ Hinweis: Einige Änderungen könnten erst nach einem Neustart wirksam werden!</m
     
     <!-- missions -->
     <mission_01>
-        <title>Mission 1</title>
-        <description>Hello!</description>
+        <title>Szenario 1</title>
+        <description>
+Jahreszeit: Sommer
+
+Tageszeit: Mittag
+
+Wetter: bewölkt
+</description>
     </mission_01>
     <mission_02>
-        <title>Mission 2</title>
+        <title>Szenario 2</title>
         <description>
-The mission's description will go here...
-automatically wrapped by Nifty, finally, yey!
+Jahreszeit: Sommer
 
-It supports paragraphs by ignoring doubled line
-breaks but eliminating single newlines.
+Tageszeit: Abenddämmerung
+
+Wetter: bewölkt
 </description>
     </mission_02>
 </translation>
