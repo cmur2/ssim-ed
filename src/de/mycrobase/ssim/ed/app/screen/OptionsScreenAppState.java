@@ -240,23 +240,20 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         String value = getApp().getSettingsManager().getString(key);
         
         // create item
-        InternalDataListModel newItem = new InternalDataListModel(
+        InternalDataListModel item = new InternalDataListModel(
             String.format(UserSettingFormat, value), value);
         
         // check using contains() since InternalDataListModel implements equals()
-        boolean found = dropDown.getItems().contains(newItem);
-        
-        // if settings contains a value not yet in the list (may occur with
-        // user specified values e.g. for screen resolution), add it and mark it
-        // as one
-        if(!found) {
+        if(!dropDown.getItems().contains(item)) {
+            // if settings contains a value not yet in the list (may occur with
+            // user specified values e.g. for screen resolution), add it and mark it
+            // as one
             logger.warn(String.format(
                 "Adding yet unknown user defined value %s on property %s",
                 value, key));
-            
-            dropDown.addItem(newItem);
-            dropDown.selectItem(newItem);
+            dropDown.addItem(item);
         }
+        dropDown.selectItem(item);
     }
     
     private void saveChangedSettingsAndFlush() {
