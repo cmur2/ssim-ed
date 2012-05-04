@@ -1,11 +1,16 @@
 package de.mycrobase.ssim.ed.app.screen;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -72,6 +77,8 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         fullscreenCheckBox = getScreen().findNiftyControl("opt_fullscreen_checkbox", CheckBox.class);
         
         vsyncCheckBox = getScreen().findNiftyControl("opt_vsync_checkbox", CheckBox.class);
+        
+        // TODO: antialias setting: num samples
         
         applyPopup = getNifty().createPopup("popupApply");
     }
@@ -174,33 +181,63 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
     }
     
     private List<InternalDataListModel> loadResolutionList() {
-        ArrayList<InternalDataListModel> list = new ArrayList<InternalDataListModel>();
-        list.add(new InternalDataListModel("640x480", "640x480"));
-        list.add(new InternalDataListModel("800x600", "800x600"));
-        // TODO: what is the minimum? and provide native resolution!
+        ArrayList<InternalDataListModel> list = new ArrayList<InternalDataListModel>(); 
+        
+        // fall back
+        DisplayMode[] modes = new DisplayMode[] { new DisplayMode(640, 480) };
+        try {
+            modes = Display.getAvailableDisplayModes();
+        } catch(LWJGLException ex) {
+            logger.error("Exception while getting list of available display modes...", ex);
+        }
+        
+        // pre sort the modes array ascending by width and height to keep
+        // our list sorted too
+        Arrays.sort(modes, new Comparator<DisplayMode>() {
+            @Override
+            public int compare(DisplayMode o1, DisplayMode o2) {
+                int w1 = o1.getWidth(), w2 = o2.getWidth();
+                int h1 = o1.getHeight(), h2 = o2.getHeight();
+                // width is weighted higher than height to group same width
+                // values together with ascending height
+                int i1 = (w1 < w2 ? -10 : (w1 == w2 ? 0 : 10));
+                int i2 = (h1 < h2 ? -1 : (h1 == h2 ? 0 : 1));
+                return i1 + i2;
+            }
+        });
+        
+        for(DisplayMode mode : modes) {
+            String res = mode.getWidth() + "x" +  mode.getHeight();
+            InternalDataListModel m = new InternalDataListModel(res, res);
+            
+            if(!list.contains(m)) {
+                list.add(m);
+            }
+        }
+        
         return list;
     }
     
     private void selectItemBySetting(DropDown<InternalDataListModel> dropDown, String key) {
-        boolean found = false;
         String value = getApp().getSettingsManager().getString(key);
         
-        for(InternalDataListModel m : dropDown.getItems()) {
-            if(m.getInternalData().equals(value)) {
-                dropDown.selectItem(m);
-                found = true;
-                break;
-            }
-        }
+        // create item
+        InternalDataListModel newItem = new InternalDataListModel(
+            String.format(UserSettingFormat, value), value);
+        
+        // check using contains() since InternalDataListModel implements equals()
+        boolean found = dropDown.getItems().contains(newItem);
         
         // if settings contains a value not yet in the list (may occur with
         // user specified values e.g. for screen resolution), add it and mark it
         // as one
         if(!found) {
-            InternalDataListModel item = new InternalDataListModel(
-                String.format(UserSettingFormat, value), value);
-            dropDown.addItem(item);
-            dropDown.selectItem(item);
+            logger.warn(String.format(
+                "Adding yet unknown user defined value %s on property %s",
+                value, key));
+            
+            dropDown.addItem(newItem);
+            dropDown.selectItem(newItem);
         }
     }
     
@@ -249,6 +286,22 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         
         public String getInternalData() {
             return internalData;
+        }
+        
+        @Override
+        public int hashCode() {
+            return internalData.hashCode();
+        }
+        
+        @Override
+        public boolean equals(Object obj) {
+            if(this == obj) return true;
+            
+            if(!(obj instanceof InternalDataListModel)) return false;
+            
+            InternalDataListModel model = (InternalDataListModel) obj;
+            
+            return internalData.equals(model.internalData);
         }
         
         @Override
