@@ -104,6 +104,9 @@ public class Main extends SimpleApplication implements GameModeListener {
         as.setFullscreen(settingsManager.getBoolean("display.fullscreen"));
         
         try {
+            // disable caching for faster startup
+            ImageIO.setUseCache(false);
+            
             as.setIcons(new BufferedImage[] {
                 ImageIO.read(Main.class.getResourceAsStream("icon_32_tx.png"))
             });
