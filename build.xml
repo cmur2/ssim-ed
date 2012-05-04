@@ -18,6 +18,7 @@
     <target name="init">
         <property name="build.dir" value="bin"/>
         <property name="dist.dir" value="dist"/>
+        <property name="dist.pass1.dir" value="${dist.dir}/pass1"/>
         <property name="lib.dir" value="libs"/>
         <property name="src.dir" value="src"/>
         <property name="asset.dir" value="assets"/>
@@ -84,6 +85,43 @@
             <classpath refid="classpath"/>
             <classpath refid="classpath-build"/>
         </java>
+    </target>
+    
+    <target name="dist" depends="init,build,pre" description="Package application">
+        <jar jarfile="${dist.pass1.dir}/sed.jar" compress="false" strict="warn">
+            <fileset dir="${build.dir}"/>
+            <manifest>
+                <attribute name="Main-Class" value="de.mycrobase.ssim.ed.Main"/>
+                <attribute name="Class-Path" value="libs/ajutil-1.0.3.jar libs/chlib-v0.1.7.jar libs/commons-cli-1.2.jar libs/jdom-1.1.1.jar libs/log4j-1.2.16.jar libs/jMonkeyEngine3.jar libs/j-ogg-oggd.jar libs/j-ogg-vorbisd.jar libs/jbullet.jar libs/stack-alloc.jar libs/vecmath.jar libs/jME3-bullet-natives.jar libs/lwjgl.jar libs/jME3-lwjgl-natives.jar libs/jinput.jar libs/jheora-jst-debug-0.6.0.jar libs/eventbus.jar libs/nifty-default-controls.jar libs/nifty-examples.jar libs/nifty-style-black.jar libs/nifty.jar libs/xmlpull-xpp3.jar libs/jME3-testdata.jar libs/noise-0.0.1-SNAPSHOT.jar libs/jME3-jbullet.jar libs/jME3-bullet.jar libs/jME3-test.jar"/>
+                
+                <attribute name="Implementation-Vendor" value="cn"/>
+                <attribute name="Implementation-Title" value="SSim Environment Demo"/>
+                <attribute name="Implementation-Version" value="0.0.1"/>
+            </manifest>
+        </jar>
+        
+        <zip destfile="${dist.dir}/sed.zip" duplicate="fail" compress="false">
+            <!-- wrap into a subfolder for easier extraction -->
+            <mappedresources>
+                <union>
+                    <!-- include everything from 1th pass -->
+                    <fileset dir="${dist.pass1.dir}"/>
+                    <!-- pull in all libs -->
+                    <fileset dir="${basedir}">
+                        <include name="${lib.dir}/**"/>
+                    </fileset>
+                    <mappedresources>
+                        <!-- pull them in into lib.dir from specific location -->
+                        <union>
+                            <file file="${sed.jme3-jar.file}"/>
+                            <fileset dir="${sed.jme3-deps.dir}"/>
+                        </union>
+                        <globmapper from="*" to="${lib.dir}/*"/>
+                    </mappedresources>
+                </union>
+                <globmapper from="*" to="sed/*"/>
+            </mappedresources>
+        </zip>
     </target>
     
     <target name="clean" depends="init" description="Removes build files">
