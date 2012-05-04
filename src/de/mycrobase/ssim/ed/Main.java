@@ -102,6 +102,7 @@ public class Main extends SimpleApplication implements GameModeListener {
             as.setResolution(Integer.parseInt(wh[0]), Integer.parseInt(wh[1]));
         }
         as.setFullscreen(settingsManager.getBoolean("display.fullscreen"));
+        as.setSamples(settingsManager.getInteger("display.multisample"));
         
         try {
             // disable caching for faster startup

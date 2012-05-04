@@ -38,6 +38,7 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
     private DropDown<InternalDataListModel> localeUIDropDown;
     private DropDown<InternalDataListModel> localeInputDropDown;
     private DropDown<InternalDataListModel> resolutionDropDown;
+    private DropDown<InternalDataListModel> multisampleDropDown;
     private CheckBox fullscreenCheckBox;
     private CheckBox vsyncCheckBox;
     private Element applyPopup;
@@ -74,11 +75,12 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         resolutionDropDown = getScreen().findNiftyControl("opt_resolution_dropdown", DropDown.class);
         resolutionDropDown.addAllItems(loadResolutionList());
         
+        multisampleDropDown = getScreen().findNiftyControl("opt_multisample_dropdown", DropDown.class);
+        multisampleDropDown.addAllItems(loadMultisampleList());
+        
         fullscreenCheckBox = getScreen().findNiftyControl("opt_fullscreen_checkbox", CheckBox.class);
         
         vsyncCheckBox = getScreen().findNiftyControl("opt_vsync_checkbox", CheckBox.class);
-        
-        // TODO: antialias setting: num samples
         
         applyPopup = getNifty().createPopup("popupApply");
     }
@@ -115,11 +117,17 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         String localeSetting = localeInputDropDown.getSelection().getInternalData();
         changedSettings.put("locale.input", localeSetting);
     }
-    
+
     @NiftyEventSubscriber(id="opt_resolution_dropdown")
     public void onResolutionDropDownSelectionChanged(String id, DropDownSelectionChangedEvent<String> event) {
         String resolutionSetting = resolutionDropDown.getSelection().getInternalData();
         changedSettings.put("display.resolution", resolutionSetting);
+    }
+
+    @NiftyEventSubscriber(id="opt_multisample_dropdown")
+    public void onMultisampleDropDownSelectionChanged(String id, DropDownSelectionChangedEvent<String> event) {
+        String multisampleSetting = multisampleDropDown.getSelection().getInternalData();
+        changedSettings.put("display.multisample", multisampleSetting);
     }
     
     @NiftyEventSubscriber(id="opt_fullscreen_checkbox")
@@ -215,6 +223,16 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
             }
         }
         
+        return list;
+    }
+    
+    private List<InternalDataListModel> loadMultisampleList() {
+        ArrayList<InternalDataListModel> list = new ArrayList<InternalDataListModel>();
+        list.add(new InternalDataListModel("-", "0"));
+        list.add(new InternalDataListModel("1x", "1"));
+        list.add(new InternalDataListModel("2x", "2"));
+        list.add(new InternalDataListModel("4x", "4"));
+        list.add(new InternalDataListModel("8x", "8"));
         return list;
     }
     

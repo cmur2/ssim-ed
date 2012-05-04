@@ -61,6 +61,10 @@ public class NiftyAppState extends BasicAppState implements GameModeListener {
         
         loadScreens(files, states, "intro");
         
+        // TODO: use more, different fonts (weight, size) in UI
+        // TODO: refactor % placeholder where absolute px is better
+        // TODO: need in-game help screen
+        
         // manual call to avoid code duplication
         gameModeChanged(null, getApp().getCurrentMode());
         

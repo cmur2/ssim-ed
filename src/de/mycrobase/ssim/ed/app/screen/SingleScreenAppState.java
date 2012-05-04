@@ -66,6 +66,7 @@ public class SingleScreenAppState extends BasicScreenAppState implements KeyInpu
         super.onStartScreen();
         
         // try to select first item by default, fails silently if there are no items
+        // TODO: select last played? or successor of last won?
         missionList.selectItemByIndex(0);
     }
     
@@ -96,6 +97,7 @@ public class SingleScreenAppState extends BasicScreenAppState implements KeyInpu
         if(selection.size() > 0) {
             // pass info about selected Mission to App
             Mission m = selection.get(0).getMission();
+            // TODO: need loading screen
             getApp().doGameInit(m);
         }
     }

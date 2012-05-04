@@ -24,6 +24,7 @@
             <locale_ui>Sprache:</locale_ui>
             <locale_input>Tastenbelegung:</locale_input>
             <resolution>Auflösung:</resolution>
+            <multisample>Antialising:</multisample>
             <vsync>VSync:</vsync>
             <fullscreen>Vollbild:</fullscreen>
         </opt>
