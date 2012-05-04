@@ -1,12 +1,16 @@
 package de.mycrobase.ssim.ed;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+
+import javax.imageio.ImageIO;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
@@ -99,7 +103,14 @@ public class Main extends SimpleApplication implements GameModeListener {
         }
         as.setFullscreen(settingsManager.getBoolean("display.fullscreen"));
         
-        // TODO: use nice logos/icons for window
+        try {
+            as.setIcons(new BufferedImage[] {
+                ImageIO.read(Main.class.getResourceAsStream("icon_32_tx.png"))
+            });
+            // TODO: more icons in different resolutions, see LWJGL recommendations
+        } catch(IOException ex) {
+            logger.error("Exception while loading icons follows...", ex);
+        }
         
         // initialize Main
         Main main = new Main(settingsManager);
