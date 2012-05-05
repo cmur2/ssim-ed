@@ -304,8 +304,6 @@ public class Main extends SimpleApplication implements GameModeListener {
             stateManager.attach(state);
         }
         
-        // TODO: need LightScatteringFilter!
-        
         switchGameMode(GameMode.Running);
     }
     
