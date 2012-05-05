@@ -66,7 +66,6 @@ public class DebugAppState extends BasicAppState {
         intervalUpdate();
         
         handler = new InputHandler();
-        getApp().getInputManager().addMapping(INPUT_MAPPING_SHOW_GRID, new KeyTrigger(KeyInput.KEY_F6));
         getApp().getInputManager().addListener(handler, INPUT_MAPPING_SHOW_GRID);
     }
     
@@ -75,7 +74,6 @@ public class DebugAppState extends BasicAppState {
         super.cleanup();
         
         getApp().getRootNode().detachChild(debugNode);
-        getApp().getInputManager().deleteMapping(INPUT_MAPPING_SHOW_GRID);
         getApp().getInputManager().removeListener(handler);
         
         debugNode = null;

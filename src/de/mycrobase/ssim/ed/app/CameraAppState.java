@@ -40,9 +40,6 @@ public class CameraAppState extends BasicAppState {
         //cam.lookAtDirection(Vector3f.UNIT_Y, Vector3f.UNIT_Z);
         //cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Z);
         cam.setFrustumPerspective(60f, (float)cam.getWidth() / cam.getHeight(), 1f, maxVisibility);
-        
-        getApp().getInputManager().deleteTrigger("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Z));
-        getApp().getInputManager().addMapping("FLYCAM_Lower", new KeyTrigger(KeyInput.KEY_Y));
     }
     
     @Override

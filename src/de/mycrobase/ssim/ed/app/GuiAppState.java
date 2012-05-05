@@ -38,9 +38,7 @@ public class GuiAppState extends BasicAppState {
         getApp().getGuiNode().attachChild(speedLabel);
         
         handler = new InputHandler();
-        getApp().getInputManager().addMapping(INPUT_MAPPING_SPEED_UP, new KeyTrigger(KeyInput.KEY_F10));
         getApp().getInputManager().addListener(handler, INPUT_MAPPING_SPEED_UP);
-        getApp().getInputManager().addMapping(INPUT_MAPPING_SPEED_DOWN, new KeyTrigger(KeyInput.KEY_F9));
         getApp().getInputManager().addListener(handler, INPUT_MAPPING_SPEED_DOWN);
     }
     
@@ -56,8 +54,6 @@ public class GuiAppState extends BasicAppState {
         
         getApp().getGuiNode().detachChild(clockLabel);
         getApp().getGuiNode().detachChild(speedLabel);
-        getApp().getInputManager().deleteMapping(INPUT_MAPPING_SPEED_UP);
-        getApp().getInputManager().deleteMapping(INPUT_MAPPING_SPEED_DOWN);
         getApp().getInputManager().removeListener(handler);
         
         clockLabel = null;

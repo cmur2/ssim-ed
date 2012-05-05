@@ -21,4 +21,8 @@
     
     <map button="LEFT" action="FLYCAM_RotateDrag" />
     
+    <map key="F6" action="SED_ShowGrid" />
+    <map key="F9" action="SED_SpeedDown" />
+    <map key="F10" action="SED_SpeedUp" />
+    
 </sed:mappings>
