@@ -19,6 +19,7 @@
         <property name="build.dir" value="bin"/>
         <property name="dist.dir" value="dist"/>
         <property name="dist.pass1.dir" value="${dist.dir}/pass1"/>
+        <property name="misc.dir" value="misc"/>
         <property name="lib.dir" value="libs"/>
         <property name="src.dir" value="src"/>
         <property name="asset.dir" value="assets"/>
@@ -122,6 +123,68 @@
                 <globmapper from="*" to="sed/*"/>
             </mappedresources>
         </zip>
+    </target>
+    
+    <target name="dist-osx" depends="dist" description="Package application into OSX .app bundle">
+        <!-- only works on a mac! -->
+        
+        <copy file="${misc.dir}/Info.plist.stub" tofile="${dist.dir}/Info.plist"/>
+        <replace file="${dist.dir}/Info.plist" failOnNoReplacements="true">
+            <replacefilter token="${sed.info.name}" value="sed-0.0.1"/>
+            <replacefilter token="${sed.info.id}" value="de.mycrobase.ssim.ed.Main"/>
+            <replacefilter token="${sed.info.version}" value="0.0.1"/>
+            <replacefilter token="${sed.info.mainclass}" value="de.mycrobase.ssim.ed.Main"/>
+        </replace>
+        
+        <mkdir dir="${dist.dir}/sed.app"/>
+        <mkdir dir="${dist.dir}/sed.app/Contents"/>
+        <mkdir dir="${dist.dir}/sed.app/Contents/MacOS"/>
+        <mkdir dir="${dist.dir}/sed.app/Contents/Resources"/>
+        <mkdir dir="${dist.dir}/sed.app/Contents/Resources/Java"/>
+        
+        <copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub" todir="${dist.dir}/sed.app/Contents/MacOS"/>
+        <exec executable="chmod">
+            <arg value="+x"/>
+            <arg value="${dist.dir}/sed.app/Contents/MacOS/JavaApplicationStub"/>
+        </exec>
+        
+        <copy file="${dist.dir}/Info.plist" todir="${dist.dir}/sed.app/Contents"/>
+        <copy file="${misc.dir}/GenericApp.icns" todir="${dist.dir}/sed.app/Contents/Resources"/>
+        
+        <copy todir="${dist.dir}/sed.app/Contents/Resources/Java">
+            <!-- include everything from 1th pass -->
+            <fileset dir="${dist.pass1.dir}"/>
+            <!-- pull in all libs -->
+            <fileset dir="${basedir}">
+                <include name="${lib.dir}/**"/>
+            </fileset>
+            <mappedresources>
+                <!-- pull them in into lib.dir from specific location -->
+                <union>
+                    <file file="${sed.jme3-jar.file}"/>
+                    <fileset dir="${sed.jme3-deps.dir}"/>
+                </union>
+                <globmapper from="*" to="${lib.dir}/*"/>
+            </mappedresources>
+        </copy>
+        
+        <exec executable="SetFile">
+            <arg value="-a"/>
+            <arg value="B"/>
+            <arg value="${dist.dir}/sed.app"/>
+        </exec>
+        
+        <!--
+            <zip> does not preserve unix permissions like executable flag on
+            Contents/MacOS/JavaApplicationStub which is necessary else an error
+            is thrown on start (error -10810), so we use <tar> instead
+        -->
+        <!--<zip destfile="${dist.dir}/sed.app.zip" duplicate="fail" compress="false">
+            <fileset dir="${dist.dir}">
+                <include name="sed.app/**"/>
+            </fileset>
+        </zip>-->
+        <tar destfile="${dist.dir}/sed.app.tar" basedir="${dist.dir}" includes="sed.app/**"/>
     </target>
     
     <target name="clean" depends="init" description="Removes build files">
