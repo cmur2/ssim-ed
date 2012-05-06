@@ -32,16 +32,22 @@ public class OceanAppState extends BasicAppState {
         ocean = new OceanSurface(NumGridTiles, NumGridTiles, 400f, 400f);
         ocean.setAConstant(.001f);
         ocean.setConvergenceConstant(.15f);
-        ocean.setWaveHeightScale(.05f);
+        ocean.setWaveHeightScale(.1f);
         ocean.setWindVelocity(new Vector3f(15,0,15));
+        ocean.setLambda(.05f);
         ocean.initSim();
         
         oceanNode = new Node("OceanNode");
         oceanNode.setCullHint(CullHint.Never);
         
-        Material oceanMat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        oceanMat.setColor("Color", new ColorRGBA(0.5f, 0.5f, 1f, 1));
-        oceanMat.getAdditionalRenderState().setWireframe(true);
+//        Material oceanMat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+//        oceanMat.setColor("Color", new ColorRGBA(0.5f, 0.5f, 1f, 1));
+//        oceanMat.getAdditionalRenderState().setWireframe(true);
+//        Material oceanMat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
+        Material oceanMat = new Material(getApp().getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
+        oceanMat.setColor("Diffuse", new ColorRGBA(0.5f, 0.5f, 1f, 1));
+        oceanMat.setColor("Specular", ColorRGBA.White);
+        oceanMat.setBoolean("UseMaterialColors", true);
         
         oceanNode.attachChild(buildOceanTile(ocean, oceanMat, Vector3f.ZERO));
         

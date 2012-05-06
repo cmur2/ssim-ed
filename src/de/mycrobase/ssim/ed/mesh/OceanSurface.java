@@ -39,6 +39,8 @@ public class OceanSurface extends Mesh {
     private Vector3f[][] vNormals;
     private Vector3f[][] fNormals;
     private Vector2f[][] c;
+    private Vector2f[][] mDeltaX;
+    private Vector2f[][] mDeltaY;
     
     private VertexBuffer positionVBO;
     private VertexBuffer normalVBO;
@@ -47,6 +49,7 @@ public class OceanSurface extends Mesh {
     private float convergenceConstant;
     private float aConstant;
     private Vector3f windVelocity;
+    private float lambda;
     
     public OceanSurface(int numX, int numY, float scaleX, float scaleY) {
         this.numX = numX;
@@ -93,6 +96,14 @@ public class OceanSurface extends Mesh {
         this.windVelocity = windVelocity;
     }
 
+    public float getLambda() {
+        return lambda;
+    }
+
+    public void setLambda(float lambda) {
+        this.lambda = lambda;
+    }
+
     public void initSim() {
         // TODO: accTime may overrun
         accTime = 0f;
@@ -111,6 +122,8 @@ public class OceanSurface extends Mesh {
 
                 fNormals[ix][iy] = new Vector3f();
                 c[ix][iy] = new Vector2f();
+                mDeltaX[ix][iy] = new Vector2f();
+                mDeltaY[ix][iy] = new Vector2f();
             }
         }
         
@@ -154,6 +167,8 @@ public class OceanSurface extends Mesh {
             }
         }
         
+        updateChoppinessDelta();
+        
         fft.iFFT2D(c);
         
         for(int ix = 0; ix < numX; ix++) {
@@ -170,9 +185,9 @@ public class OceanSurface extends Mesh {
             for(int iy = 0; iy < numY; iy++) {
                 int iyLeft = MathExt.wrapByMax(iy-1, numY-1);
                 
-                vPositions[ix][iy].x = (float) ix/numX * scaleX;
+                vPositions[ix][iy].x = (float) ix/numX * scaleX + mDeltaX[ix][iy].y;
                 vPositions[ix][iy].y = c[ix][iy].x * waveHeightScale;
-                vPositions[ix][iy].z = (float) iy/numY * scaleY;
+                vPositions[ix][iy].z = (float) iy/numY * scaleY + mDeltaY[ix][iy].y;
                 
                 float xsum = fNormals[ix][iy].x + fNormals[ixLeft][iy].x + fNormals[ix][iyLeft].x + fNormals[ixLeft][iyLeft].x;
                 float ysum = fNormals[ix][iy].y + fNormals[ixLeft][iy].y + fNormals[ix][iyLeft].y + fNormals[ixLeft][iyLeft].y;
@@ -266,6 +281,8 @@ public class OceanSurface extends Mesh {
         mH0 = new Vector2f[numX][numY];
         fNormals = new Vector3f[numX][numY];
         c = new Vector2f[numX][numY];
+        mDeltaX = new Vector2f[numX][numY];
+        mDeltaY = new Vector2f[numX][numY];
         
         positionVBO = new VertexBuffer(Type.Position);
         positionVBO.setupData(Usage.Stream, 3, Format.Float, positionBuffer);
@@ -284,6 +301,7 @@ public class OceanSurface extends Mesh {
         
         for(int ix = 0; ix < numX-1; ix++) {
             for(int iy = 0; iy < numY-1; iy++) {
+                // TODO: does not take mDelta into account
                 float tax = 0;
                 float tay = (c[ix][iy+1].x-c[ix][iy].x) * waveHeightScale;
                 float taz = yStep;
@@ -306,6 +324,35 @@ public class OceanSurface extends Mesh {
         for(int ix = 0; ix < numX-1; ix++) { fNormals[ix][numY-1].set(fNormals[ix][0]); }
         for(int iy = 0; iy < numY-1; iy++) { fNormals[numX-1][iy].set(fNormals[0][iy]); }
         fNormals[numX-1][numY-1].set(fNormals[0][0]);
+    }
+    
+    private void updateChoppinessDelta() {
+        for(int ix = 0; ix < numX; ix++) {
+            for(int iy = 0; iy < numY; iy++) {
+                float k = fHold[ix][iy].z;
+                if(k == 0) {
+                    mDeltaX[ix][iy].set(0, 0);
+                    mDeltaY[ix][iy].set(0, 0);
+                } else {
+                    mDeltaX[ix][iy].set(0, c[ix][iy].y * -fHold[ix][iy].x/k);
+                    mDeltaY[ix][iy].set(0, c[ix][iy].y * -fHold[ix][iy].y/k);
+                }
+            }
+        }
+        
+        fft.iFFT2D(mDeltaX);
+        fft.iFFT2D(mDeltaY);
+        
+        for(int ix = 0; ix < numX; ix++) {
+            for(int iy = 0; iy < numY; iy++) {
+                float s = lambda;
+                if((ix+iy) % 2 != 0) {
+                    s *= -1;
+                }
+                mDeltaX[ix][iy].multLocal(s);
+                mDeltaY[ix][iy].multLocal(s);
+            }
+        }
     }
     
     // TODO: into interface
