@@ -43,8 +43,6 @@ public class OceanAppState extends BasicAppState {
         ocean.initSim();
         
         oceanNode = new Node("OceanNode");
-        // TODO: no culling is bad
-        oceanNode.setCullHint(CullHint.Inherit);
         
 //        Material oceanMat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
 //        oceanMat.setColor("Color", new ColorRGBA(0.5f, 0.5f, 1f, 1));

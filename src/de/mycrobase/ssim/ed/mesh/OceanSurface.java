@@ -7,6 +7,7 @@ import java.util.Random;
 import ssim.util.FFT;
 import ssim.util.MathExt;
 
+import com.jme3.bounding.BoundingBox;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
@@ -20,6 +21,9 @@ public class OceanSurface extends Mesh {
     
     // TODO: convert into single parameter or function to allow variations
     private static final float Depth = 4000; // in m
+    
+    // used to determine pessimistic bounding box
+    private static final float AssumedMaxWaveHeight = 50; // in m
     
     private int numX;
     private int numY;
@@ -206,6 +210,11 @@ public class OceanSurface extends Mesh {
         
         // TODO: TriangleStrip
         setMode(Mode.Triangles);
+        
+        setBound(new BoundingBox(
+            new Vector3f(0, -AssumedMaxWaveHeight, 0),
+            new Vector3f(scaleX, +AssumedMaxWaveHeight, scaleY)
+        ));
         
         //setLodLevels(null);
     }
