@@ -156,124 +156,20 @@ public class OceanSurface extends Mesh {
         accTime += dt;
         
         // TODO: fewer updates!
-        // TODO: split method into multiple
         
-        for(int ix = 0; ix < numX; ix++) {
-            for(int iy = 0; iy < numY; iy++) {
-                double wkt = Math.sqrt(fHold[ix][iy].z * 9.81 * Math.tanh(fHold[ix][iy].z * Depth)) * accTime;
-                
-                double sinwkt = Math.sin(wkt);
-                double coswkt = Math.cos(wkt);
-                
-                // calculate h~(K, t) from the Tessendorf paper
-                c[ix][iy].set(
-                    (float) (mH0[ix][iy].x*coswkt + mH0[ix][iy].y*sinwkt + mH0[numX-1-ix][numY-1-iy].x*coswkt - mH0[numX-1-ix][numY-1-iy].y*sinwkt),
-                    (float) (mH0[ix][iy].y*coswkt + mH0[ix][iy].x*sinwkt - mH0[numX-1-ix][numY-1-iy].y*coswkt - mH0[numX-1-ix][numY-1-iy].x*sinwkt)
-                );
-            }
-        }
-        
-        updateChoppinessDelta();
-        
-        fft.iFFT2D(c);
-        
-        for(int ix = 0; ix < numX; ix++) {
-            for(int iy = 0; iy < numY; iy++) {
-                //if((ix+iy) % 2 != 0) c[ix][iy].x *= -1;
-                if(((ix+iy) & 0x01) != 0) c[ix][iy].x = -c[ix][iy].x;
-            }
-        }
+        updateWaveCoefficients();
         
         updateFaceNormals();
         
-        for(int ix = 0; ix < numX; ix++) {
-            int ixLeft = MathExt.wrapByMax(ix-1, numX);
-            for(int iy = 0; iy < numY; iy++) {
-                int iyLeft = MathExt.wrapByMax(iy-1, numY);
-                
-                vPositions[ix][iy].x = (float) ix/numX * scaleX + mDeltaX[ix][iy].y;
-                vPositions[ix][iy].y = c[ix][iy].x * waveHeightScale;
-                vPositions[ix][iy].z = (float) iy/numY * scaleY + mDeltaY[ix][iy].y;
-                
-                float xsum = fNormals[ix][iy].x + fNormals[ixLeft][iy].x + fNormals[ix][iyLeft].x + fNormals[ixLeft][iyLeft].x;
-                float ysum = fNormals[ix][iy].y + fNormals[ixLeft][iy].y + fNormals[ix][iyLeft].y + fNormals[ixLeft][iyLeft].y;
-                float zsum = fNormals[ix][iy].z + fNormals[ixLeft][iy].z + fNormals[ix][iyLeft].z + fNormals[ixLeft][iyLeft].z;
-                
-                vNormals[ix][iy].set(xsum/4, ysum/4, zsum/4);
-            }
-        }
+        updateVertexPositions();
         
-        for(int iy = 0; iy < numVertexY-1; iy++) {
-            vPositions[numVertexX-1][iy].set(vPositions[0][iy].x+scaleX, vPositions[0][iy].y, vPositions[0][iy].z);
-            vNormals[numVertexX-1][iy].set(vNormals[0][iy]);
-        }
-        for(int ix = 0; ix < numVertexX-1; ix++) {
-            vPositions[ix][numVertexY-1].set(vPositions[ix][0].x, vPositions[ix][0].y, vPositions[ix][0].z+scaleY);
-            vNormals[ix][numVertexY-1].set(vNormals[ix][0]);
-        }
-        vPositions[numVertexX-1][numVertexY-1].set(vPositions[0][0].x+scaleX, vPositions[0][0].y, vPositions[0][0].z+scaleY);
-        vNormals[numVertexX-1][numVertexY-1].set(vNormals[0][0]);
+        updateVertexNormals();
         
         // final step: bring data model into vertex buffers
-        for(int ix = 0; ix < numX; ix++) {
-            for(int iy = 0; iy < numY; iy++) {
-                // first triangle
-                positionBuffer.put(vPositions[ix][iy].x);
-                positionBuffer.put(vPositions[ix][iy].y);
-                positionBuffer.put(vPositions[ix][iy].z);
-                
-                normalBuffer.put(vNormals[ix][iy].x);
-                normalBuffer.put(vNormals[ix][iy].y);
-                normalBuffer.put(vNormals[ix][iy].z);
-
-                positionBuffer.put(vPositions[ix][iy+1].x);
-                positionBuffer.put(vPositions[ix][iy+1].y);
-                positionBuffer.put(vPositions[ix][iy+1].z);
-
-                normalBuffer.put(vNormals[ix][iy+1].x);
-                normalBuffer.put(vNormals[ix][iy+1].y);
-                normalBuffer.put(vNormals[ix][iy+1].z);
-
-                positionBuffer.put(vPositions[ix+1][iy+1].x);
-                positionBuffer.put(vPositions[ix+1][iy+1].y);
-                positionBuffer.put(vPositions[ix+1][iy+1].z);
-
-                normalBuffer.put(vNormals[ix+1][iy+1].x);
-                normalBuffer.put(vNormals[ix+1][iy+1].y);
-                normalBuffer.put(vNormals[ix+1][iy+1].z);
-
-                // second triangle
-                positionBuffer.put(vPositions[ix][iy].x);
-                positionBuffer.put(vPositions[ix][iy].y);
-                positionBuffer.put(vPositions[ix][iy].z);
-
-                normalBuffer.put(vNormals[ix][iy].x);
-                normalBuffer.put(vNormals[ix][iy].y);
-                normalBuffer.put(vNormals[ix][iy].z);
-
-                positionBuffer.put(vPositions[ix+1][iy+1].x);
-                positionBuffer.put(vPositions[ix+1][iy+1].y);
-                positionBuffer.put(vPositions[ix+1][iy+1].z);
-
-                normalBuffer.put(vNormals[ix+1][iy+1].x);
-                normalBuffer.put(vNormals[ix+1][iy+1].y);
-                normalBuffer.put(vNormals[ix+1][iy+1].z);
-
-                positionBuffer.put(vPositions[ix+1][iy].x);
-                positionBuffer.put(vPositions[ix+1][iy].y);
-                positionBuffer.put(vPositions[ix+1][iy].z);
-
-                normalBuffer.put(vNormals[ix+1][iy].x);
-                normalBuffer.put(vNormals[ix+1][iy].y);
-                normalBuffer.put(vNormals[ix+1][iy].z);
-            }
-        }
-        positionBuffer.rewind();
-        normalBuffer.rewind();
-        
-        positionVBO.updateData(positionBuffer);
-        normalVBO.updateData(normalBuffer);
+        updateTriangleVBOs();
     }
+    
+    // helper
     
     private void initGeometry() {
         // vertex data
@@ -304,33 +200,30 @@ public class OceanSurface extends Mesh {
         //setLodLevels(null);
     }
     
-    private void updateFaceNormals() {
-        float xStep = scaleX/numX;
-        float yStep = scaleY/numY;
+    private void updateWaveCoefficients() {
+        for(int ix = 0; ix < numX; ix++) {
+            for(int iy = 0; iy < numY; iy++) {
+                double wkt = Math.sqrt(fHold[ix][iy].z * 9.81 * Math.tanh(fHold[ix][iy].z * Depth)) * accTime;
+                
+                double sinwkt = Math.sin(wkt);
+                double coswkt = Math.cos(wkt);
+                
+                // calculate h~(K, t) from the Tessendorf paper
+                c[ix][iy].set(
+                    (float) (mH0[ix][iy].x*coswkt + mH0[ix][iy].y*sinwkt + mH0[numX-1-ix][numY-1-iy].x*coswkt - mH0[numX-1-ix][numY-1-iy].y*sinwkt),
+                    (float) (mH0[ix][iy].y*coswkt + mH0[ix][iy].x*sinwkt - mH0[numX-1-ix][numY-1-iy].y*coswkt - mH0[numX-1-ix][numY-1-iy].x*sinwkt)
+                );
+            }
+        }
+        
+        updateChoppinessDelta();
+        
+        fft.iFFT2D(c);
         
         for(int ix = 0; ix < numX; ix++) {
-            int ixRight = MathExt.wrapByMax(ix+1, numX);
-            
             for(int iy = 0; iy < numY; iy++) {
-                int iyRight = MathExt.wrapByMax(iy+1, numY);
-                
-                // TODO: does not take mDelta into account
-                float tax = 0;
-                float tay = (c[ix][iyRight].x-c[ix][iy].x) * waveHeightScale;
-                float taz = yStep;
-                
-                float tbx = xStep;
-                float tby = (c[ixRight][iy].x-c[ix][iy].x) * waveHeightScale;
-                float tbz = 0;
-                
-                // cross product
-                float tcx = tay*tbz - taz*tby;
-                float tcy = taz*tbx - tax*tbz;
-                float tcz = tax*tby - tay*tbx;
-                
-                // set and normalize
-                fNormals[ix][iy].set(tcx, tcy, tcz);
-                fNormals[ix][iy].normalizeLocal();
+                //if((ix+iy) % 2 != 0) c[ix][iy].x *= -1;
+                if(((ix+iy) & 0x01) != 0) c[ix][iy].x = -c[ix][iy].x;
             }
         }
     }
@@ -364,6 +257,106 @@ public class OceanSurface extends Mesh {
             }
         }
     }
+
+    private void updateFaceNormals() {
+        float xStep = scaleX/numX;
+        float yStep = scaleY/numY;
+        
+        for(int ix = 0; ix < numX; ix++) {
+            int ixRight = MathExt.wrapByMax(ix+1, numX);
+            
+            for(int iy = 0; iy < numY; iy++) {
+                int iyRight = MathExt.wrapByMax(iy+1, numY);
+                
+                // TODO: does not take mDelta into account
+                float tax = 0;
+                float tay = (c[ix][iyRight].x-c[ix][iy].x) * waveHeightScale;
+                float taz = yStep;
+                
+                float tbx = xStep;
+                float tby = (c[ixRight][iy].x-c[ix][iy].x) * waveHeightScale;
+                float tbz = 0;
+                
+                // cross product
+                float tcx = tay*tbz - taz*tby;
+                float tcy = taz*tbx - tax*tbz;
+                float tcz = tax*tby - tay*tbx;
+                
+                // set and normalize
+                fNormals[ix][iy].set(tcx, tcy, tcz);
+                fNormals[ix][iy].normalizeLocal();
+            }
+        }
+    }
+    
+    private void updateVertexPositions() {
+        for(int ix = 0; ix < numX; ix++) {
+            for(int iy = 0; iy < numY; iy++) {
+                vPositions[ix][iy].x = (float) ix/numX * scaleX + mDeltaX[ix][iy].y;
+                vPositions[ix][iy].y = c[ix][iy].x * waveHeightScale;
+                vPositions[ix][iy].z = (float) iy/numY * scaleY + mDeltaY[ix][iy].y;
+            }
+        }
+        
+        for(int iy = 0; iy < numVertexY-1; iy++) {
+            vPositions[numVertexX-1][iy].set(vPositions[0][iy].x+scaleX, vPositions[0][iy].y, vPositions[0][iy].z);
+        }
+        for(int ix = 0; ix < numVertexX-1; ix++) {
+            vPositions[ix][numVertexY-1].set(vPositions[ix][0].x, vPositions[ix][0].y, vPositions[ix][0].z+scaleY);
+        }
+        vPositions[numVertexX-1][numVertexY-1].set(vPositions[0][0].x+scaleX, vPositions[0][0].y, vPositions[0][0].z+scaleY);
+    }
+    
+    private void updateVertexNormals() {
+        for(int ix = 0; ix < numX; ix++) {
+            int ixLeft = MathExt.wrapByMax(ix-1, numX);
+            for(int iy = 0; iy < numY; iy++) {
+                int iyLeft = MathExt.wrapByMax(iy-1, numY);
+                float xsum = fNormals[ix][iy].x + fNormals[ixLeft][iy].x + fNormals[ix][iyLeft].x + fNormals[ixLeft][iyLeft].x;
+                float ysum = fNormals[ix][iy].y + fNormals[ixLeft][iy].y + fNormals[ix][iyLeft].y + fNormals[ixLeft][iyLeft].y;
+                float zsum = fNormals[ix][iy].z + fNormals[ixLeft][iy].z + fNormals[ix][iyLeft].z + fNormals[ixLeft][iyLeft].z;
+                vNormals[ix][iy].set(xsum/4, ysum/4, zsum/4);
+            }
+        }
+        
+        for(int iy = 0; iy < numVertexY-1; iy++) {
+            vNormals[numVertexX-1][iy].set(vNormals[0][iy]);
+        }
+        for(int ix = 0; ix < numVertexX-1; ix++) {
+            vNormals[ix][numVertexY-1].set(vNormals[ix][0]);
+        }
+        vNormals[numVertexX-1][numVertexY-1].set(vNormals[0][0]);
+    }
+    
+    private void updateTriangleVBOs() {
+        // final step: bring data model into vertex buffers
+        for(int ix = 0; ix < numX; ix++) {
+            for(int iy = 0; iy < numY; iy++) {
+                // first triangle
+                put(positionBuffer, vPositions[ix][iy]);
+                put(positionBuffer, vPositions[ix][iy+1]);
+                put(positionBuffer, vPositions[ix+1][iy+1]);
+                
+                put(normalBuffer, vNormals[ix][iy]);
+                put(normalBuffer, vNormals[ix][iy+1]);
+                put(normalBuffer, vNormals[ix+1][iy+1]);
+
+                // second triangle
+                put(positionBuffer, vPositions[ix][iy]);
+                put(positionBuffer, vPositions[ix+1][iy+1]);
+                put(positionBuffer, vPositions[ix+1][iy]);
+                
+                put(normalBuffer, vNormals[ix][iy]);
+                put(normalBuffer, vNormals[ix+1][iy+1]);
+                put(normalBuffer, vNormals[ix+1][iy]);
+            }
+        }
+        positionBuffer.rewind();
+        normalBuffer.rewind();
+        
+        positionVBO.updateData(positionBuffer);
+        normalVBO.updateData(normalBuffer);
+    }
     
     // TODO: into interface
     private float calcPhillipsFunction(Vector3f vK) {
@@ -395,5 +388,11 @@ public class OceanSurface extends Mesh {
         
         System.out.println(f);
         return (float) f;
+    }
+    
+    private static void put(FloatBuffer buffer, Vector3f v) {
+        buffer.put(v.x);
+        buffer.put(v.y);
+        buffer.put(v.z);
     }
 }
