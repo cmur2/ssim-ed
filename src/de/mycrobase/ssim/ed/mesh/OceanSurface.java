@@ -35,7 +35,6 @@ public class OceanSurface extends Mesh {
     
     private FloatBuffer positionBuffer;
     private FloatBuffer normalBuffer;
-    private IntBuffer indexBuffer;
     
     // sim data
     private float accTime;
@@ -53,7 +52,6 @@ public class OceanSurface extends Mesh {
     
     private VertexBuffer positionVBO;
     private VertexBuffer normalVBO;
-    private VertexBuffer indexVBO;
     
     private float waveHeightScale;
     private float convergenceConstant;
@@ -180,9 +178,8 @@ public class OceanSurface extends Mesh {
     
     private void initGeometry() {
         // vertex data
-        positionBuffer = BufferUtils.createFloatBuffer(numVertexX * numVertexY * 3);
-        normalBuffer = BufferUtils.createFloatBuffer(numVertexX * numVertexY * 3);
-        indexBuffer = BufferUtils.createIntBuffer(numX * numY * 2 * 3 * 1);
+        positionBuffer = BufferUtils.createFloatBuffer((numVertexX * numVertexY + 4) * 3);
+        normalBuffer = BufferUtils.createFloatBuffer((numVertexX * numVertexY + 4) * 3);
         
         // CPU only data
         vPositions = new Vector3f[numVertexX][numVertexY];
@@ -202,12 +199,6 @@ public class OceanSurface extends Mesh {
         normalVBO.setupData(Usage.Stream, 3, Format.Float, normalBuffer);
         setBuffer(normalVBO);
         
-        indexVBO = new VertexBuffer(Type.Index);
-        indexVBO.setupData(Usage.Static, 1, Format.UnsignedInt, indexBuffer);
-        setBuffer(indexVBO);
-
-        updateTriangleIndexVBO();
-        
         // TODO: TriangleStrip
         setMode(Mode.Triangles);
         
@@ -215,8 +206,45 @@ public class OceanSurface extends Mesh {
             new Vector3f(0, -AssumedMaxWaveHeight, 0),
             new Vector3f(scaleX, +AssumedMaxWaveHeight, scaleY)
         ));
+
+        VertexBuffer[] indexVBOs = initTriangleIndexVBOs();
         
-        //setLodLevels(null);
+        setBuffer(indexVBOs[0]);
+        setLodLevels(indexVBOs);
+    }
+
+    private VertexBuffer[] initTriangleIndexVBOs() {
+        IntBuffer indexBuffer = BufferUtils.createIntBuffer(numX * numY * 2 * 3 * 1);
+        IntBuffer index2Buffer = BufferUtils.createIntBuffer(1 * 2 * 3);
+        
+        for(int ix = 0; ix < numX; ix++) {
+            for(int iy = 0; iy < numY; iy++) {
+                // first triangle
+                indexBuffer.put(getIndexFor(ix, iy));
+                indexBuffer.put(getIndexFor(ix, iy+1));
+                indexBuffer.put(getIndexFor(ix+1, iy+1));
+                // second triangle
+                indexBuffer.put(getIndexFor(ix, iy));
+                indexBuffer.put(getIndexFor(ix+1, iy+1));
+                indexBuffer.put(getIndexFor(ix+1, iy));
+            }
+        }
+        indexBuffer.rewind();
+        
+        int offset = numVertexX * numVertexY;
+        index2Buffer.put(offset+0).put(offset+1).put(offset+3);
+        index2Buffer.put(offset+0).put(offset+3).put(offset+2);
+        index2Buffer.rewind();
+
+        VertexBuffer indexVBO = new VertexBuffer(Type.Index);
+        indexVBO.setupData(Usage.Static, 1, Format.UnsignedInt, indexBuffer);
+        indexVBO.updateData(indexBuffer);
+        
+        VertexBuffer index2VBO = new VertexBuffer(Type.Index);
+        index2VBO.setupData(Usage.Static, 1, Format.UnsignedInt, index2Buffer);
+        index2VBO.updateData(index2Buffer);
+        
+        return new VertexBuffer[] { indexVBO, index2VBO };
     }
     
     private void updateWaveCoefficients() {
@@ -355,30 +383,22 @@ public class OceanSurface extends Mesh {
                 put(normalBuffer, vNormals[ix][iy]);
             }
         }
+        
+        // add vertices for index2Buffer
+        positionBuffer.put(0).put(0).put(0);
+        positionBuffer.put(0).put(0).put(scaleY);
+        positionBuffer.put(scaleX).put(0).put(0);
+        positionBuffer.put(scaleX).put(0).put(scaleY);
+        put(normalBuffer, Vector3f.UNIT_Y);
+        put(normalBuffer, Vector3f.UNIT_Y);
+        put(normalBuffer, Vector3f.UNIT_Y);
+        put(normalBuffer, Vector3f.UNIT_Y);
+        
         positionBuffer.rewind();
         normalBuffer.rewind();
         
         positionVBO.updateData(positionBuffer);
         normalVBO.updateData(normalBuffer);
-    }
-    
-    private void updateTriangleIndexVBO() {
-        for(int ix = 0; ix < numX; ix++) {
-            for(int iy = 0; iy < numY; iy++) {
-                // first triangle
-                indexBuffer.put(getIndexFor(ix, iy));
-                indexBuffer.put(getIndexFor(ix, iy+1));
-                indexBuffer.put(getIndexFor(ix+1, iy+1));
-                
-                // second triangle
-                indexBuffer.put(getIndexFor(ix, iy));
-                indexBuffer.put(getIndexFor(ix+1, iy+1));
-                indexBuffer.put(getIndexFor(ix+1, iy));
-            }
-        }
-        indexBuffer.rewind();
-        
-        indexVBO.updateData(indexBuffer);
     }
     
     private int getIndexFor(int ix, int iy) {

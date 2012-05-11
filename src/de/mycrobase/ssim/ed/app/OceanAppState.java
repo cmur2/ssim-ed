@@ -9,7 +9,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial.CullHint;
+import com.jme3.scene.control.LodControl;
 
 import de.mycrobase.ssim.ed.mesh.OceanSurface;
 import de.mycrobase.ssim.ed.util.TempVars;
@@ -20,7 +20,7 @@ public class OceanAppState extends BasicAppState {
 
     private static final float GridStep = 400f; // in m
     private static final int GridSize = 64;
-    private static final int NumGridTiles = 7; // should be odd
+    private static final int NumGridTiles = 13; // should be odd
     
     // exists only while AppState is attached
     private Node oceanNode;
@@ -35,9 +35,10 @@ public class OceanAppState extends BasicAppState {
         super.initialize(stateManager, baseApp);
         
         ocean = new OceanSurface(GridSize, GridSize, GridStep, GridStep);
+        // TODO: Params in Weather
         ocean.setAConstant(.001f);
         ocean.setConvergenceConstant(.15f);
-        ocean.setWaveHeightScale(.1f);
+        ocean.setWaveHeightScale(.03f);
         ocean.setWindVelocity(new Vector3f(15,0,15));
         ocean.setLambda(.05f);
         ocean.initSim();
@@ -110,6 +111,11 @@ public class OceanAppState extends BasicAppState {
         geom.setMaterial(mat);
         geom.setLocalTranslation(offset);
         geom.setLocalScale(1);
+        
+        LodControl lod = new LodControl();
+        lod.setTrisPerPixel(0.7f);
+        geom.addControl(lod);
+        
         return geom;
     }
 }
