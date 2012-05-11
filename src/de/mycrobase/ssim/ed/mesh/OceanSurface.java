@@ -1,6 +1,7 @@
 package de.mycrobase.ssim.ed.mesh;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.Random;
 
 import ssim.util.FFT;
@@ -30,6 +31,7 @@ public class OceanSurface extends Mesh {
     
     private FloatBuffer positionBuffer;
     private FloatBuffer normalBuffer;
+    private IntBuffer indexBuffer;
     
     // sim data
     private float accTime;
@@ -47,6 +49,7 @@ public class OceanSurface extends Mesh {
     
     private VertexBuffer positionVBO;
     private VertexBuffer normalVBO;
+    private VertexBuffer indexVBO;
     
     private float waveHeightScale;
     private float convergenceConstant;
@@ -166,15 +169,16 @@ public class OceanSurface extends Mesh {
         updateVertexNormals();
         
         // final step: bring data model into vertex buffers
-        updateTriangleVBOs();
+        updateGridDataVBOs();
     }
     
     // helper
     
     private void initGeometry() {
         // vertex data
-        positionBuffer = BufferUtils.createFloatBuffer(numX * numY * 2 * 3 * 3);
-        normalBuffer = BufferUtils.createFloatBuffer(numX * numY * 2 * 3 * 3);
+        positionBuffer = BufferUtils.createFloatBuffer(numVertexX * numVertexY * 3);
+        normalBuffer = BufferUtils.createFloatBuffer(numVertexX * numVertexY * 3);
+        indexBuffer = BufferUtils.createIntBuffer(numX * numY * 2 * 3 * 1);
         
         // CPU only data
         vPositions = new Vector3f[numVertexX][numVertexY];
@@ -193,6 +197,12 @@ public class OceanSurface extends Mesh {
         normalVBO = new VertexBuffer(Type.Normal);
         normalVBO.setupData(Usage.Stream, 3, Format.Float, normalBuffer);
         setBuffer(normalVBO);
+        
+        indexVBO = new VertexBuffer(Type.Index);
+        indexVBO.setupData(Usage.Static, 1, Format.UnsignedInt, indexBuffer);
+        setBuffer(indexVBO);
+
+        updateTriangleIndexVBO();
         
         // TODO: TriangleStrip
         setMode(Mode.Triangles);
@@ -328,27 +338,12 @@ public class OceanSurface extends Mesh {
         vNormals[numVertexX-1][numVertexY-1].set(vNormals[0][0]);
     }
     
-    private void updateTriangleVBOs() {
-        // final step: bring data model into vertex buffers
-        for(int ix = 0; ix < numX; ix++) {
-            for(int iy = 0; iy < numY; iy++) {
-                // first triangle
+    private void updateGridDataVBOs() {
+        // apply the indexing scheme given by #getIndexFor(int ix, int iy)
+        for(int ix = 0; ix < numVertexX; ix++) {
+            for(int iy = 0; iy < numVertexY; iy++) {
                 put(positionBuffer, vPositions[ix][iy]);
-                put(positionBuffer, vPositions[ix][iy+1]);
-                put(positionBuffer, vPositions[ix+1][iy+1]);
-                
                 put(normalBuffer, vNormals[ix][iy]);
-                put(normalBuffer, vNormals[ix][iy+1]);
-                put(normalBuffer, vNormals[ix+1][iy+1]);
-
-                // second triangle
-                put(positionBuffer, vPositions[ix][iy]);
-                put(positionBuffer, vPositions[ix+1][iy+1]);
-                put(positionBuffer, vPositions[ix+1][iy]);
-                
-                put(normalBuffer, vNormals[ix][iy]);
-                put(normalBuffer, vNormals[ix+1][iy+1]);
-                put(normalBuffer, vNormals[ix+1][iy]);
             }
         }
         positionBuffer.rewind();
@@ -356,6 +351,29 @@ public class OceanSurface extends Mesh {
         
         positionVBO.updateData(positionBuffer);
         normalVBO.updateData(normalBuffer);
+    }
+    
+    private void updateTriangleIndexVBO() {
+        for(int ix = 0; ix < numX; ix++) {
+            for(int iy = 0; iy < numY; iy++) {
+                // first triangle
+                indexBuffer.put(getIndexFor(ix, iy));
+                indexBuffer.put(getIndexFor(ix, iy+1));
+                indexBuffer.put(getIndexFor(ix+1, iy+1));
+                
+                // second triangle
+                indexBuffer.put(getIndexFor(ix, iy));
+                indexBuffer.put(getIndexFor(ix+1, iy+1));
+                indexBuffer.put(getIndexFor(ix+1, iy));
+            }
+        }
+        indexBuffer.rewind();
+        
+        indexVBO.updateData(indexBuffer);
+    }
+    
+    private int getIndexFor(int ix, int iy) {
+        return ix * numVertexY + iy;
     }
     
     // TODO: into interface
@@ -386,7 +404,6 @@ public class OceanSurface extends Mesh {
         
         f *= Math.exp(-k*k * windVelocity.lengthSquared());
         
-        System.out.println(f);
         return (float) f;
     }
     
