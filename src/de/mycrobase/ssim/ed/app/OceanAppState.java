@@ -15,7 +15,9 @@ public class OceanAppState extends BasicAppState {
 
     private static final float UpdateInterval = 5f; // in seconds
 
-    private static final int NumGridTiles = 64; // should be odd
+    private static final float GridStep = 400f; // in m
+    private static final int GridSize = 64;
+    private static final int NumGridTiles = 5; // should be odd
     
     // exists only while AppState is attached
     private Node oceanNode;
@@ -29,7 +31,7 @@ public class OceanAppState extends BasicAppState {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        ocean = new OceanSurface(NumGridTiles, NumGridTiles, 400f, 400f);
+        ocean = new OceanSurface(GridSize, GridSize, GridStep, GridStep);
         ocean.setAConstant(.001f);
         ocean.setConvergenceConstant(.15f);
         ocean.setWaveHeightScale(.1f);
@@ -49,7 +51,14 @@ public class OceanAppState extends BasicAppState {
         oceanMat.setColor("Specular", ColorRGBA.White);
         oceanMat.setBoolean("UseMaterialColors", true);
         
-        oceanNode.attachChild(buildOceanTile(ocean, oceanMat, Vector3f.ZERO));
+        final int numGridTilesHalf = NumGridTiles/2;
+        for(int ix = -numGridTilesHalf; ix <= +numGridTilesHalf; ix++) {
+            for(int iz = -numGridTilesHalf; iz <= +numGridTilesHalf; iz++) {
+                Vector3f offset = new Vector3f(ix,0,iz);
+                offset.multLocal(GridStep);
+                oceanNode.attachChild(buildOceanTile(ocean, oceanMat, offset));
+            }
+        }
         
         getApp().getRootNode().attachChild(oceanNode);
     }
