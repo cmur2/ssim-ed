@@ -1,5 +1,7 @@
 package de.mycrobase.ssim.ed.app;
 
+import ssim.util.MathExt;
+
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
@@ -10,6 +12,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial.CullHint;
 
 import de.mycrobase.ssim.ed.mesh.OceanSurface;
+import de.mycrobase.ssim.ed.util.TempVars;
 
 public class OceanAppState extends BasicAppState {
 
@@ -17,7 +20,7 @@ public class OceanAppState extends BasicAppState {
 
     private static final float GridStep = 400f; // in m
     private static final int GridSize = 64;
-    private static final int NumGridTiles = 5; // should be odd
+    private static final int NumGridTiles = 7; // should be odd
     
     // exists only while AppState is attached
     private Node oceanNode;
@@ -69,6 +72,18 @@ public class OceanAppState extends BasicAppState {
         super.update(dt);
         
         ocean.update(dt);
+        
+        TempVars vars = TempVars.get();
+        
+        Vector3f loc = vars.vect1.set(getApp().getCamera().getLocation());
+        Vector3f gridLoc = vars.vect2.set(
+            MathExt.floor(loc.x/GridStep)*GridStep,
+            0,
+            MathExt.floor(loc.z/GridStep)*GridStep
+        );
+        oceanNode.setLocalTranslation(gridLoc);
+        
+        vars.release();
     }
     
     @Override
