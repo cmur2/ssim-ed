@@ -181,9 +181,9 @@ public class OceanSurface extends Mesh {
         updateFaceNormals();
         
         for(int ix = 0; ix < numX; ix++) {
-            int ixLeft = MathExt.wrapByMax(ix-1, numX-1);
+            int ixLeft = MathExt.wrapByMax(ix-1, numX);
             for(int iy = 0; iy < numY; iy++) {
-                int iyLeft = MathExt.wrapByMax(iy-1, numY-1);
+                int iyLeft = MathExt.wrapByMax(iy-1, numY);
                 
                 vPositions[ix][iy].x = (float) ix/numX * scaleX + mDeltaX[ix][iy].y;
                 vPositions[ix][iy].y = c[ix][iy].x * waveHeightScale;
@@ -299,15 +299,19 @@ public class OceanSurface extends Mesh {
         float xStep = scaleX/numX;
         float yStep = scaleY/numY;
         
-        for(int ix = 0; ix < numX-1; ix++) {
-            for(int iy = 0; iy < numY-1; iy++) {
+        for(int ix = 0; ix < numX; ix++) {
+            int ixRight = MathExt.wrapByMax(ix+1, numX);
+            
+            for(int iy = 0; iy < numY; iy++) {
+                int iyRight = MathExt.wrapByMax(iy+1, numY);
+                
                 // TODO: does not take mDelta into account
                 float tax = 0;
-                float tay = (c[ix][iy+1].x-c[ix][iy].x) * waveHeightScale;
+                float tay = (c[ix][iyRight].x-c[ix][iy].x) * waveHeightScale;
                 float taz = yStep;
                 
                 float tbx = xStep;
-                float tby = (c[ix+1][iy].x-c[ix][iy].x) * waveHeightScale;
+                float tby = (c[ixRight][iy].x-c[ix][iy].x) * waveHeightScale;
                 float tbz = 0;
                 
                 // cross product
@@ -320,10 +324,6 @@ public class OceanSurface extends Mesh {
                 fNormals[ix][iy].normalizeLocal();
             }
         }
-        
-        for(int ix = 0; ix < numX-1; ix++) { fNormals[ix][numY-1].set(fNormals[ix][0]); }
-        for(int iy = 0; iy < numY-1; iy++) { fNormals[numX-1][iy].set(fNormals[0][iy]); }
-        fNormals[numX-1][numY-1].set(fNormals[0][0]);
     }
     
     private void updateChoppinessDelta() {
