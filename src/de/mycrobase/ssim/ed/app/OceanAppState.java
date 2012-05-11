@@ -43,16 +43,22 @@ public class OceanAppState extends BasicAppState {
         ocean.initSim();
         
         oceanNode = new Node("OceanNode");
-        oceanNode.setCullHint(CullHint.Never);
+        // TODO: no culling is bad
+        oceanNode.setCullHint(CullHint.Inherit);
         
 //        Material oceanMat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
 //        oceanMat.setColor("Color", new ColorRGBA(0.5f, 0.5f, 1f, 1));
 //        oceanMat.getAdditionalRenderState().setWireframe(true);
+        
 //        Material oceanMat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
+        
+        // TODO: need shader
         Material oceanMat = new Material(getApp().getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
         oceanMat.setColor("Diffuse", new ColorRGBA(0.5f, 0.5f, 1f, 1));
         oceanMat.setColor("Specular", ColorRGBA.White);
         oceanMat.setBoolean("UseMaterialColors", true);
+        
+        // TODO: add far ocean tiles, maybe as second LOD-Mesh for all tiles?
         
         final int numGridTilesHalf = NumGridTiles/2;
         for(int ix = -numGridTilesHalf; ix <= +numGridTilesHalf; ix++) {
@@ -88,7 +94,7 @@ public class OceanAppState extends BasicAppState {
     
     @Override
     protected void intervalUpdate() {
-        
+        // TODO: update ocean surface parameters
     }
     
     @Override

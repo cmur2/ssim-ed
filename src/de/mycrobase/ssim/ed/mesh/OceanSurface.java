@@ -17,6 +17,9 @@ import com.jme3.util.BufferUtils;
 
 public class OceanSurface extends Mesh {
     
+    // TODO: convert into single parameter or function to allow variations
+    private static final float Depth = 4000; // in m
+    
     private int numX;
     private int numY;
     private int numVertexX;
@@ -152,9 +155,12 @@ public class OceanSurface extends Mesh {
     public void update(float dt) {
         accTime += dt;
         
+        // TODO: fewer updates!
+        // TODO: split method into multiple
+        
         for(int ix = 0; ix < numX; ix++) {
             for(int iy = 0; iy < numY; iy++) {
-                double wkt = Math.sqrt(fHold[ix][iy].z * 9.81 * Math.tanh(fHold[ix][iy].z * 4000)) * accTime;
+                double wkt = Math.sqrt(fHold[ix][iy].z * 9.81 * Math.tanh(fHold[ix][iy].z * Depth)) * accTime;
                 
                 double sinwkt = Math.sin(wkt);
                 double coswkt = Math.cos(wkt);
@@ -292,7 +298,10 @@ public class OceanSurface extends Mesh {
         normalVBO.setupData(Usage.Stream, 3, Format.Float, normalBuffer);
         setBuffer(normalVBO);
         
+        // TODO: TriangleStrip
         setMode(Mode.Triangles);
+        
+        //setLodLevels(null);
     }
     
     private void updateFaceNormals() {
@@ -340,6 +349,7 @@ public class OceanSurface extends Mesh {
             }
         }
         
+        // TODO: maybe parallize
         fft.iFFT2D(mDeltaX);
         fft.iFFT2D(mDeltaY);
         
