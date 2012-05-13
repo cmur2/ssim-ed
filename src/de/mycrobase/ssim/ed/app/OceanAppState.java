@@ -36,9 +36,9 @@ public class OceanAppState extends BasicAppState {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        phillipsSpectrum = new PhillipsSpectrum(false);
+        phillipsSpectrum = new PhillipsSpectrum(true);
         phillipsSpectrum.setAConstant(.001f);
-        phillipsSpectrum.setConvergenceConstant(.15f);
+        phillipsSpectrum.setSmallWaveCutoff(1f);
         phillipsSpectrum.setWindVelocity(new Vector3f(15,0,15));
         
         ocean = new OceanSurface(GridSize, GridSize, GridStep, GridStep, phillipsSpectrum);

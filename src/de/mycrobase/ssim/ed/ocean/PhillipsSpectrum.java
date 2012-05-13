@@ -8,7 +8,8 @@ public class PhillipsSpectrum implements WaveSpectrum {
     
     private boolean suppressSmallWaves;
     
-    private float convergenceConstant;
+    // wave length in m, waves with smaller wave length are eliminated
+    private float smallWaveCutoff;
     private float aConstant;
     private Vector3f windVelocity;
     
@@ -16,12 +17,12 @@ public class PhillipsSpectrum implements WaveSpectrum {
         this.suppressSmallWaves = suppressSmallWaves;
     }
     
-    public float getConvergenceConstant() {
-        return convergenceConstant;
+    public float getSmallWaveCutoff() {
+        return smallWaveCutoff;
     }
 
-    public void setConvergenceConstant(float convergenceConstant) {
-        this.convergenceConstant = convergenceConstant;
+    public void setSmallWaveCutoff(float smallWaveCutoff) {
+        this.smallWaveCutoff = smallWaveCutoff;
     }
 
     public float getAConstant() {
@@ -62,9 +63,13 @@ public class PhillipsSpectrum implements WaveSpectrum {
         //f *= dotKW * dotKW;
         f *= dotKW*dotKW / (k*k * windVelocity.lengthSquared()); 
         
-        f *= Math.exp(-k * convergenceConstant);
+        if(suppressSmallWaves) {
+            f *= Math.exp(-k*k * smallWaveCutoff*smallWaveCutoff);
+        }
         
-        f *= Math.exp(-k*k * windVelocity.lengthSquared());
+        // I don't know where this term comes from, it's not in the original
+        // Tessendorf paper and it eliminates all small waves...
+        //f *= Math.exp(-k*k * windVelocity.lengthSquared());
         
         return (float) f;
     }
