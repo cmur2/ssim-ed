@@ -33,7 +33,7 @@ public class OceanSurface extends Mesh {
     private int numVertexX;
     private int numVertexY;
     private float scaleX;
-    private float scaleY;
+    private float scaleZ;
     private WaveSpectrum waveSpectrum;
     private FFT fft;
     
@@ -60,13 +60,13 @@ public class OceanSurface extends Mesh {
     private float waveHeightScale;
     private float lambda;
     
-    public OceanSurface(int numX, int numY, float scaleX, float scaleY, WaveSpectrum waveSpectrum) {
+    public OceanSurface(int numX, int numY, float scaleX, float scaleZ, WaveSpectrum waveSpectrum) {
         this.numX = numX;
         this.numY = numY;
         this.numVertexX = numX+1;
         this.numVertexY = numY+1;
         this.scaleX = scaleX;
-        this.scaleY = scaleY;
+        this.scaleZ = scaleZ;
         this.waveSpectrum = waveSpectrum;
         
         fft = new FFT();
@@ -91,7 +91,6 @@ public class OceanSurface extends Mesh {
     }
 
     public void initSim() {
-        // TODO: accTime may overrun
         accTime = 0f;
         
         for(int ix = 0; ix < numVertexX; ix++) {
@@ -118,7 +117,7 @@ public class OceanSurface extends Mesh {
             for(int iy = 0; iy < numY; iy++) {
                 // horizontal components of K, the movement direction
                 fHold[ix][iy].x = 2f * MathExt.PI * ((float) ix - numX/2) / scaleX;
-                fHold[ix][iy].y = 2f * MathExt.PI * ((float) iy - numY/2) / scaleY;
+                fHold[ix][iy].y = 2f * MathExt.PI * ((float) iy - numY/2) / scaleZ;
                 
                 // length named k of movement vector K
                 fHold[ix][iy].z = (float)
@@ -137,8 +136,6 @@ public class OceanSurface extends Mesh {
     
     public void update(float dt) {
         accTime += dt;
-        
-        // TODO: fewer updates!
         
         updateWaveCoefficients();
         
@@ -182,7 +179,7 @@ public class OceanSurface extends Mesh {
         
         setBound(new BoundingBox(
             new Vector3f(0, -AssumedMaxWaveHeight, 0),
-            new Vector3f(scaleX, +AssumedMaxWaveHeight, scaleY)
+            new Vector3f(scaleX, +AssumedMaxWaveHeight, scaleZ)
         ));
 
         VertexBuffer[] indexVBOs = initTriangleIndexVBOs();
@@ -241,10 +238,14 @@ public class OceanSurface extends Mesh {
             }
         }
         
+        // set up the DX-DY-choppiness, needs all c values in position *before*
+        // inverse FFT on c
         updateChoppinessDelta();
         
+        // do the inverse FFT to get the surface
         fft.iFFT2D(c);
         
+        // create negative power term
         for(int ix = 0; ix < numX; ix++) {
             for(int iy = 0; iy < numY; iy++) {
                 //if((ix+iy) % 2 != 0) c[ix][iy].x *= -1;
@@ -285,7 +286,7 @@ public class OceanSurface extends Mesh {
 
     private void updateFaceNormals() {
         float xStep = scaleX/numX;
-        float yStep = scaleY/numY;
+        float yStep = scaleZ/numY;
         
         for(int ix = 0; ix < numX; ix++) {
             int ixRight = MathExt.wrapByMax(ix+1, numX);
@@ -319,7 +320,7 @@ public class OceanSurface extends Mesh {
             for(int iy = 0; iy < numY; iy++) {
                 vPositions[ix][iy].x = (float) ix/numX * scaleX + mDeltaX[ix][iy].y;
                 vPositions[ix][iy].y = c[ix][iy].x * waveHeightScale;
-                vPositions[ix][iy].z = (float) iy/numY * scaleY + mDeltaY[ix][iy].y;
+                vPositions[ix][iy].z = (float) iy/numY * scaleZ + mDeltaY[ix][iy].y;
             }
         }
         
@@ -327,9 +328,9 @@ public class OceanSurface extends Mesh {
             vPositions[numVertexX-1][iy].set(vPositions[0][iy].x+scaleX, vPositions[0][iy].y, vPositions[0][iy].z);
         }
         for(int ix = 0; ix < numVertexX-1; ix++) {
-            vPositions[ix][numVertexY-1].set(vPositions[ix][0].x, vPositions[ix][0].y, vPositions[ix][0].z+scaleY);
+            vPositions[ix][numVertexY-1].set(vPositions[ix][0].x, vPositions[ix][0].y, vPositions[ix][0].z+scaleZ);
         }
-        vPositions[numVertexX-1][numVertexY-1].set(vPositions[0][0].x+scaleX, vPositions[0][0].y, vPositions[0][0].z+scaleY);
+        vPositions[numVertexX-1][numVertexY-1].set(vPositions[0][0].x+scaleX, vPositions[0][0].y, vPositions[0][0].z+scaleZ);
     }
     
     private void updateVertexNormals() {
@@ -364,9 +365,9 @@ public class OceanSurface extends Mesh {
         
         // add vertices for index2Buffer
         positionBuffer.put(0).put(0).put(0);
-        positionBuffer.put(0).put(0).put(scaleY);
+        positionBuffer.put(0).put(0).put(scaleZ);
         positionBuffer.put(scaleX).put(0).put(0);
-        positionBuffer.put(scaleX).put(0).put(scaleY);
+        positionBuffer.put(scaleX).put(0).put(scaleZ);
         put(normalBuffer, Vector3f.UNIT_Y);
         put(normalBuffer, Vector3f.UNIT_Y);
         put(normalBuffer, Vector3f.UNIT_Y);
