@@ -41,6 +41,7 @@ public class OceanSurface extends Mesh {
     private WaveSpectrum waveSpectrum;
     private ScheduledExecutorService executor;
     private FFT fft;
+    private Random random;
     private List<ChoppinessUpdater> choppinessUpdaters;
     
     private FloatBuffer positionBuffer;
@@ -78,6 +79,7 @@ public class OceanSurface extends Mesh {
         this.executor = executor;
         
         fft = new FFT();
+        random = new Random();
         
         choppinessUpdaters = Arrays.asList(
             new ChoppinessUpdater(mDeltaX),
@@ -125,7 +127,6 @@ public class OceanSurface extends Mesh {
             }
         }
         
-        Random r = new Random();
         for(int ix = 0; ix < numX; ix++) {
             for(int iy = 0; iy < numY; iy++) {
                 // horizontal components of K, the movement direction
@@ -135,22 +136,23 @@ public class OceanSurface extends Mesh {
                 // length named k of movement vector K
                 fHold[ix][iy].z = (float)
                     Math.sqrt(fHold[ix][iy].x*fHold[ix][iy].x + fHold[ix][iy].y*fHold[ix][iy].y);
-                
-                float phillipsRoot =
-                    (float) Math.sqrt(waveSpectrum.getWaveCoefficient(fHold[ix][iy])) * MathExt.INV_SQRT_TWO;
-                
-                mH0[ix][iy].set(
-                    (float) (r.nextGaussian() * phillipsRoot),
-                    (float) (r.nextGaussian() * phillipsRoot));
             }
         }
         
+        // TODO: allow later change by reinit
+        for(int ix = 0; ix < numX; ix++) {
+            for(int iy = 0; iy < numY; iy++) {
+                reinitWave(ix, iy);
+            }
+        }
     }
     
     public void update(float dt) {
         accTime += dt;
         
         updateWaveCoefficients();
+        
+        // TODO: need tangents for bumpmapping
         
         updateFaceNormals();
         
@@ -186,6 +188,8 @@ public class OceanSurface extends Mesh {
         normalVBO = new VertexBuffer(Type.Normal);
         normalVBO.setupData(Usage.Stream, 3, Format.Float, normalBuffer);
         setBuffer(normalVBO);
+        
+        // TODO: need texcoords
         
         // TODO: TriangleStrip
         setMode(Mode.Triangles);
@@ -393,6 +397,17 @@ public class OceanSurface extends Mesh {
         
         positionVBO.updateData(positionBuffer);
         normalVBO.updateData(normalBuffer);
+    }
+    
+    private void reinitWave(int ix, int iy) {
+        float coeff = waveSpectrum.getWaveCoefficient(fHold[ix][iy]);
+        
+        float phillipsRoot =
+            (float) Math.sqrt(coeff) * MathExt.INV_SQRT_TWO;
+        
+        mH0[ix][iy].set(
+            (float) (random.nextGaussian() * phillipsRoot),
+            (float) (random.nextGaussian() * phillipsRoot));
     }
     
     private int getIndexFor(int ix, int iy) {
