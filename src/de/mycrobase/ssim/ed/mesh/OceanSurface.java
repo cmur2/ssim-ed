@@ -2,7 +2,11 @@ package de.mycrobase.ssim.ed.mesh;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ScheduledExecutorService;
 
 import ssim.sim.SimConst;
 import ssim.util.FFT;
@@ -35,7 +39,9 @@ public class OceanSurface extends Mesh {
     private float scaleX;
     private float scaleZ;
     private WaveSpectrum waveSpectrum;
+    private ScheduledExecutorService executor;
     private FFT fft;
+    private List<ChoppinessUpdater> choppinessUpdaters;
     
     private FloatBuffer positionBuffer;
     private FloatBuffer normalBuffer;
@@ -60,7 +66,8 @@ public class OceanSurface extends Mesh {
     private float waveHeightScale;
     private float lambda;
     
-    public OceanSurface(int numX, int numY, float scaleX, float scaleZ, WaveSpectrum waveSpectrum) {
+    public OceanSurface(int numX, int numY, float scaleX, float scaleZ,
+            WaveSpectrum waveSpectrum, ScheduledExecutorService executor) {
         this.numX = numX;
         this.numY = numY;
         this.numVertexX = numX+1;
@@ -68,8 +75,14 @@ public class OceanSurface extends Mesh {
         this.scaleX = scaleX;
         this.scaleZ = scaleZ;
         this.waveSpectrum = waveSpectrum;
+        this.executor = executor;
         
         fft = new FFT();
+        
+        choppinessUpdaters = Arrays.asList(
+            new ChoppinessUpdater(mDeltaX),
+            new ChoppinessUpdater(mDeltaY)
+        );
         
         initGeometry();
     }
@@ -268,9 +281,11 @@ public class OceanSurface extends Mesh {
             }
         }
         
-        // TODO: maybe parallize
-        fft.iFFT2D(mDeltaX);
-        fft.iFFT2D(mDeltaY);
+        try {
+            executor.invokeAll(choppinessUpdaters);
+        } catch(InterruptedException ex) {
+            ex.printStackTrace();
+        }
         
         for(int ix = 0; ix < numX; ix++) {
             for(int iy = 0; iy < numY; iy++) {
@@ -388,5 +403,26 @@ public class OceanSurface extends Mesh {
         buffer.put(v.x);
         buffer.put(v.y);
         buffer.put(v.z);
+    }
+    
+    private class ChoppinessUpdater implements Callable<Void> {
+        
+        private FFT threadFFT;
+        
+        private Vector2f[][] store;
+        
+        // hand over target store by reference
+        public ChoppinessUpdater(Vector2f[][] store) {
+            this.store = store;
+            
+            // we need a FFT instance per thread because FFT is not thread-safe!
+            threadFFT = new FFT();
+        }
+        
+        @Override
+        public Void call() throws Exception {
+            threadFFT.iFFT2D(store);
+            return null;
+        }
     }
 }

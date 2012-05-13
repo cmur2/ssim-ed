@@ -41,7 +41,10 @@ public class OceanAppState extends BasicAppState {
         phillipsSpectrum.setSmallWaveCutoff(1f);
         phillipsSpectrum.setWindVelocity(new Vector3f(15,0,15));
         
-        ocean = new OceanSurface(GridSize, GridSize, GridStep, GridStep, phillipsSpectrum);
+        ocean = new OceanSurface(
+            GridSize, GridSize, GridStep, GridStep,
+            phillipsSpectrum, getApp().getExecutor()
+        );
         // TODO: Params in Weather
         ocean.setWaveHeightScale(.03f);
         ocean.setLambda(.05f);
