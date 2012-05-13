@@ -12,6 +12,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.control.LodControl;
 
 import de.mycrobase.ssim.ed.mesh.OceanSurface;
+import de.mycrobase.ssim.ed.ocean.PhillipsSpectrum;
 import de.mycrobase.ssim.ed.util.TempVars;
 
 public class OceanAppState extends BasicAppState {
@@ -23,6 +24,7 @@ public class OceanAppState extends BasicAppState {
     private static final int NumGridTiles = 13; // should be odd
     
     // exists only while AppState is attached
+    private PhillipsSpectrum phillipsSpectrum;
     private Node oceanNode;
     private OceanSurface ocean;
     
@@ -34,12 +36,14 @@ public class OceanAppState extends BasicAppState {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        ocean = new OceanSurface(GridSize, GridSize, GridStep, GridStep);
+        phillipsSpectrum = new PhillipsSpectrum(false);
+        phillipsSpectrum.setAConstant(.001f);
+        phillipsSpectrum.setConvergenceConstant(.15f);
+        phillipsSpectrum.setWindVelocity(new Vector3f(15,0,15));
+        
+        ocean = new OceanSurface(GridSize, GridSize, GridStep, GridStep, phillipsSpectrum);
         // TODO: Params in Weather
-        ocean.setAConstant(.001f);
-        ocean.setConvergenceConstant(.15f);
         ocean.setWaveHeightScale(.03f);
-        ocean.setWindVelocity(new Vector3f(15,0,15));
         ocean.setLambda(.05f);
         ocean.initSim();
         

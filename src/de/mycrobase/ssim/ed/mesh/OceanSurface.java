@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Random;
 
+import ssim.sim.SimConst;
 import ssim.util.FFT;
 import ssim.util.MathExt;
 
@@ -16,6 +17,8 @@ import com.jme3.scene.VertexBuffer.Format;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.VertexBuffer.Usage;
 import com.jme3.util.BufferUtils;
+
+import de.mycrobase.ssim.ed.ocean.WaveSpectrum;
 
 public class OceanSurface extends Mesh {
     
@@ -31,6 +34,7 @@ public class OceanSurface extends Mesh {
     private int numVertexY;
     private float scaleX;
     private float scaleY;
+    private WaveSpectrum waveSpectrum;
     private FFT fft;
     
     private FloatBuffer positionBuffer;
@@ -54,18 +58,16 @@ public class OceanSurface extends Mesh {
     private VertexBuffer normalVBO;
     
     private float waveHeightScale;
-    private float convergenceConstant;
-    private float aConstant;
-    private Vector3f windVelocity;
     private float lambda;
     
-    public OceanSurface(int numX, int numY, float scaleX, float scaleY) {
+    public OceanSurface(int numX, int numY, float scaleX, float scaleY, WaveSpectrum waveSpectrum) {
         this.numX = numX;
         this.numY = numY;
         this.numVertexX = numX+1;
         this.numVertexY = numY+1;
         this.scaleX = scaleX;
         this.scaleY = scaleY;
+        this.waveSpectrum = waveSpectrum;
         
         fft = new FFT();
         
@@ -78,30 +80,6 @@ public class OceanSurface extends Mesh {
 
     public void setWaveHeightScale(float waveHeightScale) {
         this.waveHeightScale = waveHeightScale;
-    }
-
-    public float getConvergenceConstant() {
-        return convergenceConstant;
-    }
-
-    public void setConvergenceConstant(float convergenceConstant) {
-        this.convergenceConstant = convergenceConstant;
-    }
-
-    public float getAConstant() {
-        return aConstant;
-    }
-
-    public void setAConstant(float aConstant) {
-        this.aConstant = aConstant;
-    }
-    
-    public Vector3f getWindVelocity() {
-        return windVelocity;
-    }
-    
-    public void setWindVelocity(Vector3f windVelocity) {
-        this.windVelocity = windVelocity;
     }
 
     public float getLambda() {
@@ -147,7 +125,7 @@ public class OceanSurface extends Mesh {
                     Math.sqrt(fHold[ix][iy].x*fHold[ix][iy].x + fHold[ix][iy].y*fHold[ix][iy].y);
                 
                 float phillipsRoot =
-                    (float) Math.sqrt(calcPhillipsFunction(fHold[ix][iy])) * MathExt.INV_SQRT_TWO;
+                    (float) Math.sqrt(waveSpectrum.getWaveCoefficient(fHold[ix][iy])) * MathExt.INV_SQRT_TWO;
                 
                 mH0[ix][iy].set(
                     (float) (r.nextGaussian() * phillipsRoot),
@@ -250,7 +228,7 @@ public class OceanSurface extends Mesh {
     private void updateWaveCoefficients() {
         for(int ix = 0; ix < numX; ix++) {
             for(int iy = 0; iy < numY; iy++) {
-                double wkt = Math.sqrt(fHold[ix][iy].z * 9.81 * Math.tanh(fHold[ix][iy].z * Depth)) * accTime;
+                double wkt = Math.sqrt(fHold[ix][iy].z * SimConst.g * Math.tanh(fHold[ix][iy].z * Depth)) * accTime;
                 
                 double sinwkt = Math.sin(wkt);
                 double coswkt = Math.cos(wkt);
@@ -403,37 +381,6 @@ public class OceanSurface extends Mesh {
     
     private int getIndexFor(int ix, int iy) {
         return ix * numVertexY + iy;
-    }
-    
-    // TODO: into interface
-    private float calcPhillipsFunction(Vector3f vK) {
-        float g = 9.81f;
-        
-        // k = length(vector(K))
-        float k = vK.z;
-        
-        if(k == 0) return 0;
-        
-        // L = V*V / g
-        float L = windVelocity.lengthSquared() / g;
-
-        // dot product between K and windVelocity on the XZ plane
-        float dotKW = (vK.x * windVelocity.x + vK.y * windVelocity.z);
-        
-        double f = aConstant;
-        
-        f *= Math.exp( -1d / ((k*L)*(k*L)) );
-        
-        f *= 1d / (k*k*k*k);
-        
-        //f *= dotKW * dotKW;
-        f *= dotKW*dotKW / (k*k * windVelocity.lengthSquared()); 
-        
-        f *= Math.exp(-k * convergenceConstant);
-        
-        f *= Math.exp(-k*k * windVelocity.lengthSquared());
-        
-        return (float) f;
     }
     
     private static void put(FloatBuffer buffer, Vector3f v) {
