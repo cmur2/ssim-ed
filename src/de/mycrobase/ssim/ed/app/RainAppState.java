@@ -55,7 +55,9 @@ public class RainAppState extends BasicAppState {
         rain.setLineWidth(2f);
         
         rainNode = new Node("RainNode");
-        rainNode.setCullHint(CullHint.Never);
+        // Maybe disable culling if plopping is too intensive even with
+        // enlarged virtual bounds in RainParticles:
+        //rainNode.setCullHint(CullHint.Never);
         
         Material rainMat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         rainMat.setBoolean("VertexColor", true);
