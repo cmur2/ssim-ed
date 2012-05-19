@@ -12,7 +12,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial.CullHint;
 
 import de.mycrobase.ssim.ed.mesh.RainParticles;
 import de.mycrobase.ssim.ed.util.TempVars;
@@ -59,8 +58,7 @@ public class RainAppState extends BasicAppState {
         // enlarged virtual bounds in RainParticles:
         //rainNode.setCullHint(CullHint.Never);
         
-        Material rainMat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        rainMat.setBoolean("VertexColor", true);
+        Material rainMat = new Material(getApp().getAssetManager(), "shaders/RainParticles.j3md");
         rainMat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         
         final int numGridTilesHalf = NumGridTiles/2;

@@ -1,0 +1,14 @@
+MaterialDef RainParticles {
+    MaterialParameters {
+    }
+    Technique {
+        LightMode MultiPass
+        VertexShader GLSL100:   shaders/RainParticles.vert
+        FragmentShader GLSL100: shaders/RainParticles.frag
+        WorldParameters {
+            WorldViewProjectionMatrix
+        }
+    }
+    Technique FixedFunc {
+    }
+}

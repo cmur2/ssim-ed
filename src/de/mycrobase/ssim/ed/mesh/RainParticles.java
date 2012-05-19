@@ -53,8 +53,6 @@ public class RainParticles extends Mesh {
         initGeometry();
     }
     
-    // TODO: transparent and with lighting applied
-    
     public float getDropLength() {
         return dropLength;
     }
