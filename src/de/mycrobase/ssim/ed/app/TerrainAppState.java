@@ -117,6 +117,11 @@ public class TerrainAppState extends BasicAppState {
     @Override
     protected void intervalUpdate() {
         updateFog();
+        
+        // I don't know why this is necessary because the Material should be
+        // passed by reference to all terrain quads and patches. But without
+        // that they don't receive any material updates:
+        terrainGrid.setMaterial(terrainMat);
     }
     
     @Override
