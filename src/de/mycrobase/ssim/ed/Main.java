@@ -24,6 +24,7 @@ import com.jme3.system.AppSettings;
 
 import de.altimos.util.logger.JLFBridge;
 import de.altimos.util.translator.Translator;
+import de.mycrobase.ssim.ed.app.AerialAppState;
 import de.mycrobase.ssim.ed.app.CameraAppState;
 import de.mycrobase.ssim.ed.app.CloudAppState;
 import de.mycrobase.ssim.ed.app.DebugAppState;
@@ -287,6 +288,7 @@ public class Main extends SimpleApplication implements GameModeListener {
         gameAppStates.add(new CameraAppState(MaxVisibility));
         gameAppStates.add(new WeatherAppState("clear"));
         gameAppStates.add(new SkyAppState(0.5f*MaxVisibility, mission));
+        gameAppStates.add(new AerialAppState());
         
         // AppState higher layer:
         // these have no dependencies to each other, just to the base layer
