@@ -137,12 +137,17 @@ public class TerrainAppState extends BasicAppState {
         //System.out.println(java.util.Arrays.toString(color));
         terrainMat.setVector3("FogColor", new Vector3f(color[0], color[1], color[2]));
         
-        float maxDist = getSkyAppState().getHemisphereRadius();
-        // fogFactor:
+        float turbidity = getState(WeatherAppState.class).getWeather().getFloat("sky.turbidity");
+        // on clear air retain more of the original color with fog than on
+        // 'foggie' conditions (simple implementation):
+        float targetFogFactor = turbidity <= 3 ? 0.75f : 0.25f;
+        
+        // HowTo fogFactor:
         //   1.0 - full original color
         //   0.0 - full fog color
-        // TODO: modify via sky.turbidity later
-        float density = getFogDensity(0.75f, maxDist);
+        
+        float maxDist = getSkyAppState().getHemisphereRadius();
+        float density = getFogDensity(targetFogFactor, maxDist);
         terrainMat.setFloat("FogDensity", density);
         vars.release();
     }
