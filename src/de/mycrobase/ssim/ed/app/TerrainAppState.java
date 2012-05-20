@@ -137,7 +137,7 @@ public class TerrainAppState extends BasicAppState {
         //System.out.println(java.util.Arrays.toString(color));
         terrainMat.setVector3("FogColor", new Vector3f(color[0], color[1], color[2]));
         
-        float turbidity = getState(WeatherAppState.class).getWeather().getFloat("sky.turbidity");
+        float turbidity = getState(WeatherAppState.class).getWeather().getFloat("air.turbidity");
         // on clear air retain more of the original color with fog than on
         // 'foggie' conditions (simple implementation):
         float targetFogFactor = turbidity <= 3 ? 0.75f : 0.25f;
