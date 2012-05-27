@@ -1,10 +1,13 @@
 package de.mycrobase.ssim.ed.ocean;
 
 import ssim.sim.SimConst;
+import ssim.util.MathExt;
 
 import com.jme3.math.Vector3f;
 
 public class PhillipsSpectrum implements WaveSpectrum {
+    
+    private static final float weakEps = 1e-4f;
     
     private boolean suppressSmallWaves;
     
@@ -46,7 +49,11 @@ public class PhillipsSpectrum implements WaveSpectrum {
         // k = length(vector(K))
         float k = vK.z;
         
-        if(k == 0) return 0;
+        if(MathExt.epsilonEqualsZero(k, weakEps) ||
+           MathExt.epsilonEqualsZero(windVelocity.lengthSquared(), weakEps))
+        {
+            return 0;
+        }
         
         // L = V*V / g
         float L = windVelocity.lengthSquared() / SimConst.g;
