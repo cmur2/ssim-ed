@@ -298,7 +298,7 @@ public class Main extends SimpleApplication implements GameModeListener {
         gameAppStates.add(new LightingAppState());
         gameAppStates.add(new StarAppState());
         gameAppStates.add(new CloudAppState());
-        //gameAppStates.add(new TerrainAppState(mission));
+        gameAppStates.add(new TerrainAppState(mission));
         gameAppStates.add(new OceanAppState());
         gameAppStates.add(new RainAppState());
         gameAppStates.add(new GuiAppState());
