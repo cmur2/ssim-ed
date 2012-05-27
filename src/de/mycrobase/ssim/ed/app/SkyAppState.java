@@ -73,7 +73,7 @@ public class SkyAppState extends BasicAppState {
     @Override
     protected void intervalUpdate() {
         sun.update();
-        skyGradient.setTurbidity(getState(WeatherAppState.class).getWeather().getFloat("sky.turbidity"));
+        skyGradient.setTurbidity(getState(WeatherAppState.class).getWeather().getFloat("air.turbidity"));
         skyGradient.update();
     }
     

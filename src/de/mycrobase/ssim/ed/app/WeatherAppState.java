@@ -36,7 +36,7 @@ public class WeatherAppState extends BasicAppState {
         super.initialize(stateManager, baseApp);
 
         XMLPropertySetBuilder builder = new XMLPropertySetBuilder(getApp().getAssetManager(), sets);
-        builder.putFloat("sky.turbidity");
+        builder.putFloat("air.turbidity");
         builder.putVec3("sky.light");
         builder.putBool("sun.lensflare.enabled");
         builder.putFloat("sun.lensflare.shininess");
@@ -54,8 +54,6 @@ public class WeatherAppState extends BasicAppState {
         builder.putFloat("wind.strength");
         PropertySet[] ps = builder.getResults();
         
-        // TODO: sky.turbidity should be used to determine fog thickness, aerial parameters
-        // TODO: sky.turbidity -> sky.air?
         // TODO: add air temperature and maybe air pressure
         
         weatherController = new RandomWeatherController(5 * 60f, ps);

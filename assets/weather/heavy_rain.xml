@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sed:weather id="heavy_rain" xmlns:sed="http://mycrobase.de/sed-weather-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mycrobase.de/sed-weather-1.0 sed-weather-1.0.xsd">
-    <sky>
+    <air>
         <turbidity>4.0</turbidity>
+    </air>
+    <sky>
         <light>(0.2, 0.2, 0.2)</light>
     </sky>
     <sun>

@@ -5,12 +5,13 @@ import ssim.util.MathExt;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial.CullHint;
 
 import de.mycrobase.ssim.ed.mesh.RainParticles;
 import de.mycrobase.ssim.ed.util.TempVars;
@@ -50,12 +51,15 @@ public class RainAppState extends BasicAppState {
         rain.setMinY( -50f);
         rain.setMaxY(+200f);
         rain.setInitY(+400f);
+        rain.setLineWidth(2f);
         
         rainNode = new Node("RainNode");
-        rainNode.setCullHint(CullHint.Never);
+        // Maybe disable culling if plopping is too intensive even with
+        // enlarged virtual bounds in RainParticles:
+        //rainNode.setCullHint(CullHint.Never);
         
-        Material rainMat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        rainMat.setBoolean("VertexColor", true);
+        Material rainMat = new Material(getApp().getAssetManager(), "shaders/RainParticles.j3md");
+        rainMat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         
         final int numGridTilesHalf = NumGridTiles/2;
         for(int ix = -numGridTilesHalf; ix <= +numGridTilesHalf; ix++) {
@@ -129,6 +133,7 @@ public class RainAppState extends BasicAppState {
     private Geometry buildRainTile(RainParticles rain, Material mat, Vector3f offset) {
         Geometry geom = new Geometry("RainParticles"+offset.toString(), rain);
         geom.setMaterial(mat);
+        geom.setQueueBucket(Bucket.Transparent);
         geom.setLocalTranslation(offset);
         return geom;
     }
@@ -149,7 +154,7 @@ public class RainAppState extends BasicAppState {
         case Rain: {
             rain.setDropLength(2.0f + 3.5f * intensity); // in m
             rain.setDropLengthVar(0.5f); // in m
-            rain.setDropColor(new ColorRGBA(0.4f, 0.4f, 0.5f, 1.0f));
+            rain.setDropColor(new ColorRGBA(0.4f, 0.4f, 0.5f, 0.3f));
             rain.setDropColorVar(new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f));
             rain.setDropVelocity(90f); // in m/s
             rain.setDropVelocityVar(15f); // in m/s
@@ -158,7 +163,7 @@ public class RainAppState extends BasicAppState {
         case IcePellets: {
             rain.setDropLength(1.5f + 1.0f * intensity); // in m
             rain.setDropLengthVar(0.5f); // in m
-            rain.setDropColor(new ColorRGBA(0.7f, 0.7f, 0.7f, 1.0f));
+            rain.setDropColor(new ColorRGBA(0.7f, 0.7f, 0.7f, 0.5f));
             rain.setDropColorVar(new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f));
             rain.setDropVelocity(75f); // in m/s
             rain.setDropVelocityVar(10f); // in m/s
@@ -167,7 +172,7 @@ public class RainAppState extends BasicAppState {
         case Snow: {
             rain.setDropLength(0.2f + 0.3f * intensity); // in m
             rain.setDropLengthVar(0.1f); // in m
-            rain.setDropColor(new ColorRGBA(0.9f, 0.9f, 0.9f, 1.0f));
+            rain.setDropColor(new ColorRGBA(0.9f, 0.9f, 0.9f, 0.5f));
             rain.setDropColorVar(new ColorRGBA(0.1f, 0.1f, 0.1f, 0.0f));
             rain.setDropVelocity(30f); // in m/s
             rain.setDropVelocityVar(3f); // in m/s

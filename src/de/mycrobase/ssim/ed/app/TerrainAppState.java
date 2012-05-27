@@ -2,7 +2,6 @@ package de.mycrobase.ssim.ed.app;
 
 import java.util.Arrays;
 
-
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetKey;
@@ -20,7 +19,6 @@ import com.jme3.texture.Texture.MinFilter;
 import de.mycrobase.ssim.ed.mission.Mission;
 import de.mycrobase.ssim.ed.terrain.BinaryMap;
 import de.mycrobase.ssim.ed.terrain.BinaryMapTileLoader;
-import de.mycrobase.ssim.ed.util.TempVars;
 
 public class TerrainAppState extends BasicAppState {
     
@@ -97,7 +95,7 @@ public class TerrainAppState extends BasicAppState {
         }
         // Pass fog parameters into shader necessary for Fog.glsllib
         updateFog();
-        
+
         final float sampleDistance = (float) (map.weDiff + map.nsNum)/2f * 0.5f;
         
         TerrainGridTileLoader loader = new BinaryMapTileLoader(map, sampleDistance);
@@ -119,6 +117,11 @@ public class TerrainAppState extends BasicAppState {
     @Override
     protected void intervalUpdate() {
         updateFog();
+        
+        // I don't know why this is necessary because the Material should be
+        // passed by reference to all terrain quads and patches. But without
+        // that they don't receive any material updates:
+        terrainGrid.setMaterial(terrainMat);
     }
     
     @Override
@@ -132,37 +135,7 @@ public class TerrainAppState extends BasicAppState {
     }
     
     private void updateFog() {
-        TempVars vars = TempVars.get();
-        float[] color = getSkyAppState().getSkyGradient().getSkyColor(0,0,-1, vars.float1);
-        //System.out.println(java.util.Arrays.toString(color));
-        terrainMat.setVector3("FogColor", new Vector3f(color[0], color[1], color[2]));
-        
-        float maxDist = getSkyAppState().getHemisphereRadius();
-        // fogFactor:
-        //   1.0 - full original color
-        //   0.0 - full fog color
-        // TODO: modify via sky.turbidity later
-        float density = getFogDensity(0.75f, maxDist);
-        terrainMat.setFloat("FogDensity", density);
-        vars.release();
-    }
-    
-    /**
-     * Calculates the necessary distance value so that EXP2 fog has the given
-     * targetFogFactor at the given distance.
-     * 
-     * @param targetFogFactor wished fog factor
-     * @param maxDist at this distance
-     * @return necessary fog density
-     */
-    private float getFogDensity(float targetFogFactor, float maxDist) {
-        return (float) (
-            Math.sqrt(1.0 / (maxDist*maxDist)) *
-            Math.sqrt(Math.log(1.0 / targetFogFactor))
-            );
-    }
-    
-    private SkyAppState getSkyAppState() {
-        return getState(SkyAppState.class);
+        terrainMat.setVector3("FogColor", getState(AerialAppState.class).getFogColor());
+        terrainMat.setFloat("FogDensity", getState(AerialAppState.class).getFogDensity());
     }
 }

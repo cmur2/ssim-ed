@@ -4,7 +4,8 @@
     
     <xs:complexType name="weatherType">
     	<xs:sequence>
-    		<xs:element name="sky" type="skyType"></xs:element>
+            <xs:element name="air" type="airType"></xs:element>
+            <xs:element name="sky" type="skyType"></xs:element>
     		<xs:element name="sun" type="sunType"></xs:element>
     		<xs:element name="ocean" type="oceanType"></xs:element>
     		<xs:element name="cloud" type="cloudType"></xs:element>
@@ -13,20 +14,23 @@
     	</xs:sequence>
     	<xs:attribute name="id" type="xs:string" use="required"></xs:attribute>
     </xs:complexType>
+
+    <xs:complexType name="airType">
+        <xs:sequence>
+            <xs:element name="turbidity">
+                <xs:simpleType>
+                    <xs:restriction base="xs:float">
+                        <xs:minInclusive value="2"></xs:minInclusive>
+                        <xs:maxInclusive value="30"></xs:maxInclusive>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
     
     <xs:complexType name="skyType">
     	<xs:sequence>
-    		<xs:element name="turbidity">
-    			<xs:simpleType>
-    				<xs:restriction base="xs:float">
-    					<xs:minInclusive value="2"></xs:minInclusive>
-    					<xs:maxInclusive value="30"></xs:maxInclusive>
-    				</xs:restriction>
-    			</xs:simpleType>
-    		</xs:element>
-    		<xs:element name="light" type="Vector3f">
-    		</xs:element>
-    		
+    		<xs:element name="light" type="Vector3f"></xs:element>
     	</xs:sequence>
     </xs:complexType>
     

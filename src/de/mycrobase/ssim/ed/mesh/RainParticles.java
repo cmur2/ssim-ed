@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import java.util.Random;
 
 
+import com.jme3.bounding.BoundingBox;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
@@ -162,7 +163,6 @@ public class RainParticles extends Mesh {
         
         positionVBO.updateData(positionBuffer);
         colorVBO.updateData(colorBuffer);
-        //updateBound();
     }
     
     public void update(float dt) {
@@ -221,7 +221,6 @@ public class RainParticles extends Mesh {
         
         positionVBO.updateData(positionBuffer);
         colorVBO.updateData(colorBuffer);
-//        updateBound();
     }
     
     private void initGeometry() {
@@ -241,6 +240,11 @@ public class RainParticles extends Mesh {
         setBuffer(colorVBO);
         
         setMode(Mode.Lines);
+        
+        setBound(new BoundingBox(
+            new Vector3f(-1.0f*size, 1f*minY, -1.0f*size),
+            new Vector3f(+2.0f*size, 2f*maxY, +2.0f*size)
+        ));
     }
 
     private Vector3f getVaryingDirection(Vector3f store) {

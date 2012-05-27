@@ -24,6 +24,7 @@ import com.jme3.system.AppSettings;
 
 import de.altimos.util.logger.JLFBridge;
 import de.altimos.util.translator.Translator;
+import de.mycrobase.ssim.ed.app.AerialAppState;
 import de.mycrobase.ssim.ed.app.CameraAppState;
 import de.mycrobase.ssim.ed.app.CloudAppState;
 import de.mycrobase.ssim.ed.app.DebugAppState;
@@ -31,6 +32,7 @@ import de.mycrobase.ssim.ed.app.GuiAppState;
 import de.mycrobase.ssim.ed.app.InputMappingAppState;
 import de.mycrobase.ssim.ed.app.LightingAppState;
 import de.mycrobase.ssim.ed.app.NiftyAppState;
+import de.mycrobase.ssim.ed.app.OceanAppState;
 import de.mycrobase.ssim.ed.app.RainAppState;
 import de.mycrobase.ssim.ed.app.SimClockAppState;
 import de.mycrobase.ssim.ed.app.SkyAppState;
@@ -287,6 +289,7 @@ public class Main extends SimpleApplication implements GameModeListener {
         gameAppStates.add(new CameraAppState(MaxVisibility));
         gameAppStates.add(new WeatherAppState("clear"));
         gameAppStates.add(new SkyAppState(0.5f*MaxVisibility, mission));
+        gameAppStates.add(new AerialAppState());
         
         // AppState higher layer:
         // these have no dependencies to each other, just to the base layer
@@ -295,7 +298,8 @@ public class Main extends SimpleApplication implements GameModeListener {
         gameAppStates.add(new LightingAppState());
         gameAppStates.add(new StarAppState());
         gameAppStates.add(new CloudAppState());
-        gameAppStates.add(new TerrainAppState(mission));
+        //gameAppStates.add(new TerrainAppState(mission));
+        gameAppStates.add(new OceanAppState());
         gameAppStates.add(new RainAppState());
         gameAppStates.add(new GuiAppState());
         gameAppStates.add(new DebugAppState());

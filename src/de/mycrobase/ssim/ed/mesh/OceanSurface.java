@@ -40,9 +40,8 @@ public class OceanSurface extends Mesh {
     private float scaleZ;
     private WaveSpectrum waveSpectrum;
     private ScheduledExecutorService executor;
-    private FFT fft;
-    private Random random;
-    private List<ChoppinessUpdater> choppinessUpdaters;
+    private Random waveParamRandom;
+    private List<FFTUpdater> fftUpdaters;
     
     private FloatBuffer positionBuffer;
     private FloatBuffer normalBuffer;
@@ -78,13 +77,7 @@ public class OceanSurface extends Mesh {
         this.waveSpectrum = waveSpectrum;
         this.executor = executor;
         
-        fft = new FFT();
-        random = new Random();
-        
-        choppinessUpdaters = Arrays.asList(
-            new ChoppinessUpdater(mDeltaX),
-            new ChoppinessUpdater(mDeltaY)
-        );
+        waveParamRandom = new Random();
         
         initGeometry();
     }
@@ -126,6 +119,12 @@ public class OceanSurface extends Mesh {
                 mDeltaY[ix][iy] = new Vector2f();
             }
         }
+
+        fftUpdaters = Arrays.asList(
+            new FFTUpdater(mDeltaX),
+            new FFTUpdater(mDeltaY),
+            new FFTUpdater(c)
+        );
         
         for(int ix = 0; ix < numX; ix++) {
             for(int iy = 0; iy < numY; iy++) {
@@ -257,21 +256,6 @@ public class OceanSurface extends Mesh {
         
         // set up the DX-DY-choppiness, needs all c values in position *before*
         // inverse FFT on c
-        updateChoppinessDelta();
-        
-        // do the inverse FFT to get the surface
-        fft.iFFT2D(c);
-        
-        // create negative power term
-        for(int ix = 0; ix < numX; ix++) {
-            for(int iy = 0; iy < numY; iy++) {
-                //if((ix+iy) % 2 != 0) c[ix][iy].x *= -1;
-                if(((ix+iy) & 0x01) != 0) c[ix][iy].x = -c[ix][iy].x;
-            }
-        }
-    }
-    
-    private void updateChoppinessDelta() {
         for(int ix = 0; ix < numX; ix++) {
             for(int iy = 0; iy < numY; iy++) {
                 float k = fHold[ix][iy].z;
@@ -285,8 +269,10 @@ public class OceanSurface extends Mesh {
             }
         }
         
+        // do the inverse FFT on c to get the surface,
+        // do inverse FFTs on DX-DY to get delta values
         try {
-            executor.invokeAll(choppinessUpdaters);
+            executor.invokeAll(fftUpdaters);
         } catch(InterruptedException ex) {
             ex.printStackTrace();
         }
@@ -301,8 +287,16 @@ public class OceanSurface extends Mesh {
                 mDeltaY[ix][iy].multLocal(s);
             }
         }
+        
+        // create negative power term
+        for(int ix = 0; ix < numX; ix++) {
+            for(int iy = 0; iy < numY; iy++) {
+                //if((ix+iy) % 2 != 0) c[ix][iy].x *= -1;
+                if(((ix+iy) & 0x01) != 0) c[ix][iy].x = -c[ix][iy].x;
+            }
+        }
     }
-
+    
     private void updateFaceNormals() {
         float xStep = scaleX/numX;
         float yStep = scaleZ/numY;
@@ -406,8 +400,8 @@ public class OceanSurface extends Mesh {
             (float) Math.sqrt(coeff) * MathExt.INV_SQRT_TWO;
         
         mH0[ix][iy].set(
-            (float) (random.nextGaussian() * phillipsRoot),
-            (float) (random.nextGaussian() * phillipsRoot));
+            (float) (waveParamRandom.nextGaussian() * phillipsRoot),
+            (float) (waveParamRandom.nextGaussian() * phillipsRoot));
     }
     
     private int getIndexFor(int ix, int iy) {
@@ -420,14 +414,14 @@ public class OceanSurface extends Mesh {
         buffer.put(v.z);
     }
     
-    private class ChoppinessUpdater implements Callable<Void> {
+    private class FFTUpdater implements Callable<Void> {
         
         private FFT threadFFT;
         
         private Vector2f[][] store;
         
         // hand over target store by reference
-        public ChoppinessUpdater(Vector2f[][] store) {
+        public FFTUpdater(Vector2f[][] store) {
             this.store = store;
             
             // we need a FFT instance per thread because FFT is not thread-safe!
