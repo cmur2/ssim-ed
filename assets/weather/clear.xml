@@ -29,6 +29,6 @@
     <wind>
         <!-- from north west -->
         <direction>315</direction>
-        <strength>0</strength>
+        <strength>7</strength>
     </wind>
 </sed:weather>
