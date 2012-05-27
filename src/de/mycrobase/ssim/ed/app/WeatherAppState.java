@@ -40,6 +40,10 @@ public class WeatherAppState extends BasicAppState {
         builder.putVec3("sky.light");
         builder.putBool("sun.lensflare.enabled");
         builder.putFloat("sun.lensflare.shininess");
+        builder.putFloat("ocean.a-factor");
+        builder.putFloat("ocean.wave-cutoff");
+        builder.putFloat("ocean.height-scale");
+        builder.putFloat("ocean.choppiness");
         builder.putFloat("cloud.cover");
         builder.putFloat("cloud.sharpness");
         builder.putFloat("cloud.way-factor");

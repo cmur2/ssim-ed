@@ -65,7 +65,14 @@
     	</xs:sequence>
     </xs:complexType>
     
-    <xs:complexType name="oceanType"></xs:complexType>
+    <xs:complexType name="oceanType">
+    	<xs:sequence>
+    		<xs:element name="a-factor" type="xs:float"></xs:element>
+    		<xs:element name="wave-cutoff" type="xs:float"></xs:element>
+    		<xs:element name="height-scale" type="xs:float"></xs:element>
+    		<xs:element name="choppiness" type="xs:float"></xs:element>
+    	</xs:sequence>
+    </xs:complexType>
 
     <xs:complexType name="windType">
     	<xs:sequence>

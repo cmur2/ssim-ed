@@ -10,7 +10,12 @@
             <shininess>0.95</shininess>
         </lensflare>
     </sun>
-    <ocean />
+    <ocean>
+        <a-factor>0.001</a-factor>
+        <wave-cutoff>1.0</wave-cutoff>
+        <height-scale>0.1</height-scale>
+        <choppiness>0.05</choppiness>
+    </ocean>
     <cloud>
         <cover>50</cover>
         <sharpness>0.96</sharpness>
