@@ -6,6 +6,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -14,6 +15,7 @@ import com.jme3.scene.control.LodControl;
 import de.mycrobase.ssim.ed.mesh.OceanSurface;
 import de.mycrobase.ssim.ed.ocean.PhillipsSpectrum;
 import de.mycrobase.ssim.ed.util.TempVars;
+import de.mycrobase.ssim.ed.weather.Weather;
 
 public class OceanAppState extends BasicAppState {
 
@@ -37,17 +39,13 @@ public class OceanAppState extends BasicAppState {
         super.initialize(stateManager, baseApp);
         
         phillipsSpectrum = new PhillipsSpectrum(true);
-        phillipsSpectrum.setAConstant(.001f);
-        phillipsSpectrum.setSmallWaveCutoff(1f);
-        phillipsSpectrum.setWindVelocity(new Vector3f(15,0,15));
+        //phillipsSpectrum.setWindVelocity(new Vector3f(0,0,-15));
         
         ocean = new OceanSurface(
             GridSize, GridSize, GridStep, GridStep,
             phillipsSpectrum, getApp().getExecutor()
         );
-        // TODO: Params in Weather
-        ocean.setWaveHeightScale(.03f);
-        ocean.setLambda(.05f);
+        intervalUpdate();
         ocean.initSim();
         
         oceanNode = new Node("OceanNode");
@@ -61,10 +59,8 @@ public class OceanAppState extends BasicAppState {
         // TODO: need shader
         Material oceanMat = new Material(getApp().getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
         oceanMat.setColor("Diffuse", new ColorRGBA(0.5f, 0.5f, 1f, 1));
-        oceanMat.setColor("Specular", ColorRGBA.White);
+        //oceanMat.setColor("Specular", ColorRGBA.White);
         oceanMat.setBoolean("UseMaterialColors", true);
-        
-        // TODO: add far ocean tiles, maybe as second LOD-Mesh for all tiles?
         
         final int numGridTilesHalf = NumGridTiles/2;
         for(int ix = -numGridTilesHalf; ix <= +numGridTilesHalf; ix++) {
@@ -100,7 +96,30 @@ public class OceanAppState extends BasicAppState {
     
     @Override
     protected void intervalUpdate() {
-        // TODO: update ocean surface parameters
+        phillipsSpectrum.setAConstant(getWeather().getFloat("ocean.a-factor"));
+        phillipsSpectrum.setSmallWaveCutoff(getWeather().getFloat("ocean.wave-cutoff"));
+        ocean.setWaveHeightScale(getWeather().getFloat("ocean.height-scale"));
+        ocean.setLambda(getWeather().getFloat("ocean.choppiness"));
+        
+        TempVars vars = TempVars.get();
+        
+        {
+            float direction = getWeather().getFloat("wind.direction");
+            float strength = getWeather().getFloat("wind.strength");
+            // windVelo will be: direction into which wind is blowing and magnitude
+            // reflects strength of wind
+            Vector3f windVelo = vars.vect1.set(
+                (float) Math.sin(direction * FastMath.DEG_TO_RAD),
+                0,
+                -(float) Math.cos(direction * FastMath.DEG_TO_RAD));
+            // We do not negate here since e.g. an x++ in cloudShift will create
+            // an animation looking like an x--, so we would have to double negate
+            //windVelo.negateLocal();
+            windVelo.multLocal(strength*0.514f); // in m/s
+            phillipsSpectrum.setWindVelocity(windVelo);
+        }
+        
+        vars.release();
     }
     
     @Override
@@ -124,5 +143,9 @@ public class OceanAppState extends BasicAppState {
         geom.addControl(lod);
         
         return geom;
+    }
+    
+    private Weather getWeather() {
+        return getState(WeatherAppState.class).getWeather();
     }
 }
