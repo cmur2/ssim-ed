@@ -28,6 +28,11 @@ public class SkyGradient {
     // since the sun is below the horizon it should actually be black
     public static final ColorRGBA NightSunColor = ColorRGBA.Black;
     
+    // lowest level under worst lighting conditions
+    public static final float MinShadowBaseIntensity = 0.05f;
+    // maximum influence (resulting from sky and sun)
+    public static final float MaxShadowBaseIntensity = 0.50f;
+    
     private Sun sun;
     
     /**
@@ -154,6 +159,29 @@ public class SkyGradient {
         store.interpolate(NightSunColor, linearNightBlendFactor);
         vars.release();
         return store;
+    }
+    
+    /**
+     * Calculates a shadow intensity (useful for shadow filters) for the current
+     * environment depending on sky light and sun position that will be in range
+     * 0.0 to 1.0.
+     * 
+     * @return the base shadow intensity in [0, 1]
+     */
+    public float getShadowBaseIntensity() {
+        float intensity;
+        if(linearNightBlendFactor > 0f) {
+            intensity = (float) MathExt.interpolateLinear(
+                MinShadowBaseIntensity, 0.00f, linearNightBlendFactor);
+        } else {
+            float thetaDeg = (float) Math.toDegrees(sunAngles.y);
+            float linearSunRiseFactor =
+                1f - MathExt.clamp01((thetaDeg-15f)/(NightThetaMin-15f));
+            
+            intensity = MinShadowBaseIntensity +
+                linearSunRiseFactor * (MaxShadowBaseIntensity-MinShadowBaseIntensity);
+        }
+        return intensity;
     }
     
     /**

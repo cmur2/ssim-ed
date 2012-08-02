@@ -1,18 +1,26 @@
 package de.mycrobase.ssim.ed.app;
 
+import ssim.util.MathExt;
+
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Vector3f;
-import com.jme3.shadow.BasicShadowRenderer;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.scene.Spatial;
+import com.jme3.shadow.PssmShadowRenderer;
+import com.jme3.shadow.PssmShadowRenderer.FilterMode;
 
 import de.mycrobase.ssim.ed.util.TempVars;
+import de.mycrobase.ssim.ed.weather.Weather;
 
 public class ShadowAppState extends BasicAppState {
 
     private static final float UpdateInterval = 30f; // in seconds
+    private static final int TexSize = 1024;
+    private static final int NumSplits = 3;
     
     // exists only while AppState is attached
-    private BasicShadowRenderer bsr;
+    private PssmShadowRenderer pssm;
     
     public ShadowAppState() {
         super(UpdateInterval);
@@ -22,33 +30,48 @@ public class ShadowAppState extends BasicAppState {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        bsr = new BasicShadowRenderer(getApp().getAssetManager(), 256);
-        updateLightDir();
-        getApp().getViewPort().addProcessor(bsr);
+        pssm = new PssmShadowRenderer(getApp().getAssetManager(), TexSize, NumSplits);
+        // dithering is cooool :)
+        pssm.setFilterMode(FilterMode.Dither);
+        updateShadows();
+        
+        getApp().getViewPort().addProcessor(pssm);
     }
     
     @Override
     protected void intervalUpdate() {
-        updateLightDir();
+        updateShadows();
     }
     
     @Override
     public void cleanup() {
         super.cleanup();
         
-        getApp().getViewPort().removeProcessor(bsr);
+        getApp().getViewPort().removeProcessor(pssm);
         
-        bsr = null;
+        pssm = null;
     }
     
-    private void updateLightDir() {
+    private void updateShadows() {
         TempVars vars = TempVars.get();
         
         Vector3f sunPosition = getSkyAppState().getSun().getSunPosition(vars.vect1);
         sunPosition.negateLocal();
-        bsr.setDirection(sunPosition);
+        pssm.setDirection(sunPosition);
+        
+        // range 0 to 1
+        float baseIntensity = getSkyAppState().getSkyGradient().getShadowBaseIntensity();
+        // range -1 (totally overcast) to +1 (completely clear) 
+        float cloudInfluence = (getWeather().getFloat("cloud.cover")/255f)*2f - 1f;
+        // combine
+        baseIntensity += cloudInfluence * 0.3f;
+        pssm.setShadowIntensity(MathExt.clamp01(baseIntensity));
         
         vars.release();
+    }
+    
+    private Weather getWeather() {
+        return getState(WeatherAppState.class).getWeather();
     }
     
     private SkyAppState getSkyAppState() {
