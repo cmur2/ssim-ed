@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sed:weather id="clear" xmlns:sed="http://mycrobase.de/sed-weather-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mycrobase.de/sed-weather-1.0 sed-weather-1.0.xsd">
     <air>
-        <turbidity>2.0</turbidity>
+        <turbidity>2.5</turbidity>
     </air>
     <sky>
-        <light>(0.3, 0.3, 0.3)</light>
+        <light>(0.22, 0.22, 0.22)</light>
     </sky>
     <sun>
         <lensflare>
@@ -19,7 +19,7 @@
         <choppiness>0.05</choppiness>
     </ocean>
     <cloud>
-        <cover>150</cover>
+        <cover>100</cover>
         <sharpness>0.96</sharpness>
         <way-factor>0.005</way-factor>
         <zoom>40</zoom> <!-- static value -->
