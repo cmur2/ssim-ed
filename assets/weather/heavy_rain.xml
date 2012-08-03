@@ -4,7 +4,7 @@
         <turbidity>4.0</turbidity>
     </air>
     <sky>
-        <light>(0.2, 0.2, 0.2)</light>
+        <light>(0.18, 0.18, 0.18)</light>
     </sky>
     <sun>
         <lensflare>
