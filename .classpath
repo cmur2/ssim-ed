@@ -4,13 +4,24 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="assets"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="libs/log4j-1.2.16.jar"/>
-	<classpathentry kind="lib" path="libs/chlib-v0.1.7.jar"/>
-	<classpathentry kind="lib" path="libs/jdom-1.1.1.jar"/>
-	<classpathentry kind="lib" path="libs/ajutil-1.0.3.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jME3_2011-11-19"/>
-	<classpathentry kind="lib" path="libs/vecmath-1.5.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="libs/commons-cli-1.2.jar" sourcepath="libs/commons-cli-1.2-sources.jar"/>
+	<classpathentry kind="lib" path="libs/ajutil-1.0.3-jar.jar"/>
+	<classpathentry kind="lib" path="libs/chlib-0.1.7-jar.jar"/>
+	<classpathentry kind="lib" path="libs/commons-cli-1.2-jar.jar" sourcepath="libs/commons-cli-1.2-source.jar"/>
+	<classpathentry kind="lib" path="libs/eventbus-1.4-jar.jar"/>
+	<classpathentry kind="lib" path="libs/j-ogg-oggd-3.0.0-20111119-jar.jar"/>
+    <classpathentry kind="lib" path="libs/j-ogg-vorbisd-3.0.0-20111119-jar.jar"/>
+    <classpathentry kind="lib" path="libs/jdom-1.1.2-jar.jar" sourcepath="libs/jdom-1.1.2-source.jar"/>
+    <classpathentry kind="lib" path="libs/jinput-2.0.5-jar.jar"/>
+    <classpathentry kind="lib" path="libs/jME3-lwjgl-natives-3.0.0-20111119-jar.jar"/>
+	<classpathentry kind="lib" path="libs/jMonkeyEngine3-3.0.0-20111119-jar.jar" sourcepath="libs/jMonkeyEngine3-3.0.0-20111119-source.jar"/>
+	<classpathentry kind="lib" path="libs/jutils-1.0.0-jar.jar"/>
+    <classpathentry kind="lib" path="libs/log4j-1.2.16-bundle.jar" sourcepath="libs/log4j-1.2.16-source.jar"/>
+    <classpathentry kind="lib" path="libs/lwjgl-2.8.2-jar.jar" sourcepath="libs/lwjgl-2.8.2-source.jar"/>
+	<classpathentry kind="lib" path="libs/nifty-1.3-jar.jar" sourcepath="libs/nifty-1.3-source.jar"/>
+	<classpathentry kind="lib" path="libs/nifty-default-controls-1.3-jar.jar" sourcepath="libs/nifty-default-controls-1.3-source.jar"/>
+	<classpathentry kind="lib" path="libs/nifty-style-black-1.3-jar.jar" sourcepath="libs/nifty-style-black-1.3-source.jar"/>
+	<classpathentry kind="lib" path="libs/vecmath-1.5.2-jar.jar" sourcepath="libs/vecmath-1.5.2-source.jar"/>
+	<classpathentry kind="lib" path="libs/xpp3-1.1.4c-jar.jar" sourcepath="libs/xpp3-1.1.4c-source.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

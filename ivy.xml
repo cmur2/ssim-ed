@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+    <info organisation="de.mycrobase" module="ssim.ed"/>
+    <publications>
+        <!-- no artifacts -->
+    </publications>
+    <dependencies>
+        <dependency org="log4j" name="log4j" rev="1.2.16" conf="*->*,!optional"/>
+        <dependency org="javax.vecmath" name="vecmath" rev="1.5.2"/>
+        <dependency org="de.altimos" name="ajutil" rev="1.0.3"/>
+        <dependency org="chlib" name="chlib" rev="0.1.7"/>
+        <dependency org="commons-cli" name="commons-cli" rev="1.2"/>
+        <dependency org="org.jdom" name="jdom" rev="1.1.2" conf="*->*,!optional">
+            <!-- don't need XPath support in JDOM -->
+            <exclude org="jaxen"/>
+        </dependency>
+        <dependency org="com.jme3" name="jMonkeyEngine3" rev="3.0.0-20111119"/>
+
+        <!-- strip all Javadoc, since we have sources -->
+        <exclude org="*" ext="*" type="javadoc"/>
+    </dependencies>
+</ivy-module>

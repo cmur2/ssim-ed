@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivysettings>
+	<settings defaultResolver="default"/>
+	<include url="${ivy.default.settings.dir}/ivysettings-public.xml"/>
+	<include url="${ivy.default.settings.dir}/ivysettings-shared.xml"/>
+	<include url="${ivy.default.settings.dir}/ivysettings-local.xml"/>
+	<include url="${ivy.default.settings.dir}/ivysettings-main-chain.xml"/>
+
+	<!--
+		Replace the "default" chain that dispatches to [local,main] with a custom
+		that additionally uses mycrobase.de:
+		<include url="${ivy.default.settings.dir}/ivysettings-default-chain.xml"/>
+	-->
+	<resolvers>
+		<url name="mycrobase.de">
+			<ivy pattern="http://ivyrep.mycrobase.de/[organisation]/[module]/ivy-[revision].xml"/>
+			<artifact pattern="http://ivyrep.mycrobase.de/[organisation]/[module]/[artifact]-[revision]-[type].[ext]"/>
+		</url>
+		<ibiblio name="nifty-maven-repo" m2compatible="true" root="http://nifty-gui.sourceforge.net/nifty-maven-repo/"/>
+
+		<chain name="default" returnFirst="true">
+			<resolver ref="local"/>
+			<resolver ref="mycrobase.de"/>
+			<resolver ref="nifty-maven-repo"/>
+			<resolver ref="main"/>
+		</chain>
+	</resolvers>
+</ivysettings>
