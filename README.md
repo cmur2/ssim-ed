@@ -1,20 +1,17 @@
 SSim Environment Demo
 =====================
 
-jMonkeyEngine
--------------
+Getting Ivy and dependencies
+----------------------------
 
-Retrieve compatible jME nightly build from
-[http://jmonkeyengine.com/nightly/jME3_2011-11-19.zip](http://jmonkeyengine.com/nightly/jME3_2011-11-19.zip).
+Retrieve *ivy-xyz.jar* to your ANT_HOME/lib directory (on Unix it's commonly
+/usr/share/ant/lib):
 
-Create a user library in Eclipse named "jME3_2011-11-19" with an attached jar
-pointing to *jMonkeyEngine3.jar* from the unzipped nightly archive.
+    cd /usr/share/ant/lib; wget http://mycrobase.de/wtf/ivy-2.3.0-rc1.jar
 
-To use the provided Ant *build.xml* create a *build.properties* file in the
-project root folder with similar contents:
+Now run:
 
-	# This should be the path to jMonkeyEngine3.jar
-	ssim.lp.jme3-jar.file = /path/to/jME3_2011-11-19/jMonkeyEngine3.jar
-	ssim.lp.jme3-deps.dir = /path/to/jME3_2011-11-19/lib
+    ant resolve
 
-That path above should be pointing to the previously downloaded *jMonkeyEngine3.jar*.
+in this projects root directory to fetch all dependencies not included in the
+source code repository via Ivy.
