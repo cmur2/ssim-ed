@@ -65,7 +65,7 @@ public class Main extends SimpleApplication implements GameModeListener {
     private static final Logger logger = Logger.getLogger(Main.class);
     private static final float UpdateInterval = 5f; // in seconds
     
-    private static final float MaxVisibility = 200000f;
+    private static final float MaxVisibility = 20000f;
     private static final long DebugSeed = 4569845;
     
     public static void main(String[] args) {

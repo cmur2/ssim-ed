@@ -38,7 +38,7 @@ public class AerialAppState extends BasicAppState {
         float turbidity = getState(WeatherAppState.class).getWeather().getFloat("air.turbidity");
         // on clear air retain more of the original color with fog than on
         // foggy conditions (simple implementation):
-        float targetFogFactor = turbidity <= 3 ? 0.75f : 0.25f;
+        float targetFogFactor = turbidity <= 3 ? 0.50f : 0.20f;
         
         // HowTo fogFactor:
         //   1.0 - full original color

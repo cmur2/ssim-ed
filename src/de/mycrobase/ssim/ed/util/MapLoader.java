@@ -14,7 +14,7 @@ import de.mycrobase.ssim.ed.terrain.BinaryMap;
 
 public class MapLoader implements AssetLoader {
 
-    public static final float ScaleXZ = 1/25f;
+    public static final float ScaleXZ = 1f;
     public static final float ScaleY = 1f;
     
     private static final Logger logger = Logger.getLogger(MapLoader.class);
