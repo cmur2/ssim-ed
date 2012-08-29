@@ -49,4 +49,10 @@ public class CameraAppState extends BasicAppState {
         cam = null;
         flyCam = null;
     }
+    
+    // public API
+    
+    public float getMaxVisibility() {
+        return maxVisibility;
+    }
 }

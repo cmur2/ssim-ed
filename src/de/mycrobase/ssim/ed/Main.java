@@ -34,6 +34,7 @@ import de.mycrobase.ssim.ed.app.LightingAppState;
 import de.mycrobase.ssim.ed.app.NiftyAppState;
 import de.mycrobase.ssim.ed.app.OceanAppState;
 import de.mycrobase.ssim.ed.app.RainAppState;
+import de.mycrobase.ssim.ed.app.ShadowAppState;
 import de.mycrobase.ssim.ed.app.SimClockAppState;
 import de.mycrobase.ssim.ed.app.SkyAppState;
 import de.mycrobase.ssim.ed.app.SkyDomeAppState;
@@ -64,7 +65,7 @@ public class Main extends SimpleApplication implements GameModeListener {
     private static final Logger logger = Logger.getLogger(Main.class);
     private static final float UpdateInterval = 5f; // in seconds
     
-    private static final float MaxVisibility = 2000f;
+    private static final float MaxVisibility = 200000f;
     private static final long DebugSeed = 4569845;
     
     public static void main(String[] args) {
@@ -288,7 +289,7 @@ public class Main extends SimpleApplication implements GameModeListener {
         gameAppStates.add(new SimClockAppState(mission));
         gameAppStates.add(new CameraAppState(MaxVisibility));
         gameAppStates.add(new WeatherAppState("clear"));
-        gameAppStates.add(new SkyAppState(0.5f*MaxVisibility, mission));
+        gameAppStates.add(new SkyAppState(10000f, mission));
         gameAppStates.add(new AerialAppState());
         
         // AppState higher layer:
@@ -296,6 +297,7 @@ public class Main extends SimpleApplication implements GameModeListener {
         gameAppStates.add(new SkyDomeAppState());
         gameAppStates.add(new SunAppState());
         gameAppStates.add(new LightingAppState());
+        gameAppStates.add(new ShadowAppState());
         gameAppStates.add(new StarAppState());
         gameAppStates.add(new CloudAppState());
         gameAppStates.add(new TerrainAppState(mission));

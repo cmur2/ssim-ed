@@ -44,7 +44,7 @@ public class AerialAppState extends BasicAppState {
         //   1.0 - full original color
         //   0.0 - full fog color
         
-        float maxDist = getState(SkyAppState.class).getHemisphereRadius();
+        float maxDist = getState(CameraAppState.class).getMaxVisibility();
         fogDensity = getFogDensity(targetFogFactor, maxDist);
     }
     
