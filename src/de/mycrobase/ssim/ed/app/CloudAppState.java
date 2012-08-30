@@ -138,7 +138,8 @@ public class CloudAppState extends BasicAppState {
             vToSun.set(vToSun.x, -vToSun.z, vToSun.y); // from J3D to Sky
             float x = vToSun.x; // from 1f to -1f
             float y = vToSun.y; // from 1f to -1f
-            Vector3f sunPosition = vars.vect2.set(x * CloudPlaneSize, y * CloudPlaneSize, 5000);
+            final float convFactor = 4f;
+            Vector3f sunPosition = vars.vect2.set(x * TexSize * convFactor, y * TexSize * convFactor, 5000);
             sunPosition.addLocal(VirtualOrigin);
             //System.out.println(vToSun+" "+x+" "+y);
             cloudProcessor.setSunPosition(sunPosition);
