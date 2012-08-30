@@ -47,7 +47,6 @@ public class WeatherAppState extends BasicAppState {
         builder.putFloat("cloud.cover");
         builder.putFloat("cloud.sharpness");
         builder.putFloat("cloud.way-factor");
-        builder.putInt("cloud.zoom");
         builder.putInt("precipitation.form");
         builder.putFloat("precipitation.intensity");
         builder.putFloat("wind.direction");

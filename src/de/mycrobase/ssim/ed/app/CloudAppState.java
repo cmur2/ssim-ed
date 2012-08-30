@@ -33,6 +33,7 @@ public class CloudAppState extends BasicAppState {
     private static final float UpdateInterval = 10f; // in seconds
     private static final int TexSize = 256;
     private static final boolean UseGPU = true;
+    private static final int CloudZoom = 40; // increase proportional to TexSize
     
     private static final Vector3f CloudPlaneTranslation = new Vector3f(0, 500, 0);
     private static final float CloudPlaneSize = 1500f; // in m
@@ -73,6 +74,8 @@ public class CloudAppState extends BasicAppState {
                 getApp().getExecutor());
         }
         getApp().getViewPort().addProcessor(cloudProcessor);
+        
+        cloudProcessor.setZoom(CloudZoom);
         
         //Quad cloudQuad = new Quad(10, 10);
         CloudPlane cloudQuad = new CloudPlane(CloudPlaneSize, CloudPlaneHeightScale, CloudPlaneTranslation);
@@ -116,7 +119,6 @@ public class CloudAppState extends BasicAppState {
         cloudProcessor.setCloudCover(getWeather().getFloat("cloud.cover"));
         cloudProcessor.setCloudSharpness(getWeather().getFloat("cloud.sharpness"));
         cloudProcessor.setWayFactor(getWeather().getFloat("cloud.way-factor"));
-        cloudProcessor.setZoom(getWeather().getInt("cloud.zoom"));
         
         TempVars vars = TempVars.get();
         

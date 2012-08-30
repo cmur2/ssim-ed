@@ -22,7 +22,6 @@
         <cover>100</cover>
         <sharpness>0.96</sharpness>
         <way-factor>0.005</way-factor>
-        <zoom>40</zoom> <!-- static value -->
     </cloud>
     <precipitation>
         <form>0</form>
