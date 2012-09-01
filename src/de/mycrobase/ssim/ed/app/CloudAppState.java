@@ -35,9 +35,9 @@ public class CloudAppState extends BasicAppState {
     private static final boolean UseGPU = true;
     private static final int CloudZoom = 40; // increase proportional to TexSize
     
-    private static final Vector3f CloudPlaneTranslation = new Vector3f(0, 500, 0);
-    private static final float CloudPlaneSize = 1500f; // in m
-    private static final float CloudPlaneHeightScale = 50f; // in m
+    private static final Vector3f CloudPlaneTranslation = new Vector3f(0, 7000, 0);
+    private static final float CloudPlaneSize = 20000f; // in m
+    private static final float CloudPlaneHeightScale = 0f; // in m
     
     /**
      * x: scale the wind/displacement component of cloudShift
