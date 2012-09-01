@@ -70,6 +70,14 @@
                         </control>
                     </panel>
                     
+                    <!-- detaillevel dropdown -->
+                    <panel height="10%" width="90%" align="center" childLayout="horizontal">
+                        <text text="${CALL.translate(opt.detaillevel)}" font="Interface/Fonts/Default.fnt" valign="center" />
+                        <panel width="20px" />
+                        <control id="opt_detaillevel_dropdown" name="dropDown" valign="center">
+                        </control>
+                    </panel>
+                    
                     
                 </panel>
             </panel>

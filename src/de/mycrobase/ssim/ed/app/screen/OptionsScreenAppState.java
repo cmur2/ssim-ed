@@ -41,6 +41,7 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
     private DropDown<InternalDataListModel> multisampleDropDown;
     private CheckBox fullscreenCheckBox;
     private CheckBox vsyncCheckBox;
+    private DropDown<InternalDataListModel> detailLevelDropDown;
     private Element applyPopup;
     
     // needed by Nifty
@@ -82,6 +83,9 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         
         vsyncCheckBox = getScreen().findNiftyControl("opt_vsync_checkbox", CheckBox.class);
         
+        detailLevelDropDown = getScreen().findNiftyControl("opt_detaillevel_dropdown", DropDown.class);
+        detailLevelDropDown.addAllItems(loadDetailLevelList());
+        
         applyPopup = getNifty().createPopup("popupApply");
     }
     
@@ -95,6 +99,8 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         selectItemBySetting(resolutionDropDown, "display.resolution");
         fullscreenCheckBox.setChecked(getApp().getSettingsManager().getBoolean("display.fullscreen"));
         vsyncCheckBox.setChecked(getApp().getSettingsManager().getBoolean("display.vsync"));
+        
+        selectItemBySetting(detailLevelDropDown, "engine.detail.level");
     }
     
     @Override
@@ -138,6 +144,12 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
     @NiftyEventSubscriber(id="opt_vsync_checkbox")
     public void onVSyncCheckBoxStateChanged(String id, CheckBoxStateChangedEvent event) {
         changedSettings.put("display.vsync", vsyncCheckBox.isChecked());
+    }
+
+    @NiftyEventSubscriber(id="opt_detaillevel_dropdown")
+    public void onDetailLevelDropDownSelectionChanged(String id, DropDownSelectionChangedEvent<String> event) {
+        String detailLevelSetting = detailLevelDropDown.getSelection().getInternalData();
+        changedSettings.put("engine.detail.level", detailLevelSetting);
     }
     
     @Override
@@ -236,6 +248,14 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         list.add(new InternalDataListModel("2x", "2"));
         list.add(new InternalDataListModel("4x", "4"));
         list.add(new InternalDataListModel("8x", "8"));
+        return list;
+    }
+    
+    private List<InternalDataListModel> loadDetailLevelList() {
+        ArrayList<InternalDataListModel> list = new ArrayList<InternalDataListModel>();
+        list.add(new InternalDataListModel(translate("low"), "0"));
+        list.add(new InternalDataListModel(translate("medium"), "1"));
+        list.add(new InternalDataListModel(translate("high"), "2"));
         return list;
     }
     

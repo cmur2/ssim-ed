@@ -27,7 +27,11 @@
             <multisample>Antialiasing:</multisample>
             <vsync>VSync:</vsync>
             <fullscreen>Vollbild:</fullscreen>
+            <detaillevel>Details:</detaillevel>
         </opt>
+        <low>Gering</low>
+        <medium>Mittel</medium>
+        <high>Hoch</high>
         <popup_apply>
             <message>Änderungen wirklich übernehmen?
 Hinweis: Einige Änderungen könnten erst nach einem Neustart wirksam werden!</message>
