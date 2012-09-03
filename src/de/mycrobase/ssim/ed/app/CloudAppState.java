@@ -31,9 +31,7 @@ public class CloudAppState extends BasicAppState {
     
     private static final Logger logger = Logger.getLogger(CloudAppState.class);
     private static final float UpdateInterval = 10f; // in seconds
-    private static final int TexSize = 256;
     private static final boolean UseGPU = true;
-    private static final int CloudZoom = 40; // increase proportional to TexSize
     
     private static final Vector3f CloudPlaneTranslation = new Vector3f(0, 7000, 0);
     private static final float CloudPlaneSize = 20000f; // in m
@@ -45,17 +43,12 @@ public class CloudAppState extends BasicAppState {
      */
     private static final Vector2f ShiftScale = new Vector2f(0.001f, 0.003f);
     
-    /**
-     * Describes the virtual origin of the cloud heightfield (in pixels).
-     * Should lie in the center of the height field/texture, assumed size here
-     * is 256 pixels.
-     */
-    private static final Vector3f VirtualOrigin = new Vector3f(.5f*TexSize, .5f*TexSize, 0);
-    
     // exists only while AppState is attached
     private CloudProcessor cloudProcessor;
     private Geometry geom;
 
+    private int texSize;
+    private int cloudZoom;
     private Vector3f cloudShift;
     
     public CloudAppState() {
@@ -66,16 +59,18 @@ public class CloudAppState extends BasicAppState {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
+        evalSettings();
+        
         if(UseGPU) {
             cloudProcessor = new GPUCloudProcessor(getApp().getAssetManager(),
-                TexSize, UpdateInterval, getApp().getExecutor());
+                texSize, UpdateInterval, getApp().getExecutor());
         } else {
-            cloudProcessor = new CPUCloudProcessor(TexSize, UpdateInterval,
+            cloudProcessor = new CPUCloudProcessor(texSize, UpdateInterval,
                 getApp().getExecutor());
         }
         getApp().getViewPort().addProcessor(cloudProcessor);
         
-        cloudProcessor.setZoom(CloudZoom);
+        cloudProcessor.setZoom(cloudZoom);
         
         //Quad cloudQuad = new Quad(10, 10);
         CloudPlane cloudQuad = new CloudPlane(CloudPlaneSize, CloudPlaneHeightScale, CloudPlaneTranslation);
@@ -141,8 +136,9 @@ public class CloudAppState extends BasicAppState {
             float x = vToSun.x; // from 1f to -1f
             float y = vToSun.y; // from 1f to -1f
             final float convFactor = 4f;
-            Vector3f sunPosition = vars.vect2.set(x * TexSize * convFactor, y * TexSize * convFactor, 5000);
-            sunPosition.addLocal(VirtualOrigin);
+            Vector3f sunPosition = vars.vect2.set(x * texSize * convFactor, y * texSize * convFactor, 5000);
+            // add the virtual origin for the cloud heightfield (center)
+            sunPosition.addLocal(.5f * texSize, .5f * texSize, 0);
             //System.out.println(vToSun+" "+x+" "+y);
             cloudProcessor.setSunPosition(sunPosition);
         }
@@ -177,6 +173,24 @@ public class CloudAppState extends BasicAppState {
         }
         
         vars.release();
+    }
+    
+    private void evalSettings() {
+        int detailLevel = getApp().getSettingsManager().getInteger("engine.detail.level");
+        switch(detailLevel) {
+            case 0: {
+                texSize = 256; cloudZoom = 40;
+                break;
+            }
+            case 1: {
+                texSize = 512; cloudZoom = 80;
+                break;
+            }
+            case 2: {
+                texSize = 1024; cloudZoom = 160;
+                break;
+            }
+        }
     }
     
     private Weather getWeather() {
