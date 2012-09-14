@@ -11,6 +11,7 @@
     
     <target name="init">
         <property name="build.dir" value="bin"/>
+        <property name="reports.dir" value="${build.dir}/reports"/>
         <property name="dist.dir" value="dist"/>
         <property name="dist.pass1.dir" value="${dist.dir}/pass1"/>
         <property name="misc.dir" value="misc"/>
@@ -81,12 +82,14 @@
     </target>
     
     <target name="test" depends="build" description="Execute tests">
+        <mkdir dir="${reports.dir}"/>
+        
         <junit>
             <classpath refid="classpath"/>
             <classpath refid="classpath-build"/>
             
-            <formatter type="plain"/>
-            <batchtest>
+            <formatter type="xml"/>
+            <batchtest todir="${reports.dir}">
                 <fileset dir="test">
                     <include name="**/*Test.java"/>
                 </fileset>
