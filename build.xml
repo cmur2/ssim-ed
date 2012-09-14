@@ -8,6 +8,7 @@
     <description>Builds the SSim Environment Demo.</description>
     
     <target name="default" depends="dist" description="Builds the whole project"/>
+    <target name="jenkins-default" depends="test,dist" description="Default target for Jenkins"/>
     
     <target name="init">
         <property name="build.dir" value="bin"/>
