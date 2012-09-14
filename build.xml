@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     Use this script with 'ant -f build.xml' or simply 'ant'.
+    Tested with Ant 1.8.0.
 -->
 <project name="SSim Environment Demo" default="default" basedir="."
     xmlns:ivy="antlib:org.apache.ivy.ant">
     <description>Builds the SSim Environment Demo.</description>
-    
-    <fail message="Please build using Ant 1.7.1 or higher.">
-        <condition>
-            <not>
-                <antversion atleast="1.7.1"/>
-            </not>
-        </condition>
-    </fail>
     
     <target name="default" depends="build" description="Builds the whole project"/>
     
