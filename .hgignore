@@ -6,4 +6,4 @@ libs
 *.jnilib
 *.log
 .DS_Store
-build.properties
+authors.txt

@@ -124,13 +124,13 @@
                 <attribute name="Main-Class" value="de.mycrobase.ssim.ed.Main"/>
                 <attribute name="Class-Path" value="${manifest.class-path}"/>
                 
-                <attribute name="Implementation-Vendor" value="cn"/>
+                <attribute name="Implementation-Vendor" value="Christian Nicolai &lt;chrnicolai@gmail.com&gt;"/>
                 <attribute name="Implementation-Title" value="SSim Environment Demo"/>
-                <attribute name="Implementation-Version" value="0.0.1"/>
+                <attribute name="Implementation-Version" value="${sed.version}"/>
             </manifest>
         </jar>
         
-        <zip destfile="${dist.dir}/sed.zip" duplicate="fail" compress="false">
+        <zip destfile="${dist.dir}/sed-${sed.version}.zip" duplicate="fail" compress="false">
             <!-- wrap into a subfolder for easier extraction -->
             <mappedresources>
                 <union>
@@ -141,7 +141,7 @@
                         <include name="${lib.dir}/**"/>
                     </fileset>
                 </union>
-                <globmapper from="*" to="sed/*"/>
+                <globmapper from="*" to="sed-${sed.version}/*"/>
             </mappedresources>
         </zip>
     </target>
@@ -151,28 +151,30 @@
         
         <copy file="${misc.dir}/Info.plist.stub" tofile="${dist.dir}/Info.plist"/>
         <replace file="${dist.dir}/Info.plist" failOnNoReplacements="true">
-            <replacefilter token="${sed.info.name}" value="sed-0.0.1"/>
+            <replacefilter token="${sed.info.name}" value="sed-${sed.version}"/>
             <replacefilter token="${sed.info.id}" value="de.mycrobase.ssim.ed.Main"/>
-            <replacefilter token="${sed.info.version}" value="0.0.1"/>
+            <replacefilter token="${sed.info.version}" value="${sed.version}"/>
             <replacefilter token="${sed.info.mainclass}" value="de.mycrobase.ssim.ed.Main"/>
         </replace>
         
-        <mkdir dir="${dist.dir}/sed.app"/>
-        <mkdir dir="${dist.dir}/sed.app/Contents"/>
-        <mkdir dir="${dist.dir}/sed.app/Contents/MacOS"/>
-        <mkdir dir="${dist.dir}/sed.app/Contents/Resources"/>
-        <mkdir dir="${dist.dir}/sed.app/Contents/Resources/Java"/>
+        <property name="sed.app.file" value="sed-${sed.version}.app"/>
         
-        <copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub" todir="${dist.dir}/sed.app/Contents/MacOS"/>
+        <mkdir dir="${dist.dir}/${sed.app.file}"/>
+        <mkdir dir="${dist.dir}/${sed.app.file}/Contents"/>
+        <mkdir dir="${dist.dir}/${sed.app.file}/Contents/MacOS"/>
+        <mkdir dir="${dist.dir}/${sed.app.file}/Contents/Resources"/>
+        <mkdir dir="${dist.dir}/${sed.app.file}/Contents/Resources/Java"/>
+        
+        <copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub" todir="${dist.dir}/${sed.app.file}/Contents/MacOS"/>
         <exec executable="chmod">
             <arg value="+x"/>
-            <arg value="${dist.dir}/sed.app/Contents/MacOS/JavaApplicationStub"/>
+            <arg value="${dist.dir}/${sed.app.file}/Contents/MacOS/JavaApplicationStub"/>
         </exec>
         
-        <copy file="${dist.dir}/Info.plist" todir="${dist.dir}/sed.app/Contents"/>
-        <copy file="${misc.dir}/GenericApp.icns" todir="${dist.dir}/sed.app/Contents/Resources"/>
+        <copy file="${dist.dir}/Info.plist" todir="${dist.dir}/${sed.app.file}/Contents"/>
+        <copy file="${misc.dir}/GenericApp.icns" todir="${dist.dir}/${sed.app.file}/Contents/Resources"/>
         
-        <copy todir="${dist.dir}/sed.app/Contents/Resources/Java">
+        <copy todir="${dist.dir}/${sed.app.file}/Contents/Resources/Java">
             <!-- include everything from 1th pass -->
             <fileset dir="${dist.pass1.dir}"/>
             <!-- pull in all libs -->
@@ -184,7 +186,7 @@
         <exec executable="SetFile">
             <arg value="-a"/>
             <arg value="B"/>
-            <arg value="${dist.dir}/sed.app"/>
+            <arg value="${dist.dir}/${sed.app.file}"/>
         </exec>
         
         <!--
@@ -192,12 +194,12 @@
             Contents/MacOS/JavaApplicationStub which is necessary else an error
             is thrown on start (error -10810), so we use <tar> instead
         -->
-        <!--<zip destfile="${dist.dir}/sed.app.zip" duplicate="fail" compress="false">
+        <!--<zip destfile="${dist.dir}/${sed.app.file}.zip" duplicate="fail" compress="false">
             <fileset dir="${dist.dir}">
-                <include name="sed.app/**"/>
+                <include name="${sed.app.file}/**"/>
             </fileset>
         </zip>-->
-        <tar destfile="${dist.dir}/sed.app.tar" basedir="${dist.dir}" includes="sed.app/**"/>
+        <tar destfile="${dist.dir}/${sed.app.file}.tar" basedir="${dist.dir}" includes="${sed.app.file}/**"/>
     </target>
     
     <target name="clean" depends="init" description="Removes build files">
