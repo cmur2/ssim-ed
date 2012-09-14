@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
     <info organisation="de.mycrobase" module="ssim.ed"/>
+    <configurations>
+        <conf name="runtime"/>
+        <conf name="build" visibility="private" extends="runtime"/>
+    </configurations>
     <publications>
         <!-- no artifacts -->
     </publications>
-    <dependencies>
+    <dependencies defaultconfmapping="*->default">
         <dependency org="log4j" name="log4j" rev="1.2.16" conf="*->*,!optional"/>
         <dependency org="javax.vecmath" name="vecmath" rev="1.5.2"/>
         <dependency org="de.altimos" name="ajutil" rev="1.0.3"/>
@@ -15,6 +19,8 @@
             <exclude org="jaxen"/>
         </dependency>
         <dependency org="com.jme3" name="jMonkeyEngine3" rev="3.0.0-20111119"/>
+        
+        <dependency org="junit" name="junit" rev="4.8.2" conf="build"/>
 
         <!-- strip all Javadoc, since we have sources -->
         <exclude org="*" ext="*" type="javadoc"/>

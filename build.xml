@@ -16,12 +16,18 @@
         <property name="misc.dir" value="misc"/>
         <property name="lib.dir" value="libs"/>
         <property name="src.dir" value="src"/>
+        <property name="test.dir" value="test"/>
         <property name="asset.dir" value="assets"/>
         
         <property name="pregen-log.file" value="pregen.log"/>
         <property name="jenkins" value="false"/>
         
         <property file="build.properties"/>
+
+        <!-- output full retrieve log for jenkins -->
+        <condition property="ivy.retrieve.log" value="quiet" else="default">
+            <isfalse value="${jenkins}"/>
+        </condition>
         
         <path id="classpath">
             <fileset dir="${lib.dir}">
@@ -36,13 +42,10 @@
     <target name="resolve" depends="init" description="Retrieve dependencies">
         <mkdir dir="${lib.dir}"/>
         
-        <!-- output full retrieve log for jenkins -->
-        <condition property="ivy.retrieve.log" value="quiet" else="default">
-            <isfalse value="${jenkins}"/>
-        </condition>
-        
         <ivy:retrieve
             log="${ivy.retrieve.log}"
+            conf="build"
+            sync="true"
             pattern="${lib.dir}/[artifact]-[revision]-[type].[ext]"/>
     </target>
 
@@ -58,13 +61,14 @@
     <target name="build" depends="init,clean,resolve" description="Builds application">
         <mkdir dir="${build.dir}"/>
         
-        <javac srcdir="${src.dir}"
-               destdir="${build.dir}"
+        <javac destdir="${build.dir}"
                debug="false"
                deprecation="true"
                optimize="true"
                includeAntRuntime="false">
             <classpath refid="classpath"/>
+            <src path="${src.dir}"/>
+            <src path="${test.dir}"/>
         </javac>
         
         <copy todir="${build.dir}">
@@ -74,6 +78,20 @@
             </fileset>
             <fileset dir="${asset.dir}" />
         </copy>
+    </target>
+    
+    <target name="test" depends="build" description="Execute tests">
+        <junit>
+            <classpath refid="classpath"/>
+            <classpath refid="classpath-build"/>
+            
+            <formatter type="plain"/>
+            <batchtest>
+                <fileset dir="test">
+                    <include name="**/*Test.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
     </target>
     
     <target name="pre" depends="pre-terrain-lut,pre-terrain-atlas,pre-terrain-noise" description="Pre-generates assets">
@@ -107,6 +125,13 @@
     <target name="dist" depends="build,pre" description="Package application">
         <mkdir dir="${dist.dir}"/>
         <mkdir dir="${dist.pass1.dir}"/>
+        
+        <!-- get all runtime dependencies, and only them -->
+        <ivy:retrieve
+            log="${ivy.retrieve.log}"
+            conf="runtime"
+            sync="true"
+            pattern="${lib.dir}/[artifact]-[revision]-[type].[ext]"/>
         
         <!--
             manifestclasspath uses the given jarfile to determine relative pathes
