@@ -136,9 +136,10 @@
                 <union>
                     <!-- include everything from 1th pass -->
                     <fileset dir="${dist.pass1.dir}"/>
-                    <!-- pull in all libs -->
+                    <!-- pull in all libs (without sources!) -->
                     <fileset dir="${basedir}">
                         <include name="${lib.dir}/**"/>
+                        <exclude name="${lib.dir}/**-source.jar"/>
                     </fileset>
                 </union>
                 <globmapper from="*" to="sed-${sed.version}/*"/>
@@ -177,9 +178,10 @@
         <copy todir="${dist.dir}/${sed.app.file}/Contents/Resources/Java">
             <!-- include everything from 1th pass -->
             <fileset dir="${dist.pass1.dir}"/>
-            <!-- pull in all libs -->
+            <!-- pull in all libs (without sources!) -->
             <fileset dir="${basedir}">
                 <include name="${lib.dir}/**"/>
+                <exclude name="${lib.dir}/**-source.jar"/>
             </fileset>
         </copy>
         
