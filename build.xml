@@ -7,7 +7,7 @@
     xmlns:ivy="antlib:org.apache.ivy.ant">
     <description>Builds the SSim Environment Demo.</description>
     
-    <target name="default" depends="build" description="Builds the whole project"/>
+    <target name="default" depends="dist" description="Builds the whole project"/>
     
     <target name="init">
         <property name="build.dir" value="bin"/>
@@ -55,7 +55,7 @@
             module="ssim.ed"/>
     </target>
     
-    <target name="build" depends="init,clean" description="Builds application">
+    <target name="build" depends="init,clean,resolve" description="Builds application">
         <mkdir dir="${build.dir}"/>
         
         <javac srcdir="${src.dir}"
@@ -104,7 +104,7 @@
         </java>
     </target>
     
-    <target name="dist" depends="init,build,pre" description="Package application">
+    <target name="dist" depends="build,pre" description="Package application">
         <mkdir dir="${dist.dir}"/>
         <mkdir dir="${dist.pass1.dir}"/>
         
