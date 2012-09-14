@@ -19,6 +19,7 @@
         <property name="asset.dir" value="assets"/>
         
         <property name="pregen-log.file" value="pregen.log"/>
+        <property name="jenkins" value="false"/>
         
         <property file="build.properties"/>
         
@@ -35,8 +36,13 @@
     <target name="resolve" depends="init" description="Retrieve dependencies">
         <mkdir dir="${lib.dir}"/>
         
+        <!-- output full retrieve log for jenkins -->
+        <condition property="ivy.retrieve.log" value="quiet" else="default">
+            <isfalse value="${jenkins}"/>
+        </condition>
+        
         <ivy:retrieve
-            log="quiet"
+            log="${ivy.retrieve.log}"
             pattern="${lib.dir}/[artifact]-[revision]-[type].[ext]"/>
     </target>
 
@@ -85,7 +91,7 @@
     <target name="pre-terrain-atlas" depends="build" description="Generates TerrainAtlas.png">
         <java classname="de.mycrobase.ssim.ed.pre.TerrainAtlasGenerator" failonerror="true" output="${pregen-log.file}">
             <arg value="assets/textures/TerrainAtlas.png"/>
-        	<classpath refid="classpath"/>
+            <classpath refid="classpath"/>
             <classpath refid="classpath-build"/>
         </java>
     </target>
