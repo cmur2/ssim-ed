@@ -13,7 +13,9 @@ Installing Ant heavily depends on your OS. Installing Ivy boils down to simply p
 
 Download ivy-*version*.jar to your ANT_HOME/lib directory (on Unix it's commonly /usr/share/ant/lib or $HOME/.ant/lib for the current user):
 
-    mkdir -p ~/.ant/lib; cd ~/.ant/lib; wget http://mycrobase.de/wtf/ivy-2.3.0-rc1.jar
+    mkdir -p ~/.ant/lib; cd ~/.ant/lib; wget http://repo1.maven.org/maven2/org/apache/ivy/ivy/2.3.0-rc1/ivy-2.3.0-rc1.jar
+
+(Or get a full blown Ivy download including sources, docs etc. [here](https://ant.apache.org/ivy/download.html).)
 
 ## Compile
 
