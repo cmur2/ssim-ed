@@ -27,3 +27,5 @@ in order to produce the compiled Java classes in *bin* and a zip package contain
 
 * Code: tbd
 * Assets: tbd
+
+test
