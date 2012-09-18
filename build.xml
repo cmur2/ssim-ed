@@ -85,7 +85,7 @@
     <target name="test" depends="build" description="Execute tests">
         <mkdir dir="${reports.dir}"/>
         
-        <junit>
+        <junit haltonfailure="no" failureproperty="failed" forkmode="perBatch">
             <classpath refid="classpath"/>
             <classpath refid="classpath-build"/>
             
@@ -96,6 +96,8 @@
                 </fileset>
             </batchtest>
         </junit>
+        
+        <fail if="failed"/>
     </target>
     
     <target name="pre" depends="pre-terrain-lut,pre-terrain-atlas,pre-terrain-noise" description="Pre-generates assets">
