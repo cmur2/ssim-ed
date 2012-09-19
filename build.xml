@@ -8,11 +8,11 @@
     <description>Builds the SSim Environment Demo.</description>
     
     <target name="default" depends="dist" description="Builds the whole project"/>
-    <target name="jenkins-default" depends="test,dist" description="Default target for Jenkins"/>
+    <target name="jenkins-default" depends="report,test,dist" description="Default target for Jenkins"/>
     
     <target name="init">
         <property name="build.dir" value="bin"/>
-        <property name="reports.dir" value="${build.dir}/reports"/>
+        <property name="reports.dir" value="reports"/>
         <property name="dist.dir" value="dist"/>
         <property name="dist.pass1.dir" value="${dist.dir}/pass1"/>
         <property name="misc.dir" value="misc"/>
@@ -51,11 +51,14 @@
             pattern="${lib.dir}/[artifact]-[revision]-[type].[ext]"/>
     </target>
 
-    <target name="report" depends="init,resolve" description="Dependency report">
-        <ivy:report xsl="true"
-            todir="${build.dir}"
+    <target name="report" depends="init,clean,resolve" description="Dependency report">
+        <mkdir dir="${reports.dir}/ivy"/>
+        
+        <ivy:report
+            xsl="true"
+            todir="${reports.dir}/ivy"
             outputpattern="[organisation]-[module]-[conf]-report.[ext]"
-            conf="default"
+            conf="build"
             organisation="de.mycrobase"
             module="ssim.ed"/>
     </target>
@@ -83,14 +86,14 @@
     </target>
     
     <target name="test" depends="build" description="Execute tests">
-        <mkdir dir="${reports.dir}"/>
+        <mkdir dir="${reports.dir}/junit"/>
         
         <junit haltonfailure="no" failureproperty="failed" forkmode="perBatch">
             <classpath refid="classpath"/>
             <classpath refid="classpath-build"/>
             
             <formatter type="xml"/>
-            <batchtest todir="${reports.dir}">
+            <batchtest todir="${reports.dir}/junit">
                 <fileset dir="test">
                     <include name="**/*Test.java"/>
                 </fileset>
