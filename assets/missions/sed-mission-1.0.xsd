@@ -9,8 +9,6 @@
     		<xs:element name="location" type="locationType"></xs:element>
     		<xs:element name="datetime" type="datetimeType"></xs:element>
     		<xs:element name="map" type="mapType"></xs:element>
-    		<xs:element name="win" type="conditionType"></xs:element>
-    		<xs:element name="lose" type="conditionType"></xs:element>
     	</xs:sequence>
     	<xs:attribute name="id" type="xs:string" use="required"></xs:attribute>
     </xs:complexType>
@@ -62,17 +60,4 @@
     <xs:complexType name="mapType">
     	<xs:attribute name="file" type="xs:string" use="required"></xs:attribute>
     </xs:complexType>
-    
-    <xs:complexType name="conditionType">
-        <xs:sequence>
-        	<xs:any processContents="skip"></xs:any>
-        </xs:sequence>
-    </xs:complexType>
-
-
-    
-
-
-
-
 </xs:schema>

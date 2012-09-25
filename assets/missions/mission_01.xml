@@ -5,12 +5,4 @@
     <location latitude="36.4" longitude="-11.8" /> <!-- N 36.4 W 11.8 -->
     <datetime dayOfYear="180" timeOfDay="15.00" />
     <map file="Florida.map" />
-    <win>
-        <Const value="false" />
-    </win>
-    <lose>
-        <Not>
-            <ExistsSimobjWithId value="0" />
-        </Not>
-    </lose>
 </sed:mission>
