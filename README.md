@@ -23,9 +23,9 @@ Change to this project's root directory and run
 
 	ant
 
-in order to produce the compiled Java classes in *bin* and a zip package containing ready-to-launch jar with all dependencies in *dist*.
+in order to produce the compiled Java classes in *bin/* and a ZIP package containing ready-to-launch *.jar* with all dependencies in *dist/*.
 
 ## License
 
-* Code: tbd
-* Assets: tbd
+* Code: [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0) (see LICENSE)
+* Assets: [Creative Commons BY-NC-SA](http://creativecommons.org/licenses/by-nc-sa/3.0/de/)
