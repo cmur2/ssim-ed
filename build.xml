@@ -8,7 +8,8 @@
     <description>Builds the SSim Environment Demo.</description>
     
     <target name="default" depends="dist" description="Builds the whole project"/>
-    <target name="jenkins-default" depends="report,test,dist" description="Default target for Jenkins"/>
+    <target name="jenkins-default" depends="ivy-report,build,test-fast,dist" description="Default target for Jenkins"/>
+    <target name="jenkins-slow" depends="coverage" description="Target for slow operations for Jenkins"/>
     
     <target name="init">
         <property name="build.dir" value="bin"/>
@@ -20,6 +21,7 @@
         <property name="src.dir" value="src"/>
         <property name="test.dir" value="test"/>
         <property name="asset.dir" value="assets"/>
+        <property name="instrumented.dir" value="instrumented"/>
         
         <property name="pregen-log.file" value="pregen.log"/>
         <property name="jenkins" value="false"/>
@@ -30,6 +32,11 @@
         <condition property="ivy.retrieve.log" value="quiet" else="default">
             <isfalse value="${jenkins}"/>
         </condition>
+
+        <!-- output full retrieve log for jenkins -->
+        <condition property="cov.report.type" value="html" else="xml">
+            <isfalse value="${jenkins}"/>
+        </condition>
         
         <path id="classpath">
             <fileset dir="${lib.dir}">
@@ -38,6 +45,9 @@
         </path>
         <path id="classpath-build">
             <dirset dir="${build.dir}"/>
+        </path>
+        <path id="classpath-instrumented">
+            <dirset dir="${instrumented.dir}"/>
         </path>
     </target>
 
@@ -51,7 +61,7 @@
             pattern="${lib.dir}/[artifact]-[revision]-[type].[ext]"/>
     </target>
 
-    <target name="report" depends="init,clean,resolve" description="Dependency report">
+    <target name="ivy-report" depends="init,clean,resolve" description="Dependency report">
         <mkdir dir="${reports.dir}/ivy"/>
         
         <ivy:report
@@ -67,7 +77,7 @@
         <mkdir dir="${build.dir}"/>
         
         <javac destdir="${build.dir}"
-               debug="false"
+               debug="true"
                deprecation="true"
                optimize="true"
                includeAntRuntime="false">
@@ -84,18 +94,21 @@
             <fileset dir="${asset.dir}" />
         </copy>
     </target>
-    
-    <target name="test" depends="build" description="Execute tests">
+
+    <target name="test-fast" depends="build" description="Execute fast tests">
         <mkdir dir="${reports.dir}/junit"/>
         
-        <junit haltonfailure="no" failureproperty="failed" forkmode="perBatch">
+        <junit haltonfailure="no" failureproperty="failed"
+               printsummary="yes"
+               fork="yes"
+               forkmode="perBatch">
             <classpath refid="classpath"/>
             <classpath refid="classpath-build"/>
             
             <formatter type="xml"/>
             <batchtest todir="${reports.dir}/junit">
-                <fileset dir="test">
-                    <include name="**/*Test.java"/>
+                <fileset dir="${test.dir}">
+                    <include name="**/FastTests.java"/>
                 </fileset>
             </batchtest>
         </junit>
@@ -103,6 +116,61 @@
         <fail if="failed"/>
     </target>
     
+    <target name="test" depends="build" description="Execute all tests">
+        <mkdir dir="${reports.dir}/junit"/>
+
+        <!-- create for single run -->
+        <mkdir dir="${instrumented.dir}"/>
+        
+        <junit haltonfailure="no" failureproperty="failed"
+               printsummary="yes"
+               fork="yes"
+               forkmode="perBatch">
+            <classpath refid="classpath-instrumented"/>
+            <classpath refid="classpath"/>
+            <classpath refid="classpath-build"/>
+            
+            <formatter type="xml"/>
+            <batchtest todir="${reports.dir}/junit">
+                <fileset dir="${test.dir}">
+                    <!--
+                        BUG: The following causes undefined behavior when run by
+                        Jenkins on an OpenJDK on a headless server and it's not
+                        clear why:
+                        
+                        <include name="**/AllTests.java"/>
+                    -->
+                    <include name="**/*Test.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+        
+        <fail if="failed"/>
+    </target>
+
+    <target name="instrument" depends="build" description="Instrument classes for coverage">
+        <!-- load cobertura Ant tasks -->
+        <taskdef classpathref="classpath" resource="tasks.properties"/>
+        
+        <cobertura-instrument todir="${instrumented.dir}">
+            <fileset dir="${build.dir}">
+                <include name="**/*.class"/>
+                <exclude name="**/*Test.class"/>
+                <exclude name="**/*Test$*.class"/>
+                <exclude name="**/*TestBase.class"/>
+                <exclude name="ssim/**"/>
+                <exclude name="de/mycrobase/ssim/ed/helper/**"/>
+            </fileset>
+        </cobertura-instrument>
+    </target>
+
+    <target name="coverage" depends="instrument,test" description="Coverage report">
+        <cobertura-report format="${cov.report.type}" destdir="${reports.dir}/cov" encoding="utf-8">
+            <fileset dir="${src.dir}"/>
+            <fileset dir="${test.dir}"/>
+        </cobertura-report>
+    </target>
+
     <target name="pre" depends="pre-terrain-lut,pre-terrain-atlas,pre-terrain-noise" description="Pre-generates assets">
         <echo>Pre-generation successful!</echo>
     </target>
@@ -239,7 +307,10 @@
     </target>
     
     <target name="clean" depends="init" description="Removes build files">
+        <delete file="cobertura.ser"/>
         <delete dir="${build.dir}"/>
         <delete dir="${dist.dir}"/>
+        <delete dir="${reports.dir}"/>
+        <delete dir="${instrumented.dir}"/>
     </target>
 </project>
