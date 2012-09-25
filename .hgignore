@@ -1,9 +1,12 @@
 syntax: glob
 bin
 dist
+instrumented
 libs
+reports
 *.dll
 *.jnilib
 *.log
 .DS_Store
 authors.txt
+cobertura.ser
