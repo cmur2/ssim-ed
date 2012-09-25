@@ -9,10 +9,11 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 
 import de.mycrobase.ssim.ed.Main;
+import de.mycrobase.ssim.ed.SSimApplication;
 
 /**
  * Base class for all other {@linkplain AppState}s that provides a reference
- * to the {@link Main} app and, more important, one to the
+ * to the {@link SSimApplication} app and, more important, one to the
  * {@link AppStateManager} which is kept internally to provide
  * {@link #getState(Class)} which is the basic dependency mechanism for all
  * AppStates.
@@ -28,7 +29,7 @@ public class BasicAppState extends AbstractAppState {
     private static final Logger logger = Logger.getLogger(BasicAppState.class);
     
     private AppStateManager stateManager;
-    private Main app;
+    private SSimApplication app;
 
     /**
      * Time (in seconds) that must pass to execute another {@link #intervalUpdate()}
@@ -55,7 +56,7 @@ public class BasicAppState extends AbstractAppState {
 
         // keep references of state manager and the main app 
         this.stateManager = stateManager;
-        this.app = (Main) app;
+        this.app = (SSimApplication) app;
         
         passedTime = 0;
     }
@@ -97,7 +98,7 @@ public class BasicAppState extends AbstractAppState {
         this.intervalTime = intervalTime;
     }
     
-    protected Main getApp() {
+    protected SSimApplication getApp() {
         return app;
     }
     
