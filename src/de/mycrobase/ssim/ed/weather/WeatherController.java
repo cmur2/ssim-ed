@@ -10,17 +10,6 @@ package de.mycrobase.ssim.ed.weather;
 public interface WeatherController extends Weather {
     
     /**
-     * Registers a new property under the given key with the given initial
-     * value of given type.
-     * 
-     * @param <T> type
-     * @param key the key, e.g. "ocean.temperature"
-     * @param value the initial value
-     * @param clazz the type of the value
-     */
-    public <T> void registerProperty(String key, T value, Class<T> clazz);
-    
-    /**
      * Registers a given {@link WeatherInterpolator} for properties of given
      * type.
      * 

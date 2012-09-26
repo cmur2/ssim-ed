@@ -4,6 +4,7 @@ package de.mycrobase.ssim.ed.app;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.ColorRGBA;
+import com.jme3.renderer.queue.NullComparator;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial.CullHint;
@@ -68,6 +69,7 @@ public class SkyAppState extends BasicAppState {
         super.cleanup();
         
         skyNode.removeControl(SurfaceCameraControl.class);
+        getApp().getViewPort().getQueue().setGeometryComparator(Bucket.Sky, new NullComparator());
         getApp().getRootNode().detachChild(skyNode);
         
         skyNode = null;

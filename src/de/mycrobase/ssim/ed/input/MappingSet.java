@@ -52,4 +52,8 @@ public class MappingSet {
             inputManager.deleteTrigger(mapping, trigger);
         }
     }
+    
+    protected HashMap<Trigger, String> getMappings() {
+        return mappings;
+    }
 }

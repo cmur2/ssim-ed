@@ -15,6 +15,8 @@ public class MappingsParser {
     
     private static final Logger logger = Logger.getLogger(MappingsParser.class);
     
+    private MappingsParser() {}
+    
     public static MappingSet load(AssetManager mgr, String name) {
         Element mappingsXml = mgr.loadAsset(new AssetKey<Element>(name));
         
@@ -48,10 +50,7 @@ public class MappingsParser {
         try {
             int keyCode = (Integer) KeyInput.class.getDeclaredField(key).get(Integer.class);
             return new KeyTrigger(keyCode);
-        } catch(IllegalAccessException ex) {
-            logger.error(String.format("No key code constant found for %s!", key), ex);
-            return null;
-        } catch(NoSuchFieldException ex) {
+        } catch(Exception ex) {
             logger.error(String.format("No key code constant found for %s!", key), ex);
             return null;
         }
@@ -61,10 +60,7 @@ public class MappingsParser {
         try {
             int mouseButton = (Integer) MouseInput.class.getDeclaredField(button).get(Integer.class);
             return new MouseButtonTrigger(mouseButton);
-        } catch(IllegalAccessException ex) {
-            logger.error(String.format("No mouse button code constant found for %s!", button), ex);
-            return null;
-        } catch(NoSuchFieldException ex) {
+        } catch(Exception ex) {
             logger.error(String.format("No mouse button code constant found for %s!", button), ex);
             return null;
         }

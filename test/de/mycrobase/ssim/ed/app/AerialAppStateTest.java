@@ -1,8 +1,7 @@
 package de.mycrobase.ssim.ed.app;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -21,32 +20,23 @@ import de.mycrobase.ssim.ed.util.PropertiesLoader;
 import de.mycrobase.ssim.ed.util.XMLLoader;
 
 @Category(Slow.class)
-public class LightingAppStateTest {
+public class AerialAppStateTest {
 
     @BeforeClass
     public static void setUp() {
         Logging.require();
     }
-    
+
     @Test(timeout = 60*1000)
-    public void testCleanup() {
-        LightingAppState state = new LightingAppState();
-        
+    public void testAPI() {
         Helper app = new Helper();
         app.start(Type.Headless);
         app.waitFor();
         
-        app.getStateManager().attach(state);
-        app.waitFor();
+        AerialAppState state = app.getStateManager().getState(AerialAppState.class);
         
-        assertNotNull(app.getStateManager().getState(LightingAppState.class));
-        assertEquals(2, app.getRootNode().getLocalLightList().size());
-        
-        app.getStateManager().detach(state);
-        app.waitFor();
-        
-        assertNull(app.getStateManager().getState(LightingAppState.class));
-        assertEquals(0, app.getRootNode().getLocalLightList().size());
+        assertNotNull(state.getFogColor());
+        assertTrue(state.getFogDensity() >= 0f);
         
         app.stop();
     }
@@ -54,18 +44,6 @@ public class LightingAppStateTest {
     @Ignore
     @Test(timeout = 60*1000)
     public void testUpdate() {
-        Helper app = new Helper();
-        app.start(Type.Headless);
-        app.waitFor();
-        
-        app.getStateManager().attach(new LightingAppState());
-        app.waitFor();
-        
-        //System.out.println(app.getStateManager().getState(LightingAppState.class).getPassedTime());
-        //app.waitFor(31*1000);
-        //System.out.println(app.getStateManager().getState(LightingAppState.class).getPassedTime());
-        
-        app.stop();
     }
     
     private static class Helper extends SteppedSSimApplication {

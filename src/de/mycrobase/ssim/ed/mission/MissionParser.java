@@ -1,5 +1,6 @@
 package de.mycrobase.ssim.ed.mission;
 
+import org.apache.log4j.Logger;
 import org.jdom.DataConversionException;
 import org.jdom.Element;
 
@@ -7,6 +8,10 @@ import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 
 public class MissionParser {
+    
+    private static final Logger logger = Logger.getLogger(MissionParser.class);
+    
+    private MissionParser() {}
     
     public static Mission load(AssetManager mgr, String name) {
         Element missionXml = mgr.loadAsset(new AssetKey<Element>(name));
@@ -22,7 +27,7 @@ public class MissionParser {
             m.setDayOfYear(missionXml.getChild("datetime").getAttribute("dayOfYear").getIntValue());
             m.setTimeOfDay(missionXml.getChild("datetime").getAttribute("timeOfDay").getFloatValue());
         } catch(DataConversionException ex) {
-            ex.printStackTrace();
+            logger.error("Could not parse mission file:", ex);
             return null;
         }
         

@@ -1,6 +1,5 @@
 package de.mycrobase.ssim.ed.app;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -21,16 +20,16 @@ import de.mycrobase.ssim.ed.util.PropertiesLoader;
 import de.mycrobase.ssim.ed.util.XMLLoader;
 
 @Category(Slow.class)
-public class LightingAppStateTest {
+public class SkyDomeAppStateTest {
 
     @BeforeClass
     public static void setUp() {
         Logging.require();
     }
-    
+
     @Test(timeout = 60*1000)
     public void testCleanup() {
-        LightingAppState state = new LightingAppState();
+        SkyDomeAppState state = new SkyDomeAppState();
         
         Helper app = new Helper();
         app.start(Type.Headless);
@@ -39,18 +38,18 @@ public class LightingAppStateTest {
         app.getStateManager().attach(state);
         app.waitFor();
         
-        assertNotNull(app.getStateManager().getState(LightingAppState.class));
-        assertEquals(2, app.getRootNode().getLocalLightList().size());
+        assertNotNull(app.getStateManager().getState(SkyDomeAppState.class));
+        assertNotNull(app.getStateManager().getState(SkyAppState.class).getSkyNode().getChild("SkyDome"));
         
         app.getStateManager().detach(state);
         app.waitFor();
         
-        assertNull(app.getStateManager().getState(LightingAppState.class));
-        assertEquals(0, app.getRootNode().getLocalLightList().size());
+        assertNull(app.getStateManager().getState(SkyDomeAppState.class));
+        assertNull(app.getStateManager().getState(SkyAppState.class).getSkyNode().getChild("SkyDome"));
         
         app.stop();
     }
-    
+
     @Ignore
     @Test(timeout = 60*1000)
     public void testUpdate() {
@@ -58,12 +57,10 @@ public class LightingAppStateTest {
         app.start(Type.Headless);
         app.waitFor();
         
-        app.getStateManager().attach(new LightingAppState());
+        app.getStateManager().attach(new SkyDomeAppState());
         app.waitFor();
         
-        //System.out.println(app.getStateManager().getState(LightingAppState.class).getPassedTime());
-        //app.waitFor(31*1000);
-        //System.out.println(app.getStateManager().getState(LightingAppState.class).getPassedTime());
+        //
         
         app.stop();
     }

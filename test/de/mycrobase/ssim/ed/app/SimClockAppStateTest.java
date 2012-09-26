@@ -1,13 +1,12 @@
 package de.mycrobase.ssim.ed.app;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import ssim.sim.SimClock;
 
 import com.jme3.system.JmeContext.Type;
 
@@ -21,53 +20,30 @@ import de.mycrobase.ssim.ed.util.PropertiesLoader;
 import de.mycrobase.ssim.ed.util.XMLLoader;
 
 @Category(Slow.class)
-public class LightingAppStateTest {
+public class SimClockAppStateTest {
 
     @BeforeClass
     public static void setUp() {
         Logging.require();
     }
-    
+
     @Test(timeout = 60*1000)
-    public void testCleanup() {
-        LightingAppState state = new LightingAppState();
-        
+    public void testStep() {
         Helper app = new Helper();
         app.start(Type.Headless);
         app.waitFor();
         
-        app.getStateManager().attach(state);
+        SimClock clock = app.getStateManager().getState(SimClockAppState.class).getSimClock();
+        
+        // clock updates every frame
+        long t0 = clock.secondTime()*1000+clock.getMillis();
         app.waitFor();
-        
-        assertNotNull(app.getStateManager().getState(LightingAppState.class));
-        assertEquals(2, app.getRootNode().getLocalLightList().size());
-        
-        app.getStateManager().detach(state);
-        app.waitFor();
-        
-        assertNull(app.getStateManager().getState(LightingAppState.class));
-        assertEquals(0, app.getRootNode().getLocalLightList().size());
+        long t1 = clock.secondTime()*1000+clock.getMillis();
+        assertTrue(t1 > t0);
         
         app.stop();
     }
-    
-    @Ignore
-    @Test(timeout = 60*1000)
-    public void testUpdate() {
-        Helper app = new Helper();
-        app.start(Type.Headless);
-        app.waitFor();
-        
-        app.getStateManager().attach(new LightingAppState());
-        app.waitFor();
-        
-        //System.out.println(app.getStateManager().getState(LightingAppState.class).getPassedTime());
-        //app.waitFor(31*1000);
-        //System.out.println(app.getStateManager().getState(LightingAppState.class).getPassedTime());
-        
-        app.stop();
-    }
-    
+
     private static class Helper extends SteppedSSimApplication {
         
         @Override
@@ -83,10 +59,10 @@ public class LightingAppStateTest {
             // AppState base layer:
             // these serve as a common base for the higher AppStates
             stateManager.attach(new SimClockAppState(mission));
-            stateManager.attach(new CameraAppState(1000f));
-            stateManager.attach(new WeatherAppState("clear"));
-            stateManager.attach(new SkyAppState(10000f, mission));
-            stateManager.attach(new AerialAppState());
+//            stateManager.attach(new CameraAppState(1000f));
+//            stateManager.attach(new WeatherAppState("clear"));
+//            stateManager.attach(new SkyAppState(10000f, mission));
+//            stateManager.attach(new AerialAppState());
         }
     }
 }

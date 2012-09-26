@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sed:mappings id="test" xmlns:sed="http://mycrobase.de/sed-mapping-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mycrobase.de/sed-mapping-1.0 sed-mapping-1.0.xsd">
+    
+    <map key="A" action="TEST_a" />
+    <map key="B" action="TEST_b" />
+    <map key="NOT_FOUND" action="TEST_notfound" />
+    
+    <map button="LEFT" action="TEST_left" />
+    <map button="NOT_FOUND" action="TEST_notfound" />
+    
+    <map notfound="NOT_FOUND" action="TEST_notfound" />
+    
+</sed:mappings>

@@ -16,12 +16,13 @@ import de.mycrobase.ssim.ed.helper.SteppedSSimApplication;
 import de.mycrobase.ssim.ed.helper.categories.Slow;
 import de.mycrobase.ssim.ed.mission.Mission;
 import de.mycrobase.ssim.ed.mission.MissionParser;
+import de.mycrobase.ssim.ed.sky.SkyGradient;
 import de.mycrobase.ssim.ed.util.MapLoader;
 import de.mycrobase.ssim.ed.util.PropertiesLoader;
 import de.mycrobase.ssim.ed.util.XMLLoader;
 
 @Category(Slow.class)
-public class LightingAppStateTest {
+public class SkyAppStateTest {
 
     @BeforeClass
     public static void setUp() {
@@ -30,23 +31,36 @@ public class LightingAppStateTest {
     
     @Test(timeout = 60*1000)
     public void testCleanup() {
-        LightingAppState state = new LightingAppState();
-        
         Helper app = new Helper();
         app.start(Type.Headless);
         app.waitFor();
         
-        app.getStateManager().attach(state);
+        assertNotNull(app.getStateManager().getState(SkyAppState.class));
+        assertNotNull(app.getRootNode().getChild("SkyNode"));
+        
+        app.getStateManager().detach(app.getStateManager().getState(SkyAppState.class));
         app.waitFor();
         
-        assertNotNull(app.getStateManager().getState(LightingAppState.class));
-        assertEquals(2, app.getRootNode().getLocalLightList().size());
+        assertNull(app.getStateManager().getState(SkyAppState.class));
+        assertNull(app.getRootNode().getChild("SkyNode"));
         
-        app.getStateManager().detach(state);
+        app.stop();
+    }
+    
+    @Test(timeout = 60*1000)
+    public void testAPI() {
+        Helper app = new Helper();
+        app.start(Type.Headless);
         app.waitFor();
         
-        assertNull(app.getStateManager().getState(LightingAppState.class));
-        assertEquals(0, app.getRootNode().getLocalLightList().size());
+        SkyAppState state = app.getStateManager().getState(SkyAppState.class);
+        
+        assertEquals(app.getRootNode().getChild("SkyNode"), state.getSkyNode());
+        assertNotNull(state.getSun());
+        assertNotNull(state.getSkyGradient());
+        assertEquals(10000f, state.getHemisphereRadius(), 1e-4f);
+        assertEquals(SkyGradient.NightThetaMax, state.getNightThetaMax(), 1e-4f);
+        assertEquals(SkyGradient.NightSunColor, state.getNightSunColor());
         
         app.stop();
     }
@@ -54,18 +68,6 @@ public class LightingAppStateTest {
     @Ignore
     @Test(timeout = 60*1000)
     public void testUpdate() {
-        Helper app = new Helper();
-        app.start(Type.Headless);
-        app.waitFor();
-        
-        app.getStateManager().attach(new LightingAppState());
-        app.waitFor();
-        
-        //System.out.println(app.getStateManager().getState(LightingAppState.class).getPassedTime());
-        //app.waitFor(31*1000);
-        //System.out.println(app.getStateManager().getState(LightingAppState.class).getPassedTime());
-        
-        app.stop();
     }
     
     private static class Helper extends SteppedSSimApplication {

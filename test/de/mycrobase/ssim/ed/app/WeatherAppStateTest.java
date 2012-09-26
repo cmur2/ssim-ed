@@ -1,7 +1,6 @@
 package de.mycrobase.ssim.ed.app;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.junit.BeforeClass;
@@ -9,6 +8,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import com.jme3.math.Vector3f;
 import com.jme3.system.JmeContext.Type;
 
 import de.mycrobase.ssim.ed.helper.Logging;
@@ -19,9 +19,10 @@ import de.mycrobase.ssim.ed.mission.MissionParser;
 import de.mycrobase.ssim.ed.util.MapLoader;
 import de.mycrobase.ssim.ed.util.PropertiesLoader;
 import de.mycrobase.ssim.ed.util.XMLLoader;
+import de.mycrobase.ssim.ed.weather.Weather;
 
 @Category(Slow.class)
-public class LightingAppStateTest {
+public class WeatherAppStateTest {
 
     @BeforeClass
     public static void setUp() {
@@ -29,46 +30,28 @@ public class LightingAppStateTest {
     }
     
     @Test(timeout = 60*1000)
-    public void testCleanup() {
-        LightingAppState state = new LightingAppState();
-        
-        Helper app = new Helper();
+    public void testSingleWeather() {
+        HelperSingle app = new HelperSingle();
         app.start(Type.Headless);
         app.waitFor();
         
-        app.getStateManager().attach(state);
-        app.waitFor();
-        
-        assertNotNull(app.getStateManager().getState(LightingAppState.class));
-        assertEquals(2, app.getRootNode().getLocalLightList().size());
-        
-        app.getStateManager().detach(state);
-        app.waitFor();
-        
-        assertNull(app.getStateManager().getState(LightingAppState.class));
-        assertEquals(0, app.getRootNode().getLocalLightList().size());
+        Weather w = app.getStateManager().getState(WeatherAppState.class).getWeather();
+        assertEquals(2f, (float) w.getFloat("air.turbidity"), 1e-4f);
+        assertEquals(new Vector3f(.3f, .3f, .3f), w.getVec3("sky.light"));
+        assertEquals(true, (boolean) w.getBool("sun.lensflare.enabled"));
+        assertEquals(0, (int) w.getInt("precipitation.form"));
+        assertNull(w.getBool("not.found"));
         
         app.stop();
     }
     
     @Ignore
     @Test(timeout = 60*1000)
-    public void testUpdate() {
-        Helper app = new Helper();
-        app.start(Type.Headless);
-        app.waitFor();
-        
-        app.getStateManager().attach(new LightingAppState());
-        app.waitFor();
-        
-        //System.out.println(app.getStateManager().getState(LightingAppState.class).getPassedTime());
-        //app.waitFor(31*1000);
-        //System.out.println(app.getStateManager().getState(LightingAppState.class).getPassedTime());
-        
-        app.stop();
+    public void testMultiWeather() {
+        // TODO: need to control WeatherController
     }
-    
-    private static class Helper extends SteppedSSimApplication {
+
+    private static class HelperSingle extends SteppedSSimApplication {
         
         @Override
         public void simpleInitApp() {
@@ -84,9 +67,9 @@ public class LightingAppStateTest {
             // these serve as a common base for the higher AppStates
             stateManager.attach(new SimClockAppState(mission));
             stateManager.attach(new CameraAppState(1000f));
-            stateManager.attach(new WeatherAppState("clear"));
-            stateManager.attach(new SkyAppState(10000f, mission));
-            stateManager.attach(new AerialAppState());
+            stateManager.attach(new WeatherAppState("test"));
+//            stateManager.attach(new SkyAppState(10000f, mission));
+//            stateManager.attach(new AerialAppState());
         }
     }
 }

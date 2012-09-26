@@ -1,5 +1,6 @@
 package de.mycrobase.ssim.ed.helper;
 
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import com.jme3.app.SimpleApplication;
@@ -14,8 +15,15 @@ public abstract class SteppedSSimApplication extends SimpleApplication implement
     
     private Thread caller;
     
+    private ScheduledExecutorService executor;
+    
     public SteppedSSimApplication() {
         caller = Thread.currentThread();
+    }
+    
+    @Override
+    public void simpleInitApp() {
+        executor = Executors.newScheduledThreadPool(2);
     }
     
     @Override
@@ -26,8 +34,16 @@ public abstract class SteppedSSimApplication extends SimpleApplication implement
     }
 
     @Override
+    public void destroy() {
+        super.destroy();
+        
+        // shutdown all (non daemon) worker pool threads
+        executor.shutdown();
+    }
+
+    @Override
     public ScheduledExecutorService getExecutor() {
-        throw new UnsupportedOperationException();
+        return executor;
     }
     
     @Override

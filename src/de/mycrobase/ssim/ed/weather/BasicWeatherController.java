@@ -48,12 +48,6 @@ public abstract class BasicWeatherController implements WeatherController {
     
     /** {@inheritDoc} */
     @Override
-    public <T> void registerProperty(String key, T value, Class<T> clazz) {
-        entries.put(key, new Entry(key, value, clazz));
-    }
-    
-    /** {@inheritDoc} */
-    @Override
     public <T> void registerInterpolator(WeatherInterpolator interpolator,
             Class<T> clazz) {
         classInterpolators.put(clazz, interpolator);
@@ -80,7 +74,20 @@ public abstract class BasicWeatherController implements WeatherController {
         }
         return classInterpolators.get(entries.get(key).getClazz());
     }
-
+    
+    /**
+     * Registers a new property under the given key with the given initial
+     * value of given type.
+     * 
+     * @param <T> type
+     * @param key the key, e.g. "ocean.temperature"
+     * @param value the initial value
+     * @param clazz the type of the value
+     */
+    protected <T> void registerProperty(String key, T value, Class<T> clazz) {
+        entries.put(key, new Entry(key, value, clazz));
+    }
+    
     /**
      * Sets the raw value of a given property to the given data.
      * 
