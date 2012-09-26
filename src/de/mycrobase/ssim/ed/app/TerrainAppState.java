@@ -115,7 +115,7 @@ public class TerrainAppState extends BasicAppState {
     }
     
     @Override
-    protected void intervalUpdate() {
+    protected void intervalUpdate(float dt) {
         updateFog();
         
         // I don't know why this is necessary because the Material should be

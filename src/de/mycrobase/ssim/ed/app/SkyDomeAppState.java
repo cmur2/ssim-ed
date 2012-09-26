@@ -58,6 +58,11 @@ public class SkyDomeAppState extends BasicAppState {
     }
     
     @Override
+    protected void intervalUpdate(float dt) {
+        skyBoxTexture.update();
+    }
+    
+    @Override
     public void cleanup() {
         super.cleanup();
         
@@ -67,11 +72,6 @@ public class SkyDomeAppState extends BasicAppState {
         
         geom = null;
         skyBoxTexture = null;
-    }
-    
-    @Override
-    protected void intervalUpdate() {
-        skyBoxTexture.update();
     }
     
     private SkyAppState getSkyAppState() {

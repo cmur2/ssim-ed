@@ -51,11 +51,16 @@ public class SkyAppState extends BasicAppState {
         // the delayed update should work
         sun = new Sun(getState(SimClockAppState.class).getSimClock(), mission);
         skyGradient = new SkyGradient(sun);
-        intervalUpdate();
+        updateSky();
         
         getApp().getViewPort().getQueue().setGeometryComparator(Bucket.Sky, new FixedOrderComparator());
         
         skyNode.addControl(new SurfaceCameraControl(getApp().getCamera()));
+    }
+    
+    @Override
+    protected void intervalUpdate(float dt) {
+        updateSky();
     }
     
     @Override
@@ -70,8 +75,7 @@ public class SkyAppState extends BasicAppState {
         skyGradient = null;
     }
     
-    @Override
-    protected void intervalUpdate() {
+    private void updateSky() {
         sun.update();
         skyGradient.setTurbidity(getState(WeatherAppState.class).getWeather().getFloat("air.turbidity"));
         skyGradient.update();

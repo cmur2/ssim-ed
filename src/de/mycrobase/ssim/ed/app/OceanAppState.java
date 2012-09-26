@@ -23,7 +23,7 @@ public class OceanAppState extends BasicAppState {
 
     private static final float GridStep = 400f; // in m
     private static final int GridSize = 64;
-    private static final int NumGridTiles = 13; // should be odd
+    private static final int NumGridTiles = 1; // should be odd
     
     // exists only while AppState is attached
     private PhillipsSpectrum phillipsSpectrum;
@@ -45,7 +45,7 @@ public class OceanAppState extends BasicAppState {
             GridSize, GridSize, GridStep, GridStep,
             phillipsSpectrum, getApp().getExecutor()
         );
-        intervalUpdate();
+        updateOceanParameters();
         ocean.initSim();
         
         oceanNode = new Node("OceanNode");
@@ -95,7 +95,34 @@ public class OceanAppState extends BasicAppState {
     }
     
     @Override
-    protected void intervalUpdate() {
+    protected void intervalUpdate(float dt) {
+        updateOceanParameters();
+    }
+    
+    @Override
+    public void cleanup() {
+        super.cleanup();
+        
+        getApp().getRootNode().detachChild(oceanNode);
+        
+        ocean = null;
+        oceanNode = null;
+    }
+    
+    private Geometry buildOceanTile(OceanSurface ocean, Material mat, Vector3f offset) {
+        Geometry geom = new Geometry("OceanSurface"+offset.toString(), ocean);
+        geom.setMaterial(mat);
+        geom.setLocalTranslation(offset);
+        geom.setLocalScale(1);
+        
+        LodControl lod = new LodControl();
+        lod.setTrisPerPixel(0.7f);
+        geom.addControl(lod);
+        
+        return geom;
+    }
+    
+    private void updateOceanParameters() {
         phillipsSpectrum.setAConstant(getWeather().getFloat("ocean.a-factor"));
         phillipsSpectrum.setSmallWaveCutoff(getWeather().getFloat("ocean.wave-cutoff"));
         ocean.setWaveHeightScale(getWeather().getFloat("ocean.height-scale"));
@@ -120,29 +147,6 @@ public class OceanAppState extends BasicAppState {
         }
         
         vars.release();
-    }
-    
-    @Override
-    public void cleanup() {
-        super.cleanup();
-        
-        getApp().getRootNode().detachChild(oceanNode);
-        
-        ocean = null;
-        oceanNode = null;
-    }
-    
-    private Geometry buildOceanTile(OceanSurface ocean, Material mat, Vector3f offset) {
-        Geometry geom = new Geometry("OceanSurface"+offset.toString(), ocean);
-        geom.setMaterial(mat);
-        geom.setLocalTranslation(offset);
-        geom.setLocalScale(1);
-        
-        LodControl lod = new LodControl();
-        lod.setTrisPerPixel(0.7f);
-        geom.addControl(lod);
-        
-        return geom;
     }
     
     private Weather getWeather() {

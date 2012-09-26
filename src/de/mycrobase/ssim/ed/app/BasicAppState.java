@@ -2,13 +2,11 @@ package de.mycrobase.ssim.ed.app;
 
 import org.apache.log4j.Logger;
 
-
 import com.jme3.app.Application;
-import com.jme3.app.state.AppState;
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
 
-import de.mycrobase.ssim.ed.Main;
 import de.mycrobase.ssim.ed.SSimApplication;
 
 /**
@@ -19,7 +17,7 @@ import de.mycrobase.ssim.ed.SSimApplication;
  * AppStates.
  * 
  * Additionally it implements a basic interval timer for the
- * {@link #update(float)} loop that performs calls to {@link #intervalUpdate()}
+ * {@link #update(float)} loop that performs calls to {@link #intervalUpdate(float)}
  * after the specified {@link #intervalTime} passed.
  * 
  * @author cn
@@ -32,11 +30,11 @@ public class BasicAppState extends AbstractAppState {
     private SSimApplication app;
 
     /**
-     * Time (in seconds) that must pass to execute another {@link #intervalUpdate()}
+     * Time (in seconds) that must pass to execute another {@link #intervalUpdate(float)}
      */
     private float intervalTime;
     /**
-     * Time (in seconds) that is passed since the last {@link #intervalUpdate()}
+     * Time (in seconds) that is passed since the last {@link #intervalUpdate(float)}
      */
     private float passedTime;
 
@@ -66,8 +64,8 @@ public class BasicAppState extends AbstractAppState {
         super.update(dt);
         
         if(passedTime >= intervalTime) {
-            passedTime -= intervalTime;
-            intervalUpdate();
+            intervalUpdate(passedTime);
+            passedTime = 0;
         }
         
         passedTime += dt;
@@ -86,8 +84,10 @@ public class BasicAppState extends AbstractAppState {
      * Method invoked from {@link #update(float)} after a certain
      * ({@link #intervalTime}) amount of time passed.
      * Designed to be overridden. 
+     * 
+     * @param dt time that is passed since last invocation
      */
-    protected void intervalUpdate() {
+    protected void intervalUpdate(float dt) {
     }
     
     protected float getIntervalTime() {

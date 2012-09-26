@@ -27,7 +27,7 @@ public class AerialAppState extends BasicAppState {
     }
     
     @Override
-    protected void intervalUpdate() {
+    protected void intervalUpdate(float dt) {
         TempVars vars = TempVars.get();
         // use sky color from south because it's the place where sun influence is biggest
         float[] color = getState(SkyAppState.class).getSkyGradient().getSkyColor(0,0,-1, vars.float1);

@@ -63,10 +63,15 @@ public class DebugAppState extends BasicAppState {
         
         //buildLightDebugSphere();
         
-        intervalUpdate();
+        updateWindRose();
         
         handler = new InputHandler();
         getApp().getInputManager().addListener(handler, INPUT_MAPPING_SHOW_GRID);
+    }
+
+    @Override
+    protected void intervalUpdate(float dt) {
+        updateWindRose();
     }
     
     @Override
@@ -173,11 +178,6 @@ public class DebugAppState extends BasicAppState {
         rockGeom.rotate(1.6f, 0, 0);
         rockGeom.scale(10f);
         debugNode.attachChild(rockGeom);
-    }
-    
-    @Override
-    protected void intervalUpdate() {
-        updateWindRose();
     }
     
     private void updateWindRose() {

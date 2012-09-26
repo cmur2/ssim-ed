@@ -82,6 +82,12 @@ public class SunAppState extends BasicAppState {
     }
     
     @Override
+    protected void intervalUpdate(float dt) {
+        updateSunTranslation();
+        updateSunTexture();
+    }
+    
+    @Override
     public void cleanup() {
         super.cleanup();
         
@@ -95,18 +101,16 @@ public class SunAppState extends BasicAppState {
         sunTranslation = null;
     }
     
-    @Override
-    protected void intervalUpdate() {
-        updateSunTranslation();
-        sunTexture.setLensflareEnabled(getWeather().getBool("sun.lensflare.enabled"));
-        sunTexture.setLensflareShininess(getWeather().getFloat("sun.lensflare.shininess"));
-        sunTexture.update();
-    }
-    
     private void updateSunTranslation() {
         sunTranslation = getSkyAppState().getSun().getSunPosition(sunTranslation);
         sunTranslation.multLocal(SunDistanceFactor * getSkyAppState().getHemisphereRadius());
         sunTranslationNode.setLocalTranslation(sunTranslation);
+    }
+    
+    private void updateSunTexture() {
+        sunTexture.setLensflareEnabled(getWeather().getBool("sun.lensflare.enabled"));
+        sunTexture.setLensflareShininess(getWeather().getFloat("sun.lensflare.shininess"));
+        sunTexture.update();
     }
     
     private Weather getWeather() {

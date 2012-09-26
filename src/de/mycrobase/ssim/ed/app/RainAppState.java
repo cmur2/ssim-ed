@@ -70,7 +70,7 @@ public class RainAppState extends BasicAppState {
             }
         }
         
-        intervalUpdate();
+        updateRain();
     }
     
     @Override
@@ -96,7 +96,29 @@ public class RainAppState extends BasicAppState {
     }
     
     @Override
-    protected void intervalUpdate() {
+    protected void intervalUpdate(float dt) {
+        updateRain();
+    }
+    
+    @Override
+    public void cleanup() {
+        super.cleanup();
+        
+        getApp().getRootNode().detachChild(rainNode);
+        
+        rain = null;
+        rainNode = null;
+    }
+    
+    private Geometry buildRainTile(RainParticles rain, Material mat, Vector3f offset) {
+        Geometry geom = new Geometry("RainParticles"+offset.toString(), rain);
+        geom.setMaterial(mat);
+        geom.setQueueBucket(Bucket.Transparent);
+        geom.setLocalTranslation(offset);
+        return geom;
+    }
+
+    private void updateRain() {
         PrecipitationType oldType = curType;
         curType = PrecipitationType.fromId(getWeather().getInt("precipitation.form"));
         
@@ -118,24 +140,6 @@ public class RainAppState extends BasicAppState {
             // must have "started" again
             rain.initFirstDrops();
         }
-    }
-    
-    @Override
-    public void cleanup() {
-        super.cleanup();
-        
-        getApp().getRootNode().detachChild(rainNode);
-        
-        rain = null;
-        rainNode = null;
-    }
-    
-    private Geometry buildRainTile(RainParticles rain, Material mat, Vector3f offset) {
-        Geometry geom = new Geometry("RainParticles"+offset.toString(), rain);
-        geom.setMaterial(mat);
-        geom.setQueueBucket(Bucket.Transparent);
-        geom.setLocalTranslation(offset);
-        return geom;
     }
     
     private void updateParticleProperties() {

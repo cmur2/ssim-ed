@@ -43,7 +43,7 @@ public class GuiAppState extends BasicAppState {
     }
     
     @Override
-    protected void intervalUpdate() {
+    protected void intervalUpdate(float dt) {
         updateClockLabel();
         updateSpeedLabel();
     }

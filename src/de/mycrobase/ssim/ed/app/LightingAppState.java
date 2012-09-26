@@ -44,6 +44,12 @@ public class LightingAppState extends BasicAppState {
     }
     
     @Override
+    protected void intervalUpdate(float dt) {
+        updateSunLight();
+        updateEnvLight();
+    }
+    
+    @Override
     public void cleanup() {
         super.cleanup();
         
@@ -52,12 +58,6 @@ public class LightingAppState extends BasicAppState {
         
         sunLight = null;
         envLight = null;
-    }
-    
-    @Override
-    protected void intervalUpdate() {
-        updateSunLight();
-        updateEnvLight();
     }
     
     private void updateSunLight() {

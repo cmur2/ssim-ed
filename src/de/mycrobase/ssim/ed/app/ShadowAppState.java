@@ -39,7 +39,7 @@ public class ShadowAppState extends BasicAppState {
     }
     
     @Override
-    protected void intervalUpdate() {
+    protected void intervalUpdate(float dt) {
         updateShadows();
     }
     

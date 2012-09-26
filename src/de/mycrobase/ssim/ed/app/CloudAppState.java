@@ -91,9 +91,14 @@ public class CloudAppState extends BasicAppState {
         
         // update before attaching since all SceneProcessors are initialized
         // then (and the CP requires some variables set)
-        intervalUpdate();
+        updateCloudParameters(0f);
         
         getSkyAppState().getSkyNode().attachChild(geom);
+    }
+    
+    @Override
+    protected void intervalUpdate(float dt) {
+        updateCloudParameters(dt);
     }
     
     @Override
@@ -109,8 +114,7 @@ public class CloudAppState extends BasicAppState {
         geom = null;
     }
     
-    @Override
-    protected void intervalUpdate() {
+    private void updateCloudParameters(float dt) {
         cloudProcessor.setCloudCover(getWeather().getFloat("cloud.cover"));
         cloudProcessor.setCloudSharpness(getWeather().getFloat("cloud.sharpness"));
         cloudProcessor.setWayFactor(getWeather().getFloat("cloud.way-factor"));
@@ -167,7 +171,7 @@ public class CloudAppState extends BasicAppState {
             // derive a shift from the windVelo, z component is 1.0 to reflect
             // the change over time
             Vector3f cloudShiftAdd = vars.vect2.set(windVelo.x, -windVelo.z, 1f);
-            cloudShiftAdd.multLocal(UpdateInterval);
+            cloudShiftAdd.multLocal(dt);
             cloudShiftAdd.multLocal(ShiftScale.x, ShiftScale.x, ShiftScale.y);
             cloudShift.addLocal(cloudShiftAdd);
         }

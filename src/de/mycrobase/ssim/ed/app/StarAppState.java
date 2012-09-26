@@ -50,7 +50,12 @@ public class StarAppState extends BasicAppState {
         
         getSkyNode().attachChild(geom);
 
-        intervalUpdate();
+        updateStars();
+    }
+    
+    @Override
+    protected void intervalUpdate(float dt) {
+        updateStars();
     }
     
     @Override
@@ -64,8 +69,7 @@ public class StarAppState extends BasicAppState {
         geom = null;
     }
     
-    @Override
-    protected void intervalUpdate() {
+    private void updateStars() {
         sunAngles = getState(SkyAppState.class).getSun().getSunAngles(sunAngles);
         float thetaDeg = (float) Math.toDegrees(sunAngles.y);
         if(thetaDeg > StarsThetaMin) {
