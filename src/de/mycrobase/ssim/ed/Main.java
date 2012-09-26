@@ -60,7 +60,7 @@ import de.mycrobase.ssim.ed.util.XMLLoader;
 import de.mycrobase.ssim.ed.util.lang.TListener;
 import de.mycrobase.ssim.ed.util.lang.XmlTranslation;
 
-public class Main extends SimpleApplication implements GameModeListener {
+public class Main extends SimpleApplication implements GameModeListener, SSimApplication {
     
     private static final Logger logger = Logger.getLogger(Main.class);
     private static final float UpdateInterval = 5f; // in seconds
