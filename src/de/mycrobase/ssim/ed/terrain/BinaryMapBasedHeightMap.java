@@ -10,6 +10,7 @@ public class BinaryMapBasedHeightMap implements HeightMap {
     private static final float DefaultY = -100f; // in m
     
     private BinaryMap map;
+    private Elevator elevator;
     private int offsetx;
     private int offsetz;
     private int quadSize;
@@ -31,6 +32,8 @@ public class BinaryMapBasedHeightMap implements HeightMap {
         this.offsetz = (int) offset.z;
         this.quadSize = quadSize;
         this.sampleDistance = sampleDistance;
+        
+        elevator = new Elevator(map, DefaultY);
     }
     
     /** {@inheritDoc} */
@@ -125,7 +128,7 @@ public class BinaryMapBasedHeightMap implements HeightMap {
             for(int x = 0; x < quadSize; x++) {
                 int iz = offsetz * (quadSize-1) + z;
                 int ix = offsetx * (quadSize-1) + x;
-                data[x + z*quadSize] = getElevation(iz, ix);
+                data[x + z*quadSize] = elevator.getElevation(iz, ix);
             }
         }
         return data;
@@ -140,39 +143,9 @@ public class BinaryMapBasedHeightMap implements HeightMap {
                 // scale sample point coordinates by sampleDist, divide elevation
                 // by sampleDist to allow uniform scale of whole geometry by
                 // sampleDist
-                data[x + z*quadSize] = getElevation(iz*sampleDist, ix*sampleDist)/sampleDist;
+                data[x + z*quadSize] = elevator.getElevation(iz*sampleDist, ix*sampleDist)/sampleDist;
             }
         }
         return data;
-    }
-    
-    private float getElevation(float z, float x) {
-        int x0 = (int) (x / map.weDiff);
-        int z0 = (int) (z / map.nsDiff);
-        int x1 = x0 + 1;
-        int z1 = z0 + 1;
-        // y00 --- y01
-        //  |       |
-        // y10 --- y11
-        float y00 = getElevation(z0, x0);
-        float y01 = getElevation(z0, x1);
-        float y10 = getElevation(z1, x0);
-        float y11 = getElevation(z1, x1);
-        float r1 = MathExt.frac(x / (float) map.weDiff);
-        float r2 = MathExt.frac(z / (float) map.nsDiff);
-        double y1 = MathExt.interpolateLinear(y00, y01, r1);
-        double y2 = MathExt.interpolateLinear(y10, y11, r1);
-        return (float) MathExt.interpolateLinear(y1, y2, r2);
-//        double y1 = MathExt.interpolateCosine(y00, y01, r1);
-//        double y2 = MathExt.interpolateCosine(y10, y11, r1);
-//        return (float) MathExt.interpolateCosine(y1, y2, r2);
-    }
-    
-    private float getElevation(int iz, int ix) {
-        if(iz >= 0 && ix >= 0 && iz < map.nsNum && ix < map.weNum) {
-            return map.elevs[iz][ix];
-        } else {
-            return DefaultY;
-        }
     }
 }
