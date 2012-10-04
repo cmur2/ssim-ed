@@ -38,7 +38,7 @@ public class MissionParserTest {
         assertEquals(1f, m.getLongitude(), 1e-4f);
         assertEquals(23, m.getDayOfYear());
         assertEquals(8.00f, m.getTimeOfDay(), 1e-4f);
-        assertEquals("Test.map", m.getMapFile());
+        assertEquals("Te10d100.map", m.getMapFile());
     }
 
     @Test
