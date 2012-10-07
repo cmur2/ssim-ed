@@ -19,9 +19,9 @@ public class Elevator {
         int z0 = (int) Math.floor(gridz);
         int x1 = x0 + 1;
         int z1 = z0 + 1;
+        // y00 --- y01    pos-z goes south (same as jME Terrain)
+        //  |       |     pos-x goes east  (same as jME Terrain)
         // y10 --- y11
-        //  |       |
-        // y00 --- y01
         float y00 = getElevation(z0, x0);
         float y01 = getElevation(z0, x1);
         float y10 = getElevation(z1, x0);

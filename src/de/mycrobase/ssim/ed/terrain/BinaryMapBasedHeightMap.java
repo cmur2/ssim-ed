@@ -1,7 +1,5 @@
 package de.mycrobase.ssim.ed.terrain;
 
-import ssim.util.MathExt;
-
 import com.jme3.math.Vector3f;
 import com.jme3.terrain.heightmap.HeightMap;
 
@@ -121,20 +119,27 @@ public class BinaryMapBasedHeightMap implements HeightMap {
         heightMap = null;
     }
     
-    /** Unused */
-    private float[] generateHeightMap() {
-        float[] data = new float[quadSize*quadSize];
-        for(int z = 0; z < quadSize; z++) {
-            for(int x = 0; x < quadSize; x++) {
-                int iz = offsetz * (quadSize-1) + z;
-                int ix = offsetx * (quadSize-1) + x;
-                data[x + z*quadSize] = elevator.getElevation(iz, ix);
-            }
-        }
-        return data;
-    }
+//    private float[] generateHeightMap() {
+//        float[] data = new float[quadSize*quadSize];
+//        for(int z = 0; z < quadSize; z++) {
+//            for(int x = 0; x < quadSize; x++) {
+//                int iz = offsetz * (quadSize-1) + z;
+//                int ix = offsetx * (quadSize-1) + x;
+//                data[x + z*quadSize] = elevator.getElevation(iz, ix);
+//            }
+//        }
+//        return data;
+//    }
     
     private float[] generateHeightMapSampled(float sampleDist) {
+        // the dimension of ap data a quad provides in real units:
+        float quadDim = (quadSize-1)*sampleDist; // in m
+        // calculate offset to sampling coordinates since we want (0,0,0) to be
+        // in south-west corner of the map but jME Terrain and our Elevator
+        // have the origin in the north-west corner minus one quad:
+        float oz = (map.nsNum-1) * (float) map.nsDiff - quadDim; // in m
+        float ox = 0f - quadDim; // in m
+        
         float[] data = new float[quadSize*quadSize];
         for(int z = 0; z < quadSize; z++) {
             for(int x = 0; x < quadSize; x++) {
@@ -143,7 +148,9 @@ public class BinaryMapBasedHeightMap implements HeightMap {
                 // scale sample point coordinates by sampleDist, divide elevation
                 // by sampleDist to allow uniform scale of whole geometry by
                 // sampleDist
-                data[x + z*quadSize] = elevator.getElevation(iz*sampleDist, ix*sampleDist)/sampleDist;
+                data[x + z*quadSize] = 
+                    elevator.getElevation(iz*sampleDist + oz, ix*sampleDist + ox) /
+                    sampleDist;
             }
         }
         return data;
