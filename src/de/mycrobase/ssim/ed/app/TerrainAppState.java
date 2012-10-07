@@ -24,7 +24,7 @@ public class TerrainAppState extends BasicAppState {
     
     private static final float UpdateInterval = 10f; // in seconds
     
-    private static final int PatchSize = 128 + 1;
+    private static final int PatchSize = 32 + 1;
     private static final int MaxVisibleSize = 4 * (PatchSize-1) + 1;
     private static final float LODMultiplier = 2.7f;
     
@@ -96,7 +96,7 @@ public class TerrainAppState extends BasicAppState {
         // Pass fog parameters into shader necessary for Fog.glsllib
         updateFog();
 
-        final float sampleDistance = (float) (map.weDiff + map.nsNum)/2f * 0.5f;
+        final float sampleDistance = (float) (map.weDiff + map.nsDiff)/2f * 0.5f;
         
         TerrainGridTileLoader loader = new BinaryMapTileLoader(map, sampleDistance);
         
