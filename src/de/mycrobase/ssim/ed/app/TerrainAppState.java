@@ -24,7 +24,7 @@ public class TerrainAppState extends BasicAppState {
     
     private static final float UpdateInterval = 10f; // in seconds
     
-    private static final int PatchSize = 32 + 1;
+    private static final int PatchSize = 128 + 1;
     private static final int MaxVisibleSize = 4 * (PatchSize-1) + 1;
     private static final float LODMultiplier = 2.7f;
     
