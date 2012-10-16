@@ -1,12 +1,12 @@
 package de.mycrobase.ssim.ed.app;
 
+import org.apache.log4j.Logger;
+
 import ssim.util.MathExt;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Spatial;
 import com.jme3.shadow.PssmShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer.FilterMode;
 
@@ -15,12 +15,15 @@ import de.mycrobase.ssim.ed.weather.Weather;
 
 public class ShadowAppState extends BasicAppState {
 
+    private static final Logger logger = Logger.getLogger(ShadowAppState.class);
+    
     private static final float UpdateInterval = 30f; // in seconds
-    private static final int TexSize = 1024;
-    private static final int NumSplits = 3;
     
     // exists only while AppState is attached
     private PssmShadowRenderer pssm;
+    
+    private int texSize;
+    private int numSplits;
     
     public ShadowAppState() {
         super(UpdateInterval);
@@ -30,7 +33,12 @@ public class ShadowAppState extends BasicAppState {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        pssm = new PssmShadowRenderer(getApp().getAssetManager(), TexSize, NumSplits);
+        evalSettings();
+        
+        logger.info(String.format("Shadow map texture size: %d", texSize));
+        logger.info(String.format("Number of shadow maps: %d", numSplits));
+        
+        pssm = new PssmShadowRenderer(getApp().getAssetManager(), texSize, numSplits);
         // dithering is cooool :)
         pssm.setFilterMode(FilterMode.Dither);
         updateShadows();
@@ -68,6 +76,24 @@ public class ShadowAppState extends BasicAppState {
         pssm.setShadowIntensity(MathExt.clamp01(baseIntensity));
         
         vars.release();
+    }
+    
+    private void evalSettings() {
+        int detailLevel = getApp().getSettingsManager().getInteger("engine.detail.level");
+        switch(detailLevel) {
+            case 0: {
+                texSize = 256; numSplits = 1;
+                break;
+            }
+            case 1: {
+                texSize = 512; numSplits = 2;
+                break;
+            }
+            case 2: {
+                texSize = 1024; numSplits = 3;
+                break;
+            }
+        }
     }
     
     private Weather getWeather() {

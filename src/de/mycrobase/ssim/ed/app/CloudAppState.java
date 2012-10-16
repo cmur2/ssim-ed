@@ -30,6 +30,7 @@ import de.mycrobase.ssim.ed.weather.Weather;
 public class CloudAppState extends BasicAppState {
     
     private static final Logger logger = Logger.getLogger(CloudAppState.class);
+    
     private static final float UpdateInterval = 10f; // in seconds
     private static final boolean UseGPU = true;
     
@@ -60,6 +61,8 @@ public class CloudAppState extends BasicAppState {
         super.initialize(stateManager, baseApp);
         
         evalSettings();
+        
+        logger.info(String.format("Cloud texture size: %d", texSize));
         
         if(UseGPU) {
             cloudProcessor = new GPUCloudProcessor(getApp().getAssetManager(),
