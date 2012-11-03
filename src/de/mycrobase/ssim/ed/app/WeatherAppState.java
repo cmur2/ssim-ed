@@ -8,6 +8,7 @@ import com.jme3.math.Vector3f;
 
 import de.mycrobase.ssim.ed.weather.Weather;
 import de.mycrobase.ssim.ed.weather.WeatherController;
+import de.mycrobase.ssim.ed.weather.ext.AlternateWeatherController;
 import de.mycrobase.ssim.ed.weather.ext.Interpolators;
 import de.mycrobase.ssim.ed.weather.ext.PropertySet;
 import de.mycrobase.ssim.ed.weather.ext.RandomWeatherController;
@@ -55,7 +56,7 @@ public class WeatherAppState extends BasicAppState {
         
         // TODO: add air temperature and maybe air pressure
         
-        weatherController = new RandomWeatherController(5 * 60f, ps);
+        weatherController = new AlternateWeatherController(5 * 60f, ps);
         weatherController.registerInterpolator(new Interpolators.FloatInterpolator(), Float.class);
         weatherController.registerInterpolator(new Interpolators.DiscreteValueInterpolator(), Boolean.class);
         weatherController.registerInterpolator(new Interpolators.Vec3Interpolator(), Vector3f.class);
