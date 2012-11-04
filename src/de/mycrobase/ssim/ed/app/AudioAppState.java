@@ -6,6 +6,7 @@ import com.jme3.audio.AudioNode;
 import com.jme3.scene.Node;
 
 import de.mycrobase.ssim.ed.weather.Weather;
+import de.mycrobase.ssim.ed.weather.ext.PrecipitationType;
 
 public class AudioAppState extends BasicAppState {
 
@@ -14,7 +15,8 @@ public class AudioAppState extends BasicAppState {
     // exists only while AppState is attached
     private Node envAudio;
     private AudioNode wind;
-    private AudioNode rain;
+    private AudioNode rainMedium;
+    private AudioNode rainHeavy;
     
     public AudioAppState() {
         super(UpdateInterval);
@@ -31,14 +33,13 @@ public class AudioAppState extends BasicAppState {
 //        wind.setLooping(true);
 //        wind.setPositional(false);
 //        envAudio.attachChild(wind);
-//        
-//        rain = new AudioNode(getApp().getAssetManager(), "audio/rain-heavy-01.wav", false);
-//        rain.setLooping(true);
-//        rain.setPositional(false);
-//        envAudio.attachChild(rain);
-//        
-//        rain.play();
-//        wind.play();
+//        updateWind();
+        
+        rainMedium = loadEnvSound("audio/rain-medium.ogg");
+        rainHeavy = loadEnvSound("audio/rain-heavy.ogg");
+        envAudio.attachChild(rainMedium);
+        envAudio.attachChild(rainHeavy);
+        updateRain();
     }
     
     @Override
@@ -52,7 +53,8 @@ public class AudioAppState extends BasicAppState {
     
     @Override
     protected void intervalUpdate(float dt) {
-//        wind.setVolume(getWeather().getFloat("wind.strength")/10f);
+        updateWind();
+        updateRain();
     }
     
     @Override
@@ -61,8 +63,40 @@ public class AudioAppState extends BasicAppState {
         
         wind = null;
     }
-    
+
     private Weather getWeather() {
         return getState(WeatherAppState.class).getWeather();
+    }
+    
+    private void updateWind() {
+        //wind.setVolume(getWeather().getFloat("wind.strength")/10f);
+    }
+    
+    private void updateRain() {
+        PrecipitationType curType = 
+            PrecipitationType.fromId(getWeather().getInt("precipitation.form"));
+        float intensity = getWeather().getFloat("precipitation.intensity");
+        
+        if(curType == PrecipitationType.Rain) {
+            if(intensity >= 0.75f) {
+                rainMedium.stop();
+                rainHeavy.play();
+            } else {
+                rainHeavy.stop();
+                rainMedium.play();
+            }
+        } else {
+            // one of those is currently playing
+            rainMedium.stop();
+            rainHeavy.stop();
+        }
+    }
+    
+    private AudioNode loadEnvSound(String file) {
+        AudioNode a = new AudioNode(
+            getApp().getAssetManager(), file, false);
+        a.setLooping(true);
+        a.setPositional(false);
+        return a;
     }
 }
