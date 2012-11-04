@@ -78,7 +78,21 @@
                         </control>
                     </panel>
                     
+                    <!-- music_volume slider -->
+                    <panel height="10%" width="90%" align="center" childLayout="horizontal">
+                        <text text="${CALL.translate(opt.music_volume)}" font="Interface/Fonts/Default.fnt" valign="center" />
+                        <panel width="20px" />
+                        <control id="opt_music_volume_slider" name="horizontalSlider" valign="center">
+                        </control>
+                    </panel>
                     
+                    <!-- effect_volume slider -->
+                    <panel height="10%" width="90%" align="center" childLayout="horizontal">
+                        <text text="${CALL.translate(opt.effect_volume)}" font="Interface/Fonts/Default.fnt" valign="center" />
+                        <panel width="20px" />
+                        <control id="opt_effect_volume_slider" name="horizontalSlider" valign="center">
+                        </control>
+                    </panel>
                 </panel>
             </panel>
             

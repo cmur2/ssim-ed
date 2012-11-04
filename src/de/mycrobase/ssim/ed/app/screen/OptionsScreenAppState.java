@@ -12,6 +12,8 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
+import ssim.util.MathExt;
+
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 
@@ -21,6 +23,8 @@ import de.lessvoid.nifty.controls.CheckBox;
 import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
 import de.lessvoid.nifty.controls.DropDown;
 import de.lessvoid.nifty.controls.DropDownSelectionChangedEvent;
+import de.lessvoid.nifty.controls.Slider;
+import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.input.NiftyInputEvent;
 import de.lessvoid.nifty.screen.KeyInputHandler;
@@ -42,6 +46,8 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
     private CheckBox fullscreenCheckBox;
     private CheckBox vsyncCheckBox;
     private DropDown<InternalDataListModel> detailLevelDropDown;
+    private Slider musicVolumeSlider;
+    private Slider effectVolumeSlider;
     private Element applyPopup;
     
     // needed by Nifty
@@ -86,6 +92,18 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         detailLevelDropDown = getScreen().findNiftyControl("opt_detaillevel_dropdown", DropDown.class);
         detailLevelDropDown.addAllItems(loadDetailLevelList());
         
+        musicVolumeSlider = getScreen().findNiftyControl("opt_music_volume_slider", Slider.class);
+        musicVolumeSlider.setMin(0f);
+        musicVolumeSlider.setMax(1f);
+        musicVolumeSlider.setStepSize(0.01f);
+        musicVolumeSlider.setButtonStepSize(0.05f);
+        
+        effectVolumeSlider = getScreen().findNiftyControl("opt_effect_volume_slider", Slider.class);
+        effectVolumeSlider.setMin(0f);
+        effectVolumeSlider.setMax(1f);
+        effectVolumeSlider.setStepSize(0.01f);
+        effectVolumeSlider.setButtonStepSize(0.05f);
+        
         applyPopup = getNifty().createPopup("popupApply");
     }
     
@@ -101,6 +119,9 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
         vsyncCheckBox.setChecked(getApp().getSettingsManager().getBoolean("display.vsync"));
         
         selectItemBySetting(detailLevelDropDown, "engine.detail.level");
+        
+        musicVolumeSlider.setValue(getApp().getSettingsManager().getFloat("sound.music.volume"));
+        effectVolumeSlider.setValue(getApp().getSettingsManager().getFloat("sound.effect.volume"));
     }
     
     @Override
@@ -150,6 +171,16 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
     public void onDetailLevelDropDownSelectionChanged(String id, DropDownSelectionChangedEvent<String> event) {
         String detailLevelSetting = detailLevelDropDown.getSelection().getInternalData();
         changedSettings.put("engine.detail.level", detailLevelSetting);
+    }
+    
+    @NiftyEventSubscriber(id="opt_music_volume_slider")
+    public void onMusicVolumeSliderChanged(String id, SliderChangedEvent event) {
+        changedSettings.put("sound.music.volume", musicVolumeSlider.getValue());
+    }
+    
+    @NiftyEventSubscriber(id="opt_effect_volume_slider")
+    public void onEffectVolumeSliderChanged(String id, SliderChangedEvent event) {
+        changedSettings.put("sound.effect.volume", effectVolumeSlider.getValue());
     }
     
     @Override
@@ -302,6 +333,14 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
                     continue;
                 }
                 getApp().getSettingsManager().setBoolean(key, b);
+            } else if(value instanceof Float) {
+                Float f = (Float) value;
+                if(MathExt.epsilonEquals(f, getApp().getSettingsManager().getFloat(key), 1e-4f)) {
+                    logger.debug(String.format(
+                        "Skipping unchanged value %s on property %s", f, key));
+                    continue;
+                }
+                getApp().getSettingsManager().setFloat(key, f);
             }
         }
         getApp().getSettingsManager().flush();

@@ -28,6 +28,8 @@
             <vsync>VSync:</vsync>
             <fullscreen>Vollbild:</fullscreen>
             <detaillevel>Details:</detaillevel>
+            <music_volume>Musik:</music_volume>
+            <effect_volume>Effekte:</effect_volume>
         </opt>
         <low>Gering</low>
         <medium>Mittel</medium>
