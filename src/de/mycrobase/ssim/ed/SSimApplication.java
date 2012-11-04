@@ -4,6 +4,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioRenderer;
+import com.jme3.audio.Listener;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
 import com.jme3.renderer.Camera;
@@ -24,6 +25,7 @@ public interface SSimApplication {
     public Node getRootNode();
     public InputManager getInputManager();
     public AudioRenderer getAudioRenderer();
+    public Listener getListener();
     public void stop();
     
     public ScheduledExecutorService getExecutor();

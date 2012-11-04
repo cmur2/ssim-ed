@@ -25,6 +25,7 @@ import com.jme3.system.AppSettings;
 import de.altimos.util.logger.JLFBridge;
 import de.altimos.util.translator.Translator;
 import de.mycrobase.ssim.ed.app.AerialAppState;
+import de.mycrobase.ssim.ed.app.AudioAppState;
 import de.mycrobase.ssim.ed.app.CameraAppState;
 import de.mycrobase.ssim.ed.app.CloudAppState;
 import de.mycrobase.ssim.ed.app.DebugAppState;
@@ -300,10 +301,11 @@ public class Main extends SimpleApplication implements GameModeListener, SSimApp
         gameAppStates.add(new ShadowAppState());
         gameAppStates.add(new StarAppState());
         gameAppStates.add(new CloudAppState());
-        //gameAppStates.add(new TerrainAppState(mission));
+        gameAppStates.add(new TerrainAppState(mission));
         gameAppStates.add(new OceanAppState());
         gameAppStates.add(new RainAppState());
         gameAppStates.add(new GuiAppState());
+        gameAppStates.add(new AudioAppState());
         gameAppStates.add(new DebugAppState());
         
         for(AppState state : gameAppStates) {
