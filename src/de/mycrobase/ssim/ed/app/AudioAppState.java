@@ -42,6 +42,8 @@ public class AudioAppState extends BasicAppState {
         updateRain();
     }
     
+    // TODO: pause active sounds on GameMode.Paused?
+    
     @Override
     public void update(float dt) {
         super.update(dt);
@@ -61,7 +63,16 @@ public class AudioAppState extends BasicAppState {
     public void cleanup() {
         super.cleanup();
         
+        getApp().getRootNode().detachChild(envAudio);
+        
+//        wind.stop();
+        rainMedium.stop();
+        rainHeavy.stop();
+        
+        envAudio = null;
         wind = null;
+        rainMedium = null;
+        rainHeavy = null;
     }
 
     private Weather getWeather() {
