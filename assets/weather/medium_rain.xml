@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sed:weather id="heavy_rain" xmlns:sed="http://mycrobase.de/sed-weather-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mycrobase.de/sed-weather-1.0 sed-weather-1.0.xsd">
+    <air>
+        <turbidity>3.0</turbidity>
+    </air>
+    <sky>
+        <light>(0.25, 0.25, 0.25)</light>
+    </sky>
+    <sun>
+        <lensflare>
+            <enabled>false</enabled>
+            <shininess>0.95</shininess>
+        </lensflare>
+    </sun>
+    <ocean>
+        <a-factor>0.001</a-factor>
+        <wave-cutoff>1.0</wave-cutoff>
+        <height-scale>0.1</height-scale>
+        <choppiness>0.05</choppiness>
+    </ocean>
+    <cloud>
+        <cover>75</cover>
+        <sharpness>0.96</sharpness>
+        <way-factor>0.005</way-factor>
+    </cloud>
+    <precipitation>
+        <form>1</form>
+        <intensity>0.5</intensity>
+    </precipitation>
+    <wind>
+        <!-- from south -->
+        <direction>90</direction>
+        <strength>15</strength>
+    </wind>
+</sed:weather>
