@@ -20,16 +20,18 @@ public class RainParticles extends Mesh {
     
     private static final float DeviationScale = 0.075f;
     
-    private int numDrops;
+    private int maxNumDrops;
     private float size;
     private Random random;
     
     private FloatBuffer positionBuffer;
     private FloatBuffer colorBuffer;
+    private FloatBuffer tcBuffer;
     private Vector3f[] velocities;
     
     private VertexBuffer positionVBO;
     private VertexBuffer colorVBO;
+    private VertexBuffer tcVBO;
     
     private float dropLength;
     private float dropLengthVar;
@@ -44,13 +46,17 @@ public class RainParticles extends Mesh {
     
     private Vector3f windVelocity;
     
-    public RainParticles(int numDrops, float size) {
-        this.numDrops = numDrops;
+    public RainParticles(int maxNumDrops, float size) {
+        this.maxNumDrops = maxNumDrops;
         this.size = size;
         
         random = new Random();
         
         initGeometry();
+    }
+    
+    public int getMaxNumDrops() {
+        return maxNumDrops;
     }
     
     public float getDropLength() {
@@ -136,7 +142,7 @@ public class RainParticles extends Mesh {
     public void initFirstDrops() {
         TempVars vars = TempVars.get();
         
-        for(int i = 0; i < numDrops; i++) {
+        for(int i = 0; i < maxNumDrops; i++) {
             Vector3f dir = getVaryingDirection(vars.vect1);
             // position (upper end)
             float x = random.nextFloat() * size;
@@ -151,6 +157,9 @@ public class RainParticles extends Mesh {
             ColorRGBA c = getVaryingColor(vars.color1);
             colorBuffer.put(c.r).put(c.g).put(c.b).put(c.a);
             colorBuffer.put(c.r).put(c.g).put(c.b).put(c.a);
+            // texture coordinate (one component, used as drop ID in shader)
+            float relId = (float) i/maxNumDrops;
+            tcBuffer.put(relId).put(relId);
             // velocity (no shader parameter, only used on CPU)
             // This needs new Vector3f instance since velocities[i] might be
             // uninitialized.
@@ -158,18 +167,20 @@ public class RainParticles extends Mesh {
         }
         positionBuffer.rewind();
         colorBuffer.rewind();
+        tcBuffer.rewind();
         
         vars.release();
         
         positionVBO.updateData(positionBuffer);
         colorVBO.updateData(colorBuffer);
+        tcVBO.updateData(tcBuffer);
     }
     
     public void update(float dt) {
         TempVars vars = TempVars.get();
         
         int n = 0;
-        for(int i = 0; i < numDrops; i++) {
+        for(int i = 0; i < maxNumDrops; i++) {
             // get y from second drop position (lower end)
             float curY = positionBuffer.get((i*2+1)*3 + 1);
             // reinitialize drop if it's below minY
@@ -225,11 +236,12 @@ public class RainParticles extends Mesh {
     
     private void initGeometry() {
         // vertex data
-        positionBuffer = BufferUtils.createFloatBuffer(numDrops * 2 * 3);
-        colorBuffer = BufferUtils.createFloatBuffer(numDrops * 2 * 4);
+        positionBuffer = BufferUtils.createFloatBuffer(maxNumDrops * 2 * 3);
+        colorBuffer = BufferUtils.createFloatBuffer(maxNumDrops * 2 * 4);
+        tcBuffer = BufferUtils.createFloatBuffer(maxNumDrops * 2 * 1);
         
         // CPU only data
-        velocities = new Vector3f[numDrops];
+        velocities = new Vector3f[maxNumDrops];
         
         positionVBO = new VertexBuffer(Type.Position);
         positionVBO.setupData(Usage.Stream, 3, Format.Float, positionBuffer);
@@ -238,6 +250,10 @@ public class RainParticles extends Mesh {
         colorVBO = new VertexBuffer(Type.Color);
         colorVBO.setupData(Usage.Stream, 4, Format.Float, colorBuffer);
         setBuffer(colorVBO);
+        
+        tcVBO = new VertexBuffer(Type.TexCoord);
+        tcVBO.setupData(Usage.Static, 1, Format.Float, tcBuffer);
+        setBuffer(tcVBO);
         
         setMode(Mode.Lines);
         

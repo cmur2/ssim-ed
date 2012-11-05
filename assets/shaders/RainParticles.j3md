@@ -1,5 +1,6 @@
 MaterialDef RainParticles {
     MaterialParameters {
+        Float RelIdLimit
     }
     Technique {
         LightMode MultiPass

@@ -25,6 +25,8 @@ public class RainAppState extends BasicAppState {
     private static final float GridStep = 100f; // in m
     private static final int NumGridTiles = 5; // should be odd
     
+    private static final int MaxDropNum = 200;
+    
     // range in which the particles will follow the camera
     private static final float RainLowerY = 0f; // in m
     private static final float RainUpperY = 500f; // in m
@@ -32,6 +34,7 @@ public class RainAppState extends BasicAppState {
     // exists only while AppState is attached
     private Node rainNode;
     private RainParticles rain;
+    private Material rainMaterial;
     
     private PrecipitationType curType;
     private Vector3f windVelocity;
@@ -46,8 +49,7 @@ public class RainAppState extends BasicAppState {
         
         curType = PrecipitationType.None;
         
-        // TODO: precipitation.intensity should influence numDrops
-        rain = new RainParticles(200, GridStep);
+        rain = new RainParticles(MaxDropNum, GridStep);
         rain.setMinY( -50f);
         rain.setMaxY(+200f);
         rain.setInitY(+400f);
@@ -58,15 +60,15 @@ public class RainAppState extends BasicAppState {
         // enlarged virtual bounds in RainParticles:
         //rainNode.setCullHint(CullHint.Never);
         
-        Material rainMat = new Material(getApp().getAssetManager(), "shaders/RainParticles.j3md");
-        rainMat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+        rainMaterial = new Material(getApp().getAssetManager(), "shaders/RainParticles.j3md");
+        rainMaterial.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
         
         final int numGridTilesHalf = NumGridTiles/2;
         for(int ix = -numGridTilesHalf; ix <= +numGridTilesHalf; ix++) {
             for(int iz = -numGridTilesHalf; iz <= +numGridTilesHalf; iz++) {
                 Vector3f offset = new Vector3f(ix,0,iz);
                 offset.multLocal(GridStep);
-                rainNode.attachChild(buildRainTile(rain, rainMat, offset));
+                rainNode.attachChild(buildRainTile(rain, rainMaterial, offset));
             }
         }
         
@@ -145,6 +147,8 @@ public class RainAppState extends BasicAppState {
     private void updateParticleProperties() {
         float intensity = getWeather().getFloat("precipitation.intensity");
         
+        setVisibleDropNum((int) (MaxDropNum * intensity));
+        
         switch(curType) {
         case None: {
             rain.setDropLength(0);
@@ -200,6 +204,17 @@ public class RainAppState extends BasicAppState {
         windVelocity.negateLocal();
         windVelocity.multLocal(strength*0.514f); // in m/s
         rain.setWindVelocity(windVelocity);
+    }
+    
+    /**
+     * Instructs the RainParticles shader to show only the first dropNum rain
+     * drops and skip rendering the rest.
+     * 
+     * @param dropNum number of drops to show
+     */
+    private void setVisibleDropNum(int dropNum) {
+        System.out.println(dropNum);
+        rainMaterial.setFloat("RelIdLimit", (float) dropNum/rain.getMaxNumDrops());
     }
     
     private Weather getWeather() {
