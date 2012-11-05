@@ -62,12 +62,12 @@ public class AudioAppState extends BasicAppState {
     @Override
     public void cleanup() {
         super.cleanup();
-        
-        getApp().getRootNode().detachChild(envAudio);
-        
+
 //        wind.stop();
         rainMedium.stop();
         rainHeavy.stop();
+      
+        getApp().getRootNode().detachChild(envAudio);
         
         envAudio = null;
         wind = null;
@@ -81,9 +81,13 @@ public class AudioAppState extends BasicAppState {
     
     private void updateWind() {
         //wind.setVolume(getWeather().getFloat("wind.strength")/10f);
+        //wind.setVolume(getApp().getSettingsManager().getFloat("sound.effect.volume"));
     }
     
     private void updateRain() {
+        rainMedium.setVolume(getApp().getSettingsManager().getFloat("sound.effect.volume"));
+        rainHeavy.setVolume(getApp().getSettingsManager().getFloat("sound.effect.volume"));
+        
         PrecipitationType curType = 
             PrecipitationType.fromId(getWeather().getInt("precipitation.form"));
         float intensity = getWeather().getFloat("precipitation.intensity");
