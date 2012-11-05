@@ -18,8 +18,6 @@ import com.jme3.math.Vector3f;
  */
 public class XMLPropertySetBuilder {
     
-    // TODO: how to test jME dependent classes?
-    
     private static final Pattern patVec3 = Pattern.compile("^\\((.+),(.+),(.+)\\)$");
     private static final Pattern patIntArray = Pattern.compile("^\\[(.*)\\]$");
     
