@@ -36,7 +36,7 @@ public class RandomWeatherController extends BasicWeatherController {
         logger.debug("New weather: "+next.getName());
         
         for(PropertySet.Entry e : current) {
-            registerProperty(e.getKey(), e.getValue(), e.getClazz());
+            state.put(e.getKey(), e.getValue(), e.getClazz());
         }
     }
     
@@ -51,7 +51,7 @@ public class RandomWeatherController extends BasicWeatherController {
         
         float ratio = time/intervalTime;
         
-        for(PropertySet.Entry e : current) {
+        for(PropertySet.Entry e : state) {
             String key = e.getKey();
             WeatherInterpolator wi = getInterpolator(key);
             if(wi == null) {
@@ -59,7 +59,7 @@ public class RandomWeatherController extends BasicWeatherController {
             }
             
             Object res = wi.interpolate(current.get(key), next.get(key), ratio);
-            setProperty(key, res);
+            state.set(key, res);
         }
         
         time += dt;
@@ -67,11 +67,5 @@ public class RandomWeatherController extends BasicWeatherController {
     
     private PropertySet selectRandom() {
         return sets[random.nextInt(sets.length)];
-    }
-    
-    private void apply(PropertySet ps) {
-        for(PropertySet.Entry e : ps) {
-            setProperty(e.getKey(), e.getValue());
-        }
     }
 }

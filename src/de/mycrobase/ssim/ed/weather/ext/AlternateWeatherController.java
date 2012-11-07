@@ -28,7 +28,7 @@ public class AlternateWeatherController extends BasicWeatherController {
         logger.debug("New weather: "+sets[next].getName());
         
         for(PropertySet.Entry e : sets[current]) {
-            registerProperty(e.getKey(), e.getValue(), e.getClazz());
+            state.put(e.getKey(), e.getValue(), e.getClazz());
         }
     }
     
@@ -45,7 +45,7 @@ public class AlternateWeatherController extends BasicWeatherController {
         
         float ratio = time/intervalTime;
         
-        for(PropertySet.Entry e : sets[current]) {
+        for(PropertySet.Entry e : state) {
             String key = e.getKey();
             WeatherInterpolator wi = getInterpolator(key);
             if(wi == null) {
@@ -53,7 +53,8 @@ public class AlternateWeatherController extends BasicWeatherController {
             }
             
             Object res = wi.interpolate(sets[current].get(key), sets[next].get(key), ratio);
-            setProperty(key, res);
+            
+            state.set(key, res);
         }
         
         time += dt;

@@ -14,7 +14,7 @@ public class StaticWeatherController extends BasicWeatherController {
     @SuppressWarnings("unchecked")
     public StaticWeatherController(PropertySet init) {
         for(PropertySet.Entry e : init) {
-            registerProperty(e.getKey(), e.getValue(), e.getClazz());
+            state.put(e.getKey(), e.getValue(), e.getClazz());
         }
     }
     
@@ -22,5 +22,4 @@ public class StaticWeatherController extends BasicWeatherController {
     public void update(float dt) {
         // do nothing since we're static
     }
-    
 }
