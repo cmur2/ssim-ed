@@ -3,6 +3,7 @@ package de.mycrobase.ssim.ed.weather.ext;
 import org.apache.log4j.Logger;
 
 import de.mycrobase.ssim.ed.weather.BasicWeatherController;
+import de.mycrobase.ssim.ed.weather.PropertySet;
 import de.mycrobase.ssim.ed.weather.WeatherInterpolator;
 
 public class AlternateWeatherController extends BasicWeatherController {

@@ -9,6 +9,8 @@ import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 
+import de.mycrobase.ssim.ed.weather.PropertySet;
+
 /**
  * Builder for a {@link PropertySet} that accept it's specification via
  * {@link XMLPropertySetBuilder#putFloat(String)} etc and reads the concrete values

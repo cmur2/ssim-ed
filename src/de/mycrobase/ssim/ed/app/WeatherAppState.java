@@ -1,17 +1,15 @@
 package de.mycrobase.ssim.ed.app;
 
-
 import com.jme3.app.Application;
 import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Vector3f;
 
+import de.mycrobase.ssim.ed.weather.PropertySet;
 import de.mycrobase.ssim.ed.weather.Weather;
 import de.mycrobase.ssim.ed.weather.WeatherController;
 import de.mycrobase.ssim.ed.weather.ext.AlternateWeatherController;
 import de.mycrobase.ssim.ed.weather.ext.Interpolators;
-import de.mycrobase.ssim.ed.weather.ext.PropertySet;
-import de.mycrobase.ssim.ed.weather.ext.RandomWeatherController;
 import de.mycrobase.ssim.ed.weather.ext.WindInterpolator;
 import de.mycrobase.ssim.ed.weather.ext.XMLPropertySetBuilder;
 
@@ -50,11 +48,12 @@ public class WeatherAppState extends BasicAppState {
         builder.putFloat("cloud.way-factor");
         builder.putInt("precipitation.form");
         builder.putFloat("precipitation.intensity");
+        // TODO: should be treated separately, maybe feeded with offsets/weights from weather description
         builder.putFloat("wind.direction");
         builder.putFloat("wind.strength");
+        //builder.putFloat("air.temperature");
+        //builder.putFloat("air.pressure");
         PropertySet[] ps = builder.getResults();
-        
-        // TODO: add air temperature and maybe air pressure
         
         weatherController = new AlternateWeatherController(5 * 60f, ps);
         weatherController.registerInterpolator(new Interpolators.FloatInterpolator(), Float.class);

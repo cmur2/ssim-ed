@@ -5,6 +5,7 @@ import java.util.Random;
 import org.apache.log4j.Logger;
 
 import de.mycrobase.ssim.ed.weather.BasicWeatherController;
+import de.mycrobase.ssim.ed.weather.PropertySet;
 import de.mycrobase.ssim.ed.weather.WeatherInterpolator;
 
 /**

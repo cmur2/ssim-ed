@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.jme3.math.Vector3f;
 
-import de.mycrobase.ssim.ed.weather.ext.PropertySet;
 
 public abstract class BasicWeatherController implements WeatherController {
     

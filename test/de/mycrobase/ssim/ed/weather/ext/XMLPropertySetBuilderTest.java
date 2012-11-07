@@ -16,6 +16,7 @@ import de.mycrobase.ssim.ed.helper.categories.Fast;
 import de.mycrobase.ssim.ed.util.MapLoader;
 import de.mycrobase.ssim.ed.util.PropertiesLoader;
 import de.mycrobase.ssim.ed.util.XMLLoader;
+import de.mycrobase.ssim.ed.weather.PropertySet;
 
 @Category(Fast.class)
 public class XMLPropertySetBuilderTest {
