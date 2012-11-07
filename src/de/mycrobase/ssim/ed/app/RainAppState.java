@@ -213,7 +213,6 @@ public class RainAppState extends BasicAppState {
      * @param dropNum number of drops to show
      */
     private void setVisibleDropNum(int dropNum) {
-        System.out.println(dropNum);
         rainMaterial.setFloat("RelIdLimit", (float) dropNum/rain.getMaxNumDrops());
     }
     
