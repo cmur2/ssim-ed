@@ -8,10 +8,10 @@ import de.mycrobase.ssim.ed.weather.WeatherProperty;
 public class EnumWeatherProperty implements WeatherProperty {
     
     private String key;
-    private Class type;
+    private Class<?> type;
     private Map<String, Object> values = new HashMap<String, Object>();
     
-    public EnumWeatherProperty(String key, Class type) {
+    public EnumWeatherProperty(String key, Class<?> type) {
         this.key = key;
         this.type = type;
     }
@@ -27,7 +27,7 @@ public class EnumWeatherProperty implements WeatherProperty {
     }
     
     @Override
-    public Class getType() {
+    public Class<?> getType() {
         return type;
     }
     

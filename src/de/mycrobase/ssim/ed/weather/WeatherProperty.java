@@ -4,5 +4,5 @@ public interface WeatherProperty {
     
     public String getKey();
     public Object getValue(String weather);
-    public Class getType();
+    public Class<?> getType();
 }

@@ -1,6 +1,7 @@
 package de.mycrobase.ssim.ed.weather.ext;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,7 +17,6 @@ import de.mycrobase.ssim.ed.helper.categories.Fast;
 import de.mycrobase.ssim.ed.util.MapLoader;
 import de.mycrobase.ssim.ed.util.PropertiesLoader;
 import de.mycrobase.ssim.ed.util.XMLLoader;
-import de.mycrobase.ssim.ed.weather.PropertySet;
 import de.mycrobase.ssim.ed.weather.WeatherProperty;
 
 @Category(Fast.class)

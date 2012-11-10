@@ -50,24 +50,19 @@ public class XMLPropertySetBuilder {
         }
     }
     
-    public void put(String key, Class type, WeatherPropertyGenerator gen) {
+    public void put(String key, Class<?> type, WeatherPropertyGenerator gen) {
         GeneratedWeatherProperty p = new GeneratedWeatherProperty(key, type, gen);
-        if(type == Float.class) {
-            putFloat(p, key);
-        } else if(type == Vector3f.class) {
-            putVec3(p, key);
-        } else if(type == Integer.class) {
-            putInt(p, key);
-        } else if(type == Integer[].class) {
-            putIntArray(p, key);
-        } else if(type == Boolean.class) {
-            putBool(p, key);
-        }
+        put(p, key, type);
         properties.add(p);
     }
     
-    public void put(String key, Class type) {
+    public void put(String key, Class<?> type) {
         EnumWeatherProperty p = new EnumWeatherProperty(key, type);
+        put(p, key, type);
+        properties.add(p);
+    }
+    
+    private void put(EnumWeatherProperty p, String key, Class<?> type) {
         if(type == Float.class) {
             putFloat(p, key);
         } else if(type == Vector3f.class) {
@@ -79,7 +74,6 @@ public class XMLPropertySetBuilder {
         } else if(type == Boolean.class) {
             putBool(p, key);
         }
-        properties.add(p);
     }
     
     private void putFloat(EnumWeatherProperty p, String key) {
@@ -174,6 +168,7 @@ public class XMLPropertySetBuilder {
         return cur.getText();
     }
     
+    @SuppressWarnings("serial")
     public static class ParseException extends RuntimeException {
 
         public ParseException() {

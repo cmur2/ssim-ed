@@ -6,7 +6,7 @@ public class GeneratedWeatherProperty extends EnumWeatherProperty {
 
     private WeatherPropertyGenerator generator;
     
-    public GeneratedWeatherProperty(String key, Class type, WeatherPropertyGenerator gen) {
+    public GeneratedWeatherProperty(String key, Class<?> type, WeatherPropertyGenerator gen) {
         super(key, type);
         this.generator = gen;
     }

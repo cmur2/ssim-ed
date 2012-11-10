@@ -34,7 +34,7 @@ public class PropertySet implements Iterable<PropertySet.Entry> {
      * @param value the initial value
      * @param clazz the type of the value
      */
-    public void put(String key, Object value, Class clazz) {
+    public void put(String key, Object value, Class<?> clazz) {
         entries.put(key, new Entry(key, value, clazz));
     }
     
@@ -105,14 +105,13 @@ public class PropertySet implements Iterable<PropertySet.Entry> {
         return entries.values().iterator();
     }
     
-    @SuppressWarnings("rawtypes")
     public static class Entry {
 
         private String key;
         private Object value;
-        private Class clazz;
+        private Class<?> clazz;
         
-        public Entry(String key, Object value, Class clazz) {
+        public Entry(String key, Object value, Class<?> clazz) {
             this.key = key;
             this.value = value;
             this.clazz = clazz;
@@ -130,7 +129,7 @@ public class PropertySet implements Iterable<PropertySet.Entry> {
             this.value = value;
         }
 
-        public Class getClazz() {
+        public Class<?> getClazz() {
             return clazz;
         }
     }
