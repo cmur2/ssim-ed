@@ -8,14 +8,14 @@ import de.mycrobase.ssim.ed.weather.WeatherControllerTestBase;
 import de.mycrobase.ssim.ed.weather.WeatherProperty;
 
 @Category(Fast.class)
-public class StaticWeatherControllerTest extends WeatherControllerTestBase {
+public class RandomWeatherControllerTest extends WeatherControllerTestBase {
     
-    public StaticWeatherControllerTest() {
+    public RandomWeatherControllerTest() {
     }
     
     @Override
     protected WeatherController create(String weather, WeatherProperty[] properties) {
-        return new StaticWeatherController(weather, properties);
+        return new RandomWeatherController(1f, new String[] {weather}, properties);
     }
     
 }

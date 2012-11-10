@@ -3,6 +3,7 @@ package de.mycrobase.ssim.ed.weather.ext;
 import de.mycrobase.ssim.ed.weather.BasicWeatherController;
 import de.mycrobase.ssim.ed.weather.PropertySet;
 import de.mycrobase.ssim.ed.weather.WeatherController;
+import de.mycrobase.ssim.ed.weather.WeatherProperty;
 
 /**
  * The simplest {@link WeatherController} controller possible. It just
@@ -12,10 +13,9 @@ import de.mycrobase.ssim.ed.weather.WeatherController;
  */
 public class StaticWeatherController extends BasicWeatherController {
 
-    @SuppressWarnings("unchecked")
-    public StaticWeatherController(PropertySet init) {
-        for(PropertySet.Entry e : init) {
-            state.put(e.getKey(), e.getValue(), e.getClazz());
+    public StaticWeatherController(String weatherName, WeatherProperty[] properties) {
+        for(WeatherProperty p : properties) {
+            state.put(p.getKey(), p.getValue(weatherName), p.getType());
         }
     }
     
