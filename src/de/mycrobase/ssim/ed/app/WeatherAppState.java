@@ -8,7 +8,9 @@ import com.jme3.math.Vector3f;
 import de.mycrobase.ssim.ed.weather.PropertySet;
 import de.mycrobase.ssim.ed.weather.Weather;
 import de.mycrobase.ssim.ed.weather.WeatherController;
+import de.mycrobase.ssim.ed.weather.WeatherProperty;
 import de.mycrobase.ssim.ed.weather.ext.AlternateWeatherController;
+import de.mycrobase.ssim.ed.weather.ext.Generators;
 import de.mycrobase.ssim.ed.weather.ext.Interpolators;
 import de.mycrobase.ssim.ed.weather.ext.WindInterpolator;
 import de.mycrobase.ssim.ed.weather.ext.XMLPropertySetBuilder;
@@ -21,41 +23,39 @@ import de.mycrobase.ssim.ed.weather.ext.XMLPropertySetBuilder;
  */
 public class WeatherAppState extends BasicAppState {
     
-    private String[] sets;
+    private String[] setNames;
     
     // exists only while AppState is attached
     private WeatherController weatherController;
     
-    public WeatherAppState(String... sets) {
-        this.sets = sets;
+    public WeatherAppState(String... setNames) {
+        this.setNames = setNames;
     }
     
     @Override
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
 
-        XMLPropertySetBuilder builder = new XMLPropertySetBuilder(getApp().getAssetManager(), sets);
-        builder.putFloat("air.turbidity");
-        builder.putVec3("sky.light");
-        builder.putBool("sun.lensflare.enabled");
-        builder.putFloat("sun.lensflare.shininess");
-        builder.putFloat("ocean.a-factor");
-        builder.putFloat("ocean.wave-cutoff");
-        builder.putFloat("ocean.height-scale");
-        builder.putFloat("ocean.choppiness");
-        builder.putFloat("cloud.cover");
-        builder.putFloat("cloud.sharpness");
-        builder.putFloat("cloud.way-factor");
-        builder.putInt("precipitation.form");
-        builder.putFloat("precipitation.intensity");
-        // TODO: should be treated separately, maybe feeded with offsets/weights from weather description
-        builder.putFloat("wind.direction");
-        builder.putFloat("wind.strength");
-        //builder.putFloat("air.temperature");
-        //builder.putFloat("air.pressure");
-        PropertySet[] ps = builder.getResults();
+        XMLPropertySetBuilder builder = new XMLPropertySetBuilder(getApp().getAssetManager(), setNames);
+        builder.put("air.turbidity", Float.class);
+        //builder.put("air.temperature", Float.class, new Generators.RandomFloatGenerator());
+        //builder.put("air.pressure", Float.class, new Generators.RandomFloatGenerator());
+        builder.put("sky.light", Vector3f.class);
+        builder.put("sun.lensflare.enabled", Boolean.class);
+        builder.put("sun.lensflare.shininess", Float.class);
+        builder.put("ocean.a-factor", Float.class);
+        builder.put("ocean.wave-cutoff", Float.class);
+        builder.put("ocean.height-scale", Float.class);
+        builder.put("ocean.choppiness", Float.class);
+        builder.put("cloud.cover", Float.class);
+        builder.put("cloud.sharpness", Float.class);
+        builder.put("cloud.way-factor", Float.class);
+        builder.put("precipitation.form", Integer.class);
+        builder.put("precipitation.intensity", Float.class);
+        builder.put("wind.direction", Float.class, new Generators.RandomFloatGenerator(0f, 360f));
+        builder.put("wind.strength", Float.class, new Generators.RandomFloatGenerator(0f, 20f));
         
-        weatherController = new AlternateWeatherController(5 * 60f, ps);
+        weatherController = new AlternateWeatherController(5 * 60f, builder.getWeatherNames(), builder.getProperties());
         weatherController.registerInterpolator(new Interpolators.FloatInterpolator(), Float.class);
         weatherController.registerInterpolator(new Interpolators.DiscreteValueInterpolator(), Boolean.class);
         weatherController.registerInterpolator(new Interpolators.Vec3Interpolator(), Vector3f.class);

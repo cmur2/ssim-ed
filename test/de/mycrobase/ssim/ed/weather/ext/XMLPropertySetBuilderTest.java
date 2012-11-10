@@ -17,6 +17,7 @@ import de.mycrobase.ssim.ed.util.MapLoader;
 import de.mycrobase.ssim.ed.util.PropertiesLoader;
 import de.mycrobase.ssim.ed.util.XMLLoader;
 import de.mycrobase.ssim.ed.weather.PropertySet;
+import de.mycrobase.ssim.ed.weather.WeatherProperty;
 
 @Category(Fast.class)
 public class XMLPropertySetBuilderTest {
@@ -36,18 +37,15 @@ public class XMLPropertySetBuilderTest {
         registerWeatherXML("testResults2", "");
         
         XMLPropertySetBuilder builder = new XMLPropertySetBuilder(app.getAssetManager());
-        assertNull(builder.getResult());
-        assertEquals(0, builder.getResults().length);
+        assertEquals(0, builder.getWeatherNames().length);
         
         XMLPropertySetBuilder builder1 = new XMLPropertySetBuilder(app.getAssetManager(), "testResults1");
-        assertNotNull(builder1.getResult());
-        assertNotNull(builder1.getResult(0));
-        assertEquals(1, builder1.getResults().length);
+        assertEquals(0, builder1.getProperties().length);
+        assertEquals(1, builder1.getWeatherNames().length);
         
         XMLPropertySetBuilder builder12 = new XMLPropertySetBuilder(app.getAssetManager(), "testResults1", "testResults2");
-        assertNotNull(builder12.getResult(0));
-        assertNotNull(builder12.getResult(1));
-        assertEquals(2, builder12.getResults().length);
+        assertEquals(0, builder1.getProperties().length);
+        assertEquals(2, builder12.getWeatherNames().length);
     }
     
     @Test
@@ -64,19 +62,20 @@ public class XMLPropertySetBuilderTest {
             "<ia>[100,101,102]</ia>"
         );
         XMLPropertySetBuilder builder = new XMLPropertySetBuilder(app.getAssetManager(), "testLoad");
-        builder.putInt("i");
-        builder.putFloat("f");
-        builder.putVec3("v");
-        builder.putBool("b");
-        builder.putIntArray("ia");
-        PropertySet set = builder.getResults()[0];
+        builder.put("i", Integer.class);
+        builder.put("f", Float.class);
+        builder.put("v", Vector3f.class);
+        builder.put("b", Boolean.class);
+        builder.put("ia", Integer[].class);
         
-        assertEquals(42, (int) (Integer) set.get("i"));
-        assertEquals(23.0f, (float) (Float) set.get("f"), 1e-4f);
-        assertEquals(new Vector3f(1,2,3), set.get("v"));
-        assertTrue((Boolean)set.get("b"));
-        assertEquals(101, (int) ((Integer[]) set.get("ia"))[1]);
-        assertNull(set.get("not.found"));
+        assertEquals("testLoad", builder.getWeatherNames()[0]);
+        
+        WeatherProperty[] properties = builder.getProperties();
+        assertEquals(42, (int) (Integer) properties[0].getValue("testLoad"));
+        assertEquals(23.0f, (float) (Float) properties[1].getValue("testLoad"), 1e-4f);
+        assertEquals(new Vector3f(1,2,3), properties[2].getValue("testLoad"));
+        assertTrue((Boolean) properties[3].getValue("testLoad"));
+        assertEquals(101, (int) ((Integer[]) properties[4].getValue("testLoad"))[1]);
     }
 
     @Test(expected = XMLPropertySetBuilder.ParseException.class)
@@ -87,7 +86,7 @@ public class XMLPropertySetBuilderTest {
         
         registerWeatherXML("testFloatParse", "");
         XMLPropertySetBuilder builder = new XMLPropertySetBuilder(app.getAssetManager(), "testFloatParse");
-        builder.putFloat("not.found");
+        builder.put("not.found", Float.class);
     }
 
     @Test(expected = XMLPropertySetBuilder.ParseException.class)
@@ -98,7 +97,7 @@ public class XMLPropertySetBuilderTest {
         
         registerWeatherXML("testVec3Parse", "");
         XMLPropertySetBuilder builder = new XMLPropertySetBuilder(app.getAssetManager(), "testVec3Parse");
-        builder.putFloat("not.found");
+        builder.put("not.found", Vector3f.class);
     }
 
     @Test(expected = XMLPropertySetBuilder.ParseException.class)
@@ -109,7 +108,7 @@ public class XMLPropertySetBuilderTest {
         
         registerWeatherXML("testIntParse", "");
         XMLPropertySetBuilder builder = new XMLPropertySetBuilder(app.getAssetManager(), "testIntParse");
-        builder.putFloat("not.found");
+        builder.put("not.found", Integer.class);
     }
 
     @Test(expected = XMLPropertySetBuilder.ParseException.class)
@@ -120,7 +119,7 @@ public class XMLPropertySetBuilderTest {
         
         registerWeatherXML("testIntArrayParse", "");
         XMLPropertySetBuilder builder = new XMLPropertySetBuilder(app.getAssetManager(), "testIntArrayParse");
-        builder.putFloat("not.found");
+        builder.put("not.found", Integer[].class);
     }
 
     @Test(expected = XMLPropertySetBuilder.ParseException.class)
@@ -131,7 +130,7 @@ public class XMLPropertySetBuilderTest {
         
         registerWeatherXML("testBoolParse", "");
         XMLPropertySetBuilder builder = new XMLPropertySetBuilder(app.getAssetManager(), "testBoolParse");
-        builder.putFloat("not.found");
+        builder.put("not.found", Boolean.class);
     }
     
     private static void registerWeatherXML(String name, String body) {

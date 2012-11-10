@@ -1,8 +1,10 @@
 package de.mycrobase.ssim.ed.weather.ext;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
 import org.jdom.Element;
 
 import com.jme3.asset.AssetKey;
@@ -10,6 +12,8 @@ import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 
 import de.mycrobase.ssim.ed.weather.PropertySet;
+import de.mycrobase.ssim.ed.weather.WeatherProperty;
+import de.mycrobase.ssim.ed.weather.WeatherPropertyGenerator;
 
 /**
  * Builder for a {@link PropertySet} that accept it's specification via
@@ -20,63 +24,105 @@ import de.mycrobase.ssim.ed.weather.PropertySet;
  */
 public class XMLPropertySetBuilder {
     
+    private static final Logger logger = Logger.getLogger(XMLPropertySetBuilder.class);
+    
     private static final Pattern patVec3 = Pattern.compile("^\\((.+),(.+),(.+)\\)$");
     private static final Pattern patIntArray = Pattern.compile("^\\[(.*)\\]$");
     
     private Element[] weatherXml;
-    private PropertySet[] result;
+    private String[] weatherNames;
+    private ArrayList<WeatherProperty> properties;
     
-    public XMLPropertySetBuilder(AssetManager mgr, String... names) {
-        weatherXml = new Element[names.length];
-        result = new PropertySet[names.length];
-        for(int i = 0; i < names.length; i++) {
-            weatherXml[i] = mgr.loadAsset(new AssetKey<Element>(String.format("weather/%s.xml", names[i])));
-            String name = weatherXml[i].getAttribute("id").getValue();
-            result[i] = new PropertySet(name);
-        }
-    }
-    
-    public void putFloat(String key) {
-        for(int i = 0; i < weatherXml.length; i++) {
-            String data = getXMLText(i, key).trim();
-            try {
-                result[i].put(key, (Float) Float.valueOf(data), Float.class);
-            } catch(NumberFormatException ex) {
-                throw new ParseException(String.format(
-                    "Property %s in %s: parsing failed", key, result[i].getName()), ex); 
+    public XMLPropertySetBuilder(AssetManager mgr, String... setNames) {
+        weatherXml = new Element[setNames.length];
+        weatherNames = new String[setNames.length];
+        properties = new ArrayList<WeatherProperty>();
+        for(int i = 0; i < setNames.length; i++) {
+            weatherXml[i] = mgr.loadAsset(new AssetKey<Element>(String.format("weather/%s.xml", setNames[i])));
+            weatherNames[i] = weatherXml[i].getAttribute("id").getValue();
+            
+            // file should be named like included weather
+            if(!setNames[i].equals(weatherNames[i])) {
+                logger.warn(String.format(
+                    "Filename and weather name does not match: weather/%s.xml -> %s",
+                    setNames[i], weatherNames[i]));
             }
         }
     }
     
-    public void putVec3(String key) {
+    public void put(String key, Class type, WeatherPropertyGenerator gen) {
+        GeneratedWeatherProperty p = new GeneratedWeatherProperty(key, type, gen);
+        if(type == Float.class) {
+            putFloat(p, key);
+        } else if(type == Vector3f.class) {
+            putVec3(p, key);
+        } else if(type == Integer.class) {
+            putInt(p, key);
+        } else if(type == Integer[].class) {
+            putIntArray(p, key);
+        } else if(type == Boolean.class) {
+            putBool(p, key);
+        }
+        properties.add(p);
+    }
+    
+    public void put(String key, Class type) {
+        EnumWeatherProperty p = new EnumWeatherProperty(key, type);
+        if(type == Float.class) {
+            putFloat(p, key);
+        } else if(type == Vector3f.class) {
+            putVec3(p, key);
+        } else if(type == Integer.class) {
+            putInt(p, key);
+        } else if(type == Integer[].class) {
+            putIntArray(p, key);
+        } else if(type == Boolean.class) {
+            putBool(p, key);
+        }
+        properties.add(p);
+    }
+    
+    private void putFloat(EnumWeatherProperty p, String key) {
+        for(int i = 0; i < weatherXml.length; i++) {
+            String data = getXMLText(i, key).trim();
+            try {
+                p.put(weatherNames[i], Float.valueOf(data));
+            } catch(NumberFormatException ex) {
+                throw new ParseException(String.format(
+                    "Property %s in %s: parsing failed", key, weatherNames[i]), ex); 
+            }
+        }
+    }
+    
+    private void putVec3(EnumWeatherProperty p, String key) {
         for(int i = 0; i < weatherXml.length; i++) {
             String data = getXMLText(i, key).trim();
             Matcher m = patVec3.matcher(data);
             if(m.matches()) {
-                result[i].put(key, new Vector3f(
+                p.put(weatherNames[i], new Vector3f(
                     Float.parseFloat(m.group(1).trim()),
                     Float.parseFloat(m.group(2).trim()),
-                    Float.parseFloat(m.group(3).trim())), Vector3f.class);
+                    Float.parseFloat(m.group(3).trim())));
             } else {
                 throw new ParseException(String.format(
-                    "Property %s in %s: not a Vector3f", key, result[i].getName()));
+                    "Property %s in %s: not a Vector3f", key, weatherNames[i]));
             }
         }
     }
     
-    public void putInt(String key) {
+    private void putInt(EnumWeatherProperty p, String key) {
         for(int i = 0; i < weatherXml.length; i++) {
             String data = getXMLText(i, key).trim();
             try {
-                result[i].put(key, (Integer) Integer.valueOf(data, 10), Integer.class);
+                p.put(weatherNames[i], Integer.valueOf(data, 10));
             } catch(NumberFormatException ex) {
                 throw new ParseException(String.format(
-                    "Property %s in %s: parsing failed", key, result[i].getName()), ex);
+                    "Property %s in %s: parsing failed", key, weatherNames[i]), ex);
             }
         }
     }
     
-    public void putIntArray(String key) {
+    private void putIntArray(EnumWeatherProperty p, String key) {
         for(int i = 0; i < weatherXml.length; i++) {
             String data = getXMLText(i, key).trim();
             Matcher m = patIntArray.matcher(data);
@@ -86,36 +132,32 @@ public class XMLPropertySetBuilder {
                 for(int j = 0; j < array.length; j++) {
                     intArray[j] = Integer.parseInt(array[j].trim(), 10);
                 }
-                result[i].put(key, intArray, Integer[].class);
+                p.put(weatherNames[i], intArray);
             } else {
                 throw new ParseException(String.format(
-                    "Property %s in %s: not an Integer[]", key, result[i].getName()));
+                    "Property %s in %s: not an Integer[]", key, weatherNames[i]));
             }
         }
     }
     
-    public void putBool(String key) {
+    private void putBool(EnumWeatherProperty p, String key) {
         for(int i = 0; i < weatherXml.length; i++) {
             String data = getXMLText(i, key).trim();
             try {
-                result[i].put(key, (Boolean) Boolean.valueOf(data), Boolean.class);
+                p.put(weatherNames[i], Boolean.valueOf(data));
             } catch(NumberFormatException ex) {
                 throw new ParseException(String.format(
-                    "Property %s in %s: parsing failed", key, result[i].getName()), ex); 
+                    "Property %s in %s: parsing failed", key, weatherNames[i]), ex); 
             }
         }
     }
     
-    public PropertySet getResult() {
-        return result.length == 0 ? null : result[0];
+    public String[] getWeatherNames() {
+        return weatherNames;
     }
     
-    public PropertySet getResult(int idx) {
-        return result[idx];
-    }
-    
-    public PropertySet[] getResults() {
-        return result;
+    public WeatherProperty[] getProperties() {
+        return properties.toArray(new WeatherProperty[0]);
     }
     
     private String getXMLText(int idx, String key) {
@@ -126,7 +168,7 @@ public class XMLPropertySetBuilder {
             cur = cur.getChild(parts[i]);
             if(cur == null) {
                 throw new ParseException(String.format(
-                    "Property %s in %s: no XML data not found!", key, result[i].getName()));
+                    "Property %s in %s: no XML data not found!", key, weatherNames[i]));
             }
         }
         return cur.getText();
