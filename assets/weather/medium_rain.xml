@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sed:weather id="heavy_rain" xmlns:sed="http://mycrobase.de/sed-weather-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mycrobase.de/sed-weather-1.0 sed-weather-1.0.xsd">
+<sed:weather id="medium_rain" xmlns:sed="http://mycrobase.de/sed-weather-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mycrobase.de/sed-weather-1.0 sed-weather-1.0.xsd">
     <air>
         <turbidity>3.0</turbidity>
     </air>
