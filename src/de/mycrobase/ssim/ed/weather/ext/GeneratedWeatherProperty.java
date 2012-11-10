@@ -13,7 +13,7 @@ public class GeneratedWeatherProperty extends EnumWeatherProperty {
     
     @Override
     public Object getValue(String weather) {
-        Object valueFromConf = super.getValue(weather);
+        //Object enumValue = super.getValue(weather);
         // ignore it for now
         return generator.generate();
     }

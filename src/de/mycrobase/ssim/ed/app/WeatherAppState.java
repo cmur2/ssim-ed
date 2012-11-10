@@ -50,8 +50,12 @@ public class WeatherAppState extends BasicAppState {
         builder.put("cloud.way-factor", Float.class);
         builder.put("precipitation.form", Integer.class);
         builder.put("precipitation.intensity", Float.class);
-        builder.put("wind.direction", Float.class, new Generators.RandomFloatGenerator(0f, 360f));
-        builder.put("wind.strength", Float.class, new Generators.RandomFloatGenerator(0f, 20f));
+        // Allow wind to come from 0 (incl) to 360 degree (excl)
+        builder.put("wind.direction", Float.class,
+            new Generators.RandomFloatGenerator(0f, 360f));
+        // Allow wind speed up to 30 kn (knots), near gale
+        builder.put("wind.strength", Float.class,
+            new Generators.RandomFloatGenerator(0f, 30f));
         
         weatherController = new AlternateWeatherController(5 * 60f, builder.getWeatherNames(), builder.getProperties());
         weatherController.registerInterpolator(new Interpolators.FloatInterpolator(), Float.class);

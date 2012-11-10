@@ -81,24 +81,25 @@
     	<xs:sequence>
     		<xs:element name="direction">
                 <xs:annotation>
-                	<xs:documentation>Specifies the direction from which the wind is coming i.e. source direction in degrees.</xs:documentation>
+                	<xs:documentation>(Completely generated property!) Specifies the direction from which the wind is coming i.e. source direction in degrees.</xs:documentation>
                 </xs:annotation>
                 <xs:simpleType>
-    				<xs:restriction base="xs:float">
-    					<xs:minInclusive value="0"></xs:minInclusive>
-    					<xs:maxInclusive value="359"></xs:maxInclusive>
-    				</xs:restriction>
-    			</xs:simpleType>
+                	<xs:restriction base="xs:float">
+                		<xs:minInclusive value="-1"></xs:minInclusive>
+                		<xs:maxInclusive value="-1"></xs:maxInclusive>
+                	</xs:restriction>
+                </xs:simpleType>
     		</xs:element>
     		<xs:element name="strength">
                 <xs:annotation>
-                	<xs:documentation>Specifies the strength of the wind in kn (knots).</xs:documentation>
+                	<xs:documentation>(Completely generated property!) Specifies the strength of the wind in kn (knots).</xs:documentation>
                 </xs:annotation>
                 <xs:simpleType>
-    				<xs:restriction base="xs:float">
-    					<xs:minInclusive value="0"></xs:minInclusive>
-    				</xs:restriction>
-    			</xs:simpleType>
+                	<xs:restriction base="xs:float">
+                		<xs:minInclusive value="-1"></xs:minInclusive>
+                		<xs:maxInclusive value="-1"></xs:maxInclusive>
+                	</xs:restriction>
+                </xs:simpleType>
     		</xs:element>
     	</xs:sequence>
     </xs:complexType>

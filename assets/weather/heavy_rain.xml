@@ -28,8 +28,7 @@
         <intensity>1.0</intensity>
     </precipitation>
     <wind>
-        <!-- from south -->
-        <direction>90</direction>
-        <strength>15</strength>
+        <direction>-1</direction>
+        <strength>-1</strength>
     </wind>
 </sed:weather>

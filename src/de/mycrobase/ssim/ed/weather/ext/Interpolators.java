@@ -27,6 +27,12 @@ public class Interpolators {
         }
     }
     
+    /**
+     * interpolate(1, 10) will interpolate from 1 to 10 and show e.g. 7 when
+     * ratio is around 0.7.
+     * 
+     * @author cn
+     */
     public static class IntInterpolator implements WeatherInterpolator {
         @Override
         public Object interpolate(Object valueA, Object valueB, float ratio) {
@@ -48,6 +54,11 @@ public class Interpolators {
         }
     }
 
+    /**
+     * interpolate(1, 10) will jump from 1 to 10 when ratio >= 0.5.
+     * 
+     * @author cn
+     */
     public static class DiscreteValueInterpolator implements WeatherInterpolator {
         @Override
         public Object interpolate(Object valueA, Object valueB, float ratio) {
