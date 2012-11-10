@@ -1,7 +1,6 @@
 package de.mycrobase.ssim.ed.weather.ext;
 
 import de.mycrobase.ssim.ed.weather.BasicWeatherController;
-import de.mycrobase.ssim.ed.weather.PropertySet;
 import de.mycrobase.ssim.ed.weather.WeatherController;
 import de.mycrobase.ssim.ed.weather.WeatherProperty;
 

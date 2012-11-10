@@ -5,10 +5,8 @@ import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Vector3f;
 
-import de.mycrobase.ssim.ed.weather.PropertySet;
 import de.mycrobase.ssim.ed.weather.Weather;
 import de.mycrobase.ssim.ed.weather.WeatherController;
-import de.mycrobase.ssim.ed.weather.WeatherProperty;
 import de.mycrobase.ssim.ed.weather.ext.AlternateWeatherController;
 import de.mycrobase.ssim.ed.weather.ext.Generators;
 import de.mycrobase.ssim.ed.weather.ext.Interpolators;
