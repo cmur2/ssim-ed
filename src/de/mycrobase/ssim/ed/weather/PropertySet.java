@@ -30,12 +30,11 @@ public class PropertySet implements Iterable<PropertySet.Entry> {
      * value of given type. Needs to be called once before being able to
      * set/get the newly created property.
      * 
-     * @param <T> type
      * @param key the key, e.g. "ocean.temperature"
      * @param value the initial value
      * @param clazz the type of the value
      */
-    public <T> void put(String key, T value, Class<T> clazz) {
+    public void put(String key, Object value, Class clazz) {
         entries.put(key, new Entry(key, value, clazz));
     }
     
@@ -68,7 +67,7 @@ public class PropertySet implements Iterable<PropertySet.Entry> {
         }
         if(e.clazz != clazz) {
             throw new IllegalArgumentException(String.format(
-                "Property %s is not a %s!", key, clazz.getSimpleName()));
+                "Property %s is not a %s but a %s!", key, clazz.getSimpleName(), e.clazz.getSimpleName()));
         }
         return (T) e.getValue();
     }
