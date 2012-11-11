@@ -56,11 +56,14 @@ public class OceanAppState extends BasicAppState {
         
 //        Material oceanMat = new Material(getApp().getAssetManager(), "Common/MatDefs/Misc/ShowNormals.j3md");
         
-        // TODO: need shader
-        Material oceanMat = new Material(getApp().getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
+//        Material oceanMat = new Material(getApp().getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
+//        oceanMat.setColor("Diffuse", new ColorRGBA(0.5f, 0.5f, 1f, 1));
+//        //oceanMat.setColor("Specular", ColorRGBA.White);
+//        oceanMat.setBoolean("UseMaterialColors", true);
+
+        // TODO: improve ocean shader
+        Material oceanMat = new Material(getApp().getAssetManager(), "shaders/Ocean.j3md");
         oceanMat.setColor("Diffuse", new ColorRGBA(0.5f, 0.5f, 1f, 1));
-        //oceanMat.setColor("Specular", ColorRGBA.White);
-        oceanMat.setBoolean("UseMaterialColors", true);
         
         final int numGridTilesHalf = NumGridTiles/2;
         for(int ix = -numGridTilesHalf; ix <= +numGridTilesHalf; ix++) {
