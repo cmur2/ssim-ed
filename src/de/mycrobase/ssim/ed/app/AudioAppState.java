@@ -1,5 +1,7 @@
 package de.mycrobase.ssim.ed.app;
 
+import ssim.util.MathExt;
+
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.audio.AudioNode;
@@ -15,8 +17,11 @@ public class AudioAppState extends BasicAppState {
     // exists only while AppState is attached
     private Node envAudio;
     private AudioNode wind;
+    
     private AudioNode rainMedium;
+    private float rainMediumVolume;
     private AudioNode rainHeavy;
+    private float rainHeavyVolume;
     
     public AudioAppState() {
         super(UpdateInterval);
@@ -40,6 +45,8 @@ public class AudioAppState extends BasicAppState {
         envAudio.attachChild(rainMedium);
         envAudio.attachChild(rainHeavy);
         updateRain();
+        rainMedium.play();
+        rainHeavy.play();
     }
     
     // TODO: pause active sounds on GameMode.Paused?
@@ -79,32 +86,31 @@ public class AudioAppState extends BasicAppState {
         return getState(WeatherAppState.class).getWeather();
     }
     
+    private float getSoundEffectVolume() {
+        return getApp().getSettingsManager().getFloat("sound.effect.volume");
+    }
+    
     private void updateWind() {
         //wind.setVolume(getWeather().getFloat("wind.strength")/10f);
-        //wind.setVolume(getApp().getSettingsManager().getFloat("sound.effect.volume"));
+        //wind.setVolume(getSoundEffectVolume());
     }
     
     private void updateRain() {
-        rainMedium.setVolume(getApp().getSettingsManager().getFloat("sound.effect.volume"));
-        rainHeavy.setVolume(getApp().getSettingsManager().getFloat("sound.effect.volume"));
-        
         PrecipitationType curType = 
             PrecipitationType.fromId(getWeather().getInt("precipitation.form"));
         float intensity = getWeather().getFloat("precipitation.intensity");
         
         if(curType == PrecipitationType.Rain) {
-            if(intensity >= 0.75f) {
-                rainMedium.stop();
-                rainHeavy.play();
-            } else {
-                rainHeavy.stop();
-                rainMedium.play();
-            }
+            System.out.println(intensity);
+            rainMediumVolume = getRainMediumVolume(intensity);
+            rainHeavyVolume  = getRainHeavyVolume(intensity);
         } else {
-            // one of those is currently playing
-            rainMedium.stop();
-            rainHeavy.stop();
+            rainMediumVolume = 0f;
+            rainHeavyVolume  = 0f;
         }
+        
+        rainMedium.setVolume(rainMediumVolume * getSoundEffectVolume());
+        rainHeavy.setVolume(rainHeavyVolume * getSoundEffectVolume());
     }
     
     private AudioNode loadEnvSound(String file) {
@@ -113,5 +119,34 @@ public class AudioAppState extends BasicAppState {
         a.setLooping(true);
         a.setPositional(false);
         return a;
+    }
+    
+    private float getRainMediumVolume(float intensity) {
+        if(0.0f <= intensity && intensity < 0.2f) {
+            return (float) MathExt.interpolateLinear(0f, 1f, (intensity-0.0f) / (0.2f-0.0f));
+        }
+        if(0.2f <= intensity && intensity < 0.7f) {
+            return 1f;
+        }
+        if(0.7f <= intensity && intensity < 0.8f) {
+            return (float) MathExt.interpolateLinear(1f, 0f, (intensity-0.7f) / (0.8f-0.7f));
+        }
+        if(0.8f <= intensity && intensity <= 1.0f) {
+            return 0f;
+        }
+        throw new IllegalArgumentException("intensity not in range [0,1]");
+    }
+    
+    private float getRainHeavyVolume(float intensity) {
+        if(0.0f <= intensity && intensity < 0.7f) {
+            return 0f;
+        }
+        if(0.7f <= intensity && intensity < 0.8f) {
+            return (float) MathExt.interpolateLinear(0f, 1f, (intensity-0.7f) / (0.8f-0.7f));
+        }
+        if(0.8f <= intensity && intensity <= 1.0f) {
+            return 1f;
+        }
+        throw new IllegalArgumentException("intensity not in range [0,1]");
     }
 }
