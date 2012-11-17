@@ -16,7 +16,9 @@ public class AudioAppState extends BasicAppState {
     
     // exists only while AppState is attached
     private Node envAudio;
+    
     private AudioNode wind;
+    private float windVolume;
     
     private AudioNode rainMedium;
     private float rainMediumVolume;
@@ -34,11 +36,9 @@ public class AudioAppState extends BasicAppState {
         envAudio = new Node("EnvAudio");
         getApp().getRootNode().attachChild(envAudio);
         
-//        wind = new AudioNode(getApp().getAssetManager(), "audio/wind-01.wav", false);
-//        wind.setLooping(true);
-//        wind.setPositional(false);
-//        envAudio.attachChild(wind);
-//        updateWind();
+        wind = loadEnvSound("audio/wind.ogg");
+        updateWind();
+        wind.play();
         
         rainMedium = loadEnvSound("audio/rain-medium.ogg");
         rainHeavy = loadEnvSound("audio/rain-heavy.ogg");
@@ -70,7 +70,7 @@ public class AudioAppState extends BasicAppState {
     public void cleanup() {
         super.cleanup();
 
-//        wind.stop();
+        wind.stop();
         rainMedium.stop();
         rainHeavy.stop();
       
@@ -91,8 +91,15 @@ public class AudioAppState extends BasicAppState {
     }
     
     private void updateWind() {
-        //wind.setVolume(getWeather().getFloat("wind.strength")/10f);
-        //wind.setVolume(getSoundEffectVolume());
+        float strength = getWeather().getFloat("wind.strength");
+        
+        float minAudibleStrength = 3f; // below is calm
+        float maxAudibleStrength = 30f; // near gale and more
+        
+        windVolume = (float) MathExt.interpolateLinear(0f, 1f,
+            (strength-minAudibleStrength) / (maxAudibleStrength-minAudibleStrength));
+        
+        wind.setVolume(windVolume * getSoundEffectVolume());
     }
     
     private void updateRain() {
