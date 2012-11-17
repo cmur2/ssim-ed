@@ -7,10 +7,12 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.scene.Node;
 
+import de.mycrobase.ssim.ed.GameMode;
+import de.mycrobase.ssim.ed.GameModeListener;
 import de.mycrobase.ssim.ed.weather.Weather;
 import de.mycrobase.ssim.ed.weather.ext.PrecipitationType;
 
-public class AudioAppState extends BasicAppState {
+public class AudioAppState extends BasicAppState implements GameModeListener {
 
     private static final float UpdateInterval = 0.1f; // in seconds
     
@@ -38,18 +40,18 @@ public class AudioAppState extends BasicAppState {
         
         wind = loadEnvSound("audio/wind.ogg");
         updateWind();
-        wind.play();
         
         rainMedium = loadEnvSound("audio/rain-medium.ogg");
         rainHeavy = loadEnvSound("audio/rain-heavy.ogg");
         envAudio.attachChild(rainMedium);
         envAudio.attachChild(rainHeavy);
         updateRain();
-        rainMedium.play();
-        rainHeavy.play();
+        
+        // manual call to avoid code duplication
+        gameModeChanged(null, getApp().getCurrentMode());
+        
+        getApp().addGameModeListener(this);
     }
-    
-    // TODO: pause active sounds on GameMode.Paused?
     
     @Override
     public void update(float dt) {
@@ -80,6 +82,19 @@ public class AudioAppState extends BasicAppState {
         wind = null;
         rainMedium = null;
         rainHeavy = null;
+    }
+    
+    @Override
+    public void gameModeChanged(GameMode oldMode, GameMode newMode) {
+        if(newMode == GameMode.Paused) {
+            wind.pause();
+            rainMedium.pause();
+            rainHeavy.pause();
+        } else {
+            wind.play();
+            rainMedium.play();
+            rainHeavy.play();
+        }
     }
 
     private Weather getWeather() {
