@@ -20,7 +20,7 @@ import de.mycrobase.ssim.ed.weather.ext.PrecipitationType;
 
 public class RainAppState extends BasicAppState {
     
-    private static final float UpdateInterval = 5f; // in seconds
+    private static final float UpdateInterval = 1f; // in seconds
     
     private static final float GridStep = 100f; // in m
     private static final int NumGridTiles = 5; // should be odd
