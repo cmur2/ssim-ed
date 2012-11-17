@@ -101,7 +101,6 @@ public class AudioAppState extends BasicAppState {
         float intensity = getWeather().getFloat("precipitation.intensity");
         
         if(curType == PrecipitationType.Rain) {
-            System.out.println(intensity);
             rainMediumVolume = getRainMediumVolume(intensity);
             rainHeavyVolume  = getRainHeavyVolume(intensity);
         } else {
