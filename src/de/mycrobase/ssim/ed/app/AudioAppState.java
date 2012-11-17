@@ -20,12 +20,9 @@ public class AudioAppState extends BasicAppState implements GameModeListener {
     private Node envAudio;
     
     private AudioNode wind;
-    private float windVolume;
     
     private AudioNode rainMedium;
-    private float rainMediumVolume;
     private AudioNode rainHeavy;
-    private float rainHeavyVolume;
     
     public AudioAppState() {
         super(UpdateInterval);
@@ -111,7 +108,7 @@ public class AudioAppState extends BasicAppState implements GameModeListener {
         float minAudibleStrength = 3f; // below is calm
         float maxAudibleStrength = 30f; // near gale and more
         
-        windVolume = (float) MathExt.interpolateLinear(0f, 1f,
+        float windVolume = (float) MathExt.interpolateLinear(0f, 1f,
             (strength-minAudibleStrength) / (maxAudibleStrength-minAudibleStrength));
         
         wind.setVolume(windVolume * getSoundEffectVolume());
@@ -121,6 +118,9 @@ public class AudioAppState extends BasicAppState implements GameModeListener {
         PrecipitationType curType = 
             PrecipitationType.fromId(getWeather().getInt("precipitation.form"));
         float intensity = getWeather().getFloat("precipitation.intensity");
+        
+        float rainMediumVolume;
+        float rainHeavyVolume;
         
         if(curType == PrecipitationType.Rain) {
             rainMediumVolume = getRainMediumVolume(intensity);
