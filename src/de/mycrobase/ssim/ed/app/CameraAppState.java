@@ -32,7 +32,9 @@ public class CameraAppState extends BasicAppState {
         cam = getApp().getCamera();
         flyCam  = getApp().getFlyByCamera();
         
-        flyCam.setMoveSpeed(3e2f);
+        // TODO: implement our own (Fly-)Cam #jme-upgrade
+        
+        //flyCam.setMoveSpeed(3e2f);
         //flyCam.setDragToRotate(true);
         
         //cam.setLocation(new Vector3f(0, -450f, 0));

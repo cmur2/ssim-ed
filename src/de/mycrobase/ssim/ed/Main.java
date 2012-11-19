@@ -138,6 +138,8 @@ public class Main extends SimpleApplication implements GameModeListener, SSimApp
     private List<AppState> gameAppStates = new LinkedList<AppState>();
     
     public Main(SettingsManager settingsManager) {
+        // suppress all default AppStates from SimpleApplication
+        super(new AppState[0]);
         this.settingsManager = settingsManager;
     }
     
@@ -221,13 +223,9 @@ public class Main extends SimpleApplication implements GameModeListener, SSimApp
     @Override
     public void gameModeChanged(GameMode oldMode, GameMode newMode) {
         if(newMode == GameMode.Running) {
-            flyCam.setEnabled(true);
-            flyCam.setDragToRotate(false);
             inputManager.setCursorVisible(false);
         } else {
             // disable for nifty
-            flyCam.setEnabled(false);
-            flyCam.setDragToRotate(true);
             inputManager.setCursorVisible(true);
         }
     }

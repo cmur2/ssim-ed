@@ -43,7 +43,7 @@ public class NiftyAppState extends BasicAppState implements GameModeListener {
         //}});
         
         // disable verbose Nifty messages *after* Nifty creation
-        // TODO: remove with Nifty newer 1.3.1
+        // TODO: remove with Nifty newer 1.3.1 #jme-upgrade
         java.util.logging.Logger.getLogger("de.lessvoid.nifty").setLevel(java.util.logging.Level.WARNING);
         java.util.logging.Logger.getLogger("NiftyInputEventHandlingLog").setLevel(java.util.logging.Level.WARNING);
         java.util.logging.Logger.getLogger("NiftyEventBusLog").setLevel(java.util.logging.Level.WARNING);
@@ -88,6 +88,7 @@ public class NiftyAppState extends BasicAppState implements GameModeListener {
     public void gameModeChanged(GameMode oldMode, GameMode newMode) {
         // hide Nifty GUI in running mode (but input remains active, see
         // GameScreenAppState)
+        // TODO: this is not true anymore #jme-upgrade
         if(newMode == GameMode.Running) {
             if(getApp().getGuiViewPort().getProcessors().contains(niftyDisplay)) {
                 getApp().getGuiViewPort().removeProcessor(niftyDisplay);
