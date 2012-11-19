@@ -93,11 +93,17 @@ public class AudioAppState extends BasicAppState implements GameModeListener {
     private void updateWind() {
         float strength = getWeather().getFloat("wind.strength");
         
-        float minAudibleStrength = 3f; // below is calm
-        float maxAudibleStrength = 30f; // near gale and more
+        final float minAudibleStrength = 3f; // below is calm
+        final float maxAudibleStrength = 30f; // near gale and more
         
-        float windVolume = (float) MathExt.interpolateLinear(0f, 1f,
-            (strength-minAudibleStrength) / (maxAudibleStrength-minAudibleStrength));
+        float windVolume;
+        
+        if(strength < minAudibleStrength) {
+            windVolume = 0f;
+        } else {
+            windVolume = (float) MathExt.interpolateLinear(0f, 1f,
+                (strength-minAudibleStrength) / (maxAudibleStrength-minAudibleStrength));
+        }
         
         wind.setVolume(windVolume * getSoundEffectVolume());
     }
