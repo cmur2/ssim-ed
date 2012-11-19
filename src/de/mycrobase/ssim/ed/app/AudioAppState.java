@@ -5,7 +5,6 @@ import ssim.util.MathExt;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.audio.AudioNode;
-import com.jme3.scene.Node;
 
 import de.mycrobase.ssim.ed.GameMode;
 import de.mycrobase.ssim.ed.GameModeListener;
@@ -17,10 +16,7 @@ public class AudioAppState extends BasicAppState implements GameModeListener {
     private static final float UpdateInterval = 0.1f; // in seconds
     
     // exists only while AppState is attached
-    private Node envAudio;
-    
     private AudioNode wind;
-    
     private AudioNode rainMedium;
     private AudioNode rainHeavy;
     
@@ -32,16 +28,11 @@ public class AudioAppState extends BasicAppState implements GameModeListener {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        envAudio = new Node("EnvAudio");
-        getApp().getRootNode().attachChild(envAudio);
-        
         wind = loadEnvSound("audio/wind.ogg");
         updateWind();
         
         rainMedium = loadEnvSound("audio/rain-medium.ogg");
         rainHeavy = loadEnvSound("audio/rain-heavy.ogg");
-        envAudio.attachChild(rainMedium);
-        envAudio.attachChild(rainHeavy);
         updateRain();
         
         // manual call to avoid code duplication
@@ -73,9 +64,6 @@ public class AudioAppState extends BasicAppState implements GameModeListener {
         rainMedium.stop();
         rainHeavy.stop();
       
-        getApp().getRootNode().detachChild(envAudio);
-        
-        envAudio = null;
         wind = null;
         rainMedium = null;
         rainHeavy = null;
@@ -138,6 +126,8 @@ public class AudioAppState extends BasicAppState implements GameModeListener {
         AudioNode a = new AudioNode(
             getApp().getAssetManager(), file, false);
         a.setLooping(true);
+        // there is btw no need to attach a non-positional AudioNode to the
+        // scene: http://jmonkeyengine.org/groups/sound/forum/topic/audionodes-without-attaching-to-a-parent-node/
         a.setPositional(false);
         return a;
     }
