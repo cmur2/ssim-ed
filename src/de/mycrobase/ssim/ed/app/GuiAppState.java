@@ -10,6 +10,7 @@ import com.jme3.input.controls.KeyTrigger;
 
 public class GuiAppState extends BasicAppState {
     
+    public static final String INPUT_MAPPING_PAUSE = "SED_Pause";
     public static final String INPUT_MAPPING_SPEED_UP = "SED_SpeedUp";
     public static final String INPUT_MAPPING_SPEED_DOWN = "SED_SpeedDown";
     
@@ -38,8 +39,10 @@ public class GuiAppState extends BasicAppState {
         getApp().getGuiNode().attachChild(speedLabel);
         
         handler = new InputHandler();
-        getApp().getInputManager().addListener(handler, INPUT_MAPPING_SPEED_UP);
-        getApp().getInputManager().addListener(handler, INPUT_MAPPING_SPEED_DOWN);
+        getApp().getInputManager().addListener(handler,
+            INPUT_MAPPING_SPEED_UP,
+            INPUT_MAPPING_SPEED_DOWN,
+            INPUT_MAPPING_PAUSE);
     }
     
     @Override
@@ -83,9 +86,13 @@ public class GuiAppState extends BasicAppState {
                 return;
             }
             if(name.equals(INPUT_MAPPING_SPEED_UP)) {
-                getApp().setSpeed(getApp().getSpeed()*2f);
-            } else if(name.equals(INPUT_MAPPING_SPEED_DOWN)) {
-                getApp().setSpeed(getApp().getSpeed()*.5f);
+                getApp().setSpeed(getApp().getSpeed() * 2.0f);
+            }
+            else if(name.equals(INPUT_MAPPING_SPEED_DOWN)) {
+                getApp().setSpeed(getApp().getSpeed() * 0.5f);
+            }
+            else if(name.equals(INPUT_MAPPING_PAUSE)) {
+                getApp().doGamePause();
             }
         }
     }

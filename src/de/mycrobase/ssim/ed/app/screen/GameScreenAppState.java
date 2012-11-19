@@ -34,22 +34,11 @@ public class GameScreenAppState extends BasicScreenAppState implements KeyInputH
 
     @Override
     public boolean keyEvent(NiftyInputEvent inputEvent) {
-        if(inputEvent == NiftyInputEvent.Escape) {
-            doPause();
-            return true;
-        }
         return false;
     }
     
     @Override
     public String translate(String key) {
         return super.translate("game." + key);
-    }
-
-    // interact
-    
-    public void doPause() {
-        logger.debug("doPause");
-        getApp().doGamePause();
     }
 }

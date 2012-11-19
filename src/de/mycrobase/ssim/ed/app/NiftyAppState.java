@@ -86,9 +86,6 @@ public class NiftyAppState extends BasicAppState implements GameModeListener {
     
     @Override
     public void gameModeChanged(GameMode oldMode, GameMode newMode) {
-        // hide Nifty GUI in running mode (but input remains active, see
-        // GameScreenAppState)
-        // TODO: this is not true anymore #jme-upgrade
         if(newMode == GameMode.Running) {
             if(getApp().getGuiViewPort().getProcessors().contains(niftyDisplay)) {
                 getApp().getGuiViewPort().removeProcessor(niftyDisplay);
