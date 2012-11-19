@@ -29,7 +29,7 @@ public class DebugAppState extends BasicAppState {
     
     public static final String INPUT_MAPPING_SHOW_GRID = "SED_ShowGrid";
     
-    private static final float UpdateInterval = 0.5f; // in seconds
+    private static final float UpdateInterval = 0.1f; // in seconds
     
     private static final float StandardRadius = 50f; // in m
     private static final float GridStep = 100f; // in m
