@@ -7,6 +7,7 @@ import com.jme3.niftygui.NiftyJmeDisplay;
 import de.lessvoid.nifty.Nifty;
 import de.mycrobase.ssim.ed.GameMode;
 import de.mycrobase.ssim.ed.GameModeListener;
+import de.mycrobase.ssim.ed.ReentrantNiftyJmeDisplay;
 import de.mycrobase.ssim.ed.app.screen.BasicScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.CreditsScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.GameScreenAppState;
@@ -32,7 +33,7 @@ public class NiftyAppState extends BasicAppState implements GameModeListener {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        niftyDisplay = new NiftyJmeDisplay(
+        niftyDisplay = new ReentrantNiftyJmeDisplay(
             getApp().getAssetManager(), getApp().getInputManager(),
             getApp().getAudioRenderer(), getApp().getGuiViewPort());
         
