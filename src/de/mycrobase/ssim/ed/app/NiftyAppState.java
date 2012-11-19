@@ -44,11 +44,7 @@ public class NiftyAppState extends BasicAppState implements GameModeListener {
         //}});
         
         // disable verbose Nifty messages *after* Nifty creation
-        // TODO: remove with Nifty newer 1.3.1 #jme-upgrade
         java.util.logging.Logger.getLogger("de.lessvoid.nifty").setLevel(java.util.logging.Level.WARNING);
-        java.util.logging.Logger.getLogger("NiftyInputEventHandlingLog").setLevel(java.util.logging.Level.WARNING);
-        java.util.logging.Logger.getLogger("NiftyEventBusLog").setLevel(java.util.logging.Level.WARNING);
-        java.util.logging.Logger.getLogger("NiftyImageManager").setLevel(java.util.logging.Level.WARNING);
         
         String[] files = {
             "intro", "main", "credits", "options", "single", "game", "pause"
