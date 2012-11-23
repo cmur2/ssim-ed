@@ -225,7 +225,6 @@ public class Main extends SimpleApplication implements GameModeListener, SSimApp
         if(newMode == GameMode.Running) {
             inputManager.setCursorVisible(false);
         } else {
-            // disable for nifty
             inputManager.setCursorVisible(true);
         }
     }
