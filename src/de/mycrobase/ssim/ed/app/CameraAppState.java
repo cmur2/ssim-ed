@@ -8,11 +8,12 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 
+import de.mycrobase.ssim.ed.CustomFlyByCamera;
 import de.mycrobase.ssim.ed.GameMode;
 import de.mycrobase.ssim.ed.GameModeListener;
 
 /**
- * <b>Base layer</b> {@link AppState} providing ...
+ * <b>Base layer</b> {@link AppState} providing camera handling.
  * 
  * @author cn
  */
@@ -34,8 +35,7 @@ public class CameraAppState extends BasicAppState implements GameModeListener {
 
         cam = getApp().getCamera();
         
-        // TODO: implement our own (Fly-)Cam #jme-upgrade
-        flyCam = new FlyByCamera(cam);
+        flyCam = new CustomFlyByCamera(cam);
         flyCam.setMoveSpeed(3e2f);
         flyCam.registerWithInput(getApp().getInputManager());
         
