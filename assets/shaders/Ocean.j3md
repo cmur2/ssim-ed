@@ -20,6 +20,4 @@ MaterialDef CloudRender {
             WorldMatrix
         }
     }
-    Technique FixedFunc {
-    }
 }

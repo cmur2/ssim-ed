@@ -207,8 +207,7 @@ public class OptionsScreenAppState extends BasicScreenAppState implements KeyInp
     public void doPopupOk() {
         logger.debug("doPopupOk");
         
-        // TODO: http://sourceforge.net/tracker/index.php?func=detail&aid=3314219&group_id=223898&atid=1059822
-        //getNifty().closePopup(applyPopup.getId());
+        getNifty().closePopup(applyPopup.getId());
         
         saveChangedSettingsAndFlush();
         changedSettings.clear();

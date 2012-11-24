@@ -13,6 +13,7 @@ import org.junit.experimental.categories.Category;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.input.controls.Trigger;
 import com.jme3.system.JmeContext.Type;
@@ -44,7 +45,7 @@ public class MappingsParserTest {
         
         assertEquals("test", m.getId());
         // only 3 valid mappings found!
-        assertEquals(3, m.getMappings().size());
+        assertEquals(4, m.getMappings().size());
         
         assertTrue(containsTrigger(m, new KeyTrigger(KeyInput.KEY_A)));
         assertTrue(containsTrigger(m, new KeyTrigger(KeyInput.KEY_B)));
@@ -53,9 +54,14 @@ public class MappingsParserTest {
         assertTrue(containsTrigger(m, new MouseButtonTrigger(MouseInput.BUTTON_LEFT)));
         assertFalse(containsTrigger(m, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT)));
         
+        assertTrue(containsTrigger(m, new MouseAxisTrigger(MouseInput.AXIS_X, false)));
+        assertFalse(containsTrigger(m, new MouseAxisTrigger(MouseInput.AXIS_Y, false)));
+        assertFalse(containsTrigger(m, new MouseAxisTrigger(MouseInput.AXIS_Y, true)));
+        
         assertEquals("TEST_a", getMapping(m, new KeyTrigger(KeyInput.KEY_A)));
         assertEquals("TEST_b", getMapping(m, new KeyTrigger(KeyInput.KEY_B)));
         assertEquals("TEST_left", getMapping(m, new MouseButtonTrigger(MouseInput.BUTTON_LEFT)));
+        assertEquals("TEST_x", getMapping(m, new MouseAxisTrigger(MouseInput.AXIS_X, false)));
     }
 
     private static boolean containsTrigger(MappingSet m, Trigger trig) {

@@ -24,6 +24,4 @@ MaterialDef TerrainGradient {
             FOG : FogColor
         }
     }
-    Technique FixedFunc {
-    }
 }

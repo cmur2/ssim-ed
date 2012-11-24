@@ -40,6 +40,7 @@ public class InputMappingAppState extends BasicAppState {
         currentMappingSet = getCurrentMappingSet();
         logger.info("Using mapping set: " + currentMappingSet.getId());
         
+        // undo the default mappings
         switchMappings(mappingSets.get("default"), currentMappingSet);
     }
     

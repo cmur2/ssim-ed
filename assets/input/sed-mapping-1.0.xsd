@@ -15,12 +15,24 @@
     <xs:complexType name="mapType">
     	<xs:attribute name="key" type="xs:string" use="optional">
     		<xs:annotation>
-    			<xs:documentation>Key constant (suffix after KEY_) from com.jme3.input.KeyInput - not at the same time with: "button"!</xs:documentation>
-    		</xs:annotation></xs:attribute>
-        <xs:attribute name="button" type="xs:string">
-        	<xs:annotation>
-        		<xs:documentation>Mouse button constant (suffix after BUTTON_) from com.jme3.input.MouseInput - not at the same time with: "key"!</xs:documentation>
-        	</xs:annotation></xs:attribute>
-        <xs:attribute name="action" type="xs:string" use="required"></xs:attribute>
+    			<xs:documentation>Key constant (suffix after KEY_) from com.jme3.input.KeyInput - don't use at the same time with button or axis!</xs:documentation>
+    		</xs:annotation>
+    	</xs:attribute>
+    	<xs:attribute name="button" type="xs:string" use="optional">
+    		<xs:annotation>
+    			<xs:documentation>Mouse button constant (suffix after BUTTON_) from com.jme3.input.MouseInput - don't use at the same time with key or axis!</xs:documentation>
+    		</xs:annotation>
+    	</xs:attribute>
+    	<xs:attribute name="axis" type="xs:string" use="optional">
+    		<xs:annotation>
+    			<xs:documentation>Mouse axis constant (suffix after AXIS_) from com.jme3.input.MouseInput - don't use at the same time with key or button!</xs:documentation>
+    		</xs:annotation>
+    	</xs:attribute>
+    	<xs:attribute name="negative" type="xs:boolean" use="optional">
+            <xs:annotation>
+                <xs:documentation>Only useful in junction with axis attribute.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    	<xs:attribute name="action" type="xs:string" use="required"></xs:attribute>
     </xs:complexType>
 </xs:schema>

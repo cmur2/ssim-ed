@@ -61,7 +61,7 @@ import de.mycrobase.ssim.ed.util.XMLLoader;
 import de.mycrobase.ssim.ed.util.lang.TListener;
 import de.mycrobase.ssim.ed.util.lang.XmlTranslation;
 
-public class Main extends SimpleApplication implements GameModeListener, SSimApplication {
+public class Main extends SimpleApplication implements SSimApplication {
     
     private static final Logger logger = Logger.getLogger(Main.class);
     private static final float UpdateInterval = 5f; // in seconds
@@ -138,13 +138,13 @@ public class Main extends SimpleApplication implements GameModeListener, SSimApp
     private List<AppState> gameAppStates = new LinkedList<AppState>();
     
     public Main(SettingsManager settingsManager) {
+        // suppress all default AppStates from SimpleApplication
+        super(new AppState[0]);
         this.settingsManager = settingsManager;
     }
     
     @Override
     public void simpleInitApp() {
-        setDisplayStatView(settingsManager.getBoolean("debug.stats"));
-        
         if(settingsManager.getBoolean("debug.noise.seed")) {
             NoiseUtil.reinitialize(DebugSeed);
         } else {
@@ -181,9 +181,6 @@ public class Main extends SimpleApplication implements GameModeListener, SSimApp
         }
         
         speed = 1f;
-
-        // manual call to avoid code duplication
-        gameModeChanged(null, getCurrentMode());
         
         stateManager.attach(new IntroScreenAppState());
         stateManager.attach(new MainScreenAppState());
@@ -195,8 +192,6 @@ public class Main extends SimpleApplication implements GameModeListener, SSimApp
         
         stateManager.attach(new NiftyAppState());
         stateManager.attach(new InputMappingAppState());
-        
-        addGameModeListener(this);
     }
     
     @Override
@@ -218,20 +213,6 @@ public class Main extends SimpleApplication implements GameModeListener, SSimApp
         executor.shutdown();
     }
 
-    @Override
-    public void gameModeChanged(GameMode oldMode, GameMode newMode) {
-        if(newMode == GameMode.Running) {
-            flyCam.setEnabled(true);
-            flyCam.setDragToRotate(false);
-            inputManager.setCursorVisible(false);
-        } else {
-            // disable for nifty
-            flyCam.setEnabled(false);
-            flyCam.setDragToRotate(true);
-            inputManager.setCursorVisible(true);
-        }
-    }
-    
     // public API
     
     public ScheduledExecutorService getExecutor() {

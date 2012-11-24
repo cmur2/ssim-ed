@@ -16,6 +16,4 @@ MaterialDef TerrainGradient {
             ViewMatrix
         }
     }
-    Technique FixedFunc {
-    }
 }
