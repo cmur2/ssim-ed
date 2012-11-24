@@ -145,8 +145,6 @@ public class Main extends SimpleApplication implements SSimApplication {
     
     @Override
     public void simpleInitApp() {
-        setDisplayStatView(settingsManager.getBoolean("debug.stats"));
-        
         if(settingsManager.getBoolean("debug.noise.seed")) {
             NoiseUtil.reinitialize(DebugSeed);
         } else {

@@ -16,9 +16,15 @@ public class GuiAppState extends BasicAppState {
     
     private static final float UpdateInterval = 1f; // in seconds
     
+    // exists only while AppState is attached
     private BitmapText clockLabel;
     private BitmapText speedLabel;
+    private BitmapText fpsLabel;
     private InputHandler handler;
+    
+    private float fpsPassedTime;
+    private int fpsCounter;
+    private int fpsLast;
     
     public GuiAppState() {
         super(UpdateInterval);
@@ -32,11 +38,18 @@ public class GuiAppState extends BasicAppState {
         
         clockLabel = new BitmapText(font);
         updateClockLabel();
-        getApp().getGuiNode().attachChild(clockLabel);
         
         speedLabel = new BitmapText(font);
         updateSpeedLabel();
-        getApp().getGuiNode().attachChild(speedLabel);
+        
+        fpsLabel = new BitmapText(font);
+        updateFpsLabel();
+        
+        if(getApp().getSettingsManager().getBoolean("debug.stats")) {
+            getApp().getGuiNode().attachChild(clockLabel);
+            getApp().getGuiNode().attachChild(speedLabel);
+            getApp().getGuiNode().attachChild(fpsLabel);
+        }
         
         handler = new InputHandler();
         getApp().getInputManager().addListener(handler,
@@ -46,9 +59,24 @@ public class GuiAppState extends BasicAppState {
     }
     
     @Override
+    public void update(float dt) {
+        super.update(dt);
+        
+        fpsPassedTime += dt;
+        fpsCounter++;
+        
+        if(fpsPassedTime >= 1f) {
+            fpsLast = (int) (fpsCounter/fpsPassedTime);
+            fpsPassedTime = 0f;
+            fpsCounter = 0;
+        }
+    }
+    
+    @Override
     protected void intervalUpdate(float dt) {
         updateClockLabel();
         updateSpeedLabel();
+        updateFpsLabel();
     }
     
     @Override
@@ -57,10 +85,12 @@ public class GuiAppState extends BasicAppState {
         
         getApp().getGuiNode().detachChild(clockLabel);
         getApp().getGuiNode().detachChild(speedLabel);
+        getApp().getGuiNode().detachChild(fpsLabel);
         getApp().getInputManager().removeListener(handler);
         
         clockLabel = null;
         speedLabel = null;
+        fpsLabel = null;
     }
     
     private void updateClockLabel() {
@@ -76,6 +106,14 @@ public class GuiAppState extends BasicAppState {
         speedLabel.setLocalTranslation(
             getApp().getCamera().getWidth()-speedLabel.getLineWidth()-1,
             clockLabel.getLineHeight()+speedLabel.getLineHeight(),
+            0);
+    }
+    
+    private void updateFpsLabel() {
+        fpsLabel.setText(String.format("FPS: %d", fpsLast));
+        fpsLabel.setLocalTranslation(
+            0,
+            fpsLabel.getLineHeight(),
             0);
     }
     
