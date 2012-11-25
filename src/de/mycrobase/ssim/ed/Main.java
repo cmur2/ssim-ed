@@ -35,7 +35,6 @@ import de.mycrobase.ssim.ed.app.LightingAppState;
 import de.mycrobase.ssim.ed.app.NiftyAppState;
 import de.mycrobase.ssim.ed.app.OceanAppState;
 import de.mycrobase.ssim.ed.app.RainAppState;
-import de.mycrobase.ssim.ed.app.ShadowAppState;
 import de.mycrobase.ssim.ed.app.SimClockAppState;
 import de.mycrobase.ssim.ed.app.SkyAppState;
 import de.mycrobase.ssim.ed.app.SkyDomeAppState;
@@ -279,7 +278,6 @@ public class Main extends SimpleApplication implements SSimApplication {
         gameAppStates.add(new SkyDomeAppState());
         gameAppStates.add(new SunAppState());
         gameAppStates.add(new LightingAppState());
-        gameAppStates.add(new ShadowAppState());
         gameAppStates.add(new StarAppState());
         gameAppStates.add(new CloudAppState());
         gameAppStates.add(new TerrainAppState(mission));
