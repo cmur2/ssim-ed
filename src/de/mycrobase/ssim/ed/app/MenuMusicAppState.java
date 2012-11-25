@@ -26,7 +26,6 @@ public class MenuMusicAppState extends BasicAppState implements GameModeListener
         menuMusic.setPositional(false);
         //menuMusic.setLooping(true);
         menuMusic.setTimeOffset(5f);
-        getApp().getRootNode().attachChild(menuMusic);
         
         // manual call to avoid code duplication
         gameModeChanged(null, getApp().getCurrentMode());
@@ -52,7 +51,6 @@ public class MenuMusicAppState extends BasicAppState implements GameModeListener
         getApp().removeGameModeListener(this);
         
         menuMusic.stop();
-        getApp().getRootNode().detachChild(menuMusic);
         
         menuMusic = null;
     }
