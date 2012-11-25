@@ -8,12 +8,12 @@
 	<classpathentry kind="lib" path="libs/chlib-0.1.7-jar.jar"/>
 	<classpathentry kind="lib" path="libs/commons-cli-1.2-jar.jar" sourcepath="libs/commons-cli-1.2-source.jar"/>
 	<classpathentry kind="lib" path="libs/eventbus-1.4-jar.jar"/>
-	<classpathentry kind="lib" path="libs/j-ogg-oggd-3.0.0-20121117-jar.jar"/>
-	<classpathentry kind="lib" path="libs/j-ogg-vorbisd-3.0.0-20121117-jar.jar"/>
+	<classpathentry kind="lib" path="libs/j-ogg-oggd-3.0.0-20121125-jar.jar"/>
+	<classpathentry kind="lib" path="libs/j-ogg-vorbisd-3.0.0-20121125-jar.jar"/>
 	<classpathentry kind="lib" path="libs/jdom-1.1.2-jar.jar" sourcepath="libs/jdom-1.1.2-source.jar"/>
 	<classpathentry kind="lib" path="libs/jinput-2.0.5-jar.jar"/>
-	<classpathentry kind="lib" path="libs/jME3-lwjgl-natives-3.0.0-20121117-jar.jar"/>
-	<classpathentry kind="lib" path="libs/jMonkeyEngine3-3.0.0-20121117-jar.jar" sourcepath="libs/jMonkeyEngine3-3.0.0-20121117-source.jar"/>
+	<classpathentry kind="lib" path="libs/jME3-lwjgl-natives-3.0.0-20121125-jar.jar"/>
+	<classpathentry kind="lib" path="libs/jMonkeyEngine3-3.0.0-20121125-jar.jar" sourcepath="libs/jMonkeyEngine3-3.0.0-20121125-source.jar"/>
 	<classpathentry kind="lib" path="libs/junit-4.8.2-jar.jar"/>
 	<classpathentry kind="lib" path="libs/jutils-1.0.0-jar.jar"/>
 	<classpathentry kind="lib" path="libs/log4j-1.2.16-bundle.jar" sourcepath="libs/log4j-1.2.16-source.jar"/>
