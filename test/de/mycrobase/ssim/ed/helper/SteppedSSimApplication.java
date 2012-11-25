@@ -10,14 +10,18 @@ import com.jme3.app.state.AppState;
 
 import de.mycrobase.ssim.ed.GameMode;
 import de.mycrobase.ssim.ed.GameModeListener;
+import de.mycrobase.ssim.ed.Main;
 import de.mycrobase.ssim.ed.SSimApplication;
 import de.mycrobase.ssim.ed.mission.Mission;
+import de.mycrobase.ssim.ed.settings.LayeredSettingsManager;
+import de.mycrobase.ssim.ed.settings.PropertiesLayer;
 import de.mycrobase.ssim.ed.settings.SettingsManager;
 
 public abstract class SteppedSSimApplication extends SimpleApplication implements SSimApplication {
     
     private Thread caller;
     
+    private LayeredSettingsManager settingsManager;
     private ScheduledExecutorService executor;
     
     protected GameMode currentMode = GameMode.Running;
@@ -25,7 +29,11 @@ public abstract class SteppedSSimApplication extends SimpleApplication implement
     
     public SteppedSSimApplication() {
         super(new AppState[0]);
+        
         caller = Thread.currentThread();
+        
+        settingsManager = new LayeredSettingsManager();
+        settingsManager.addLayer(PropertiesLayer.fromStream(Main.class.getResourceAsStream("default.properties")));
     }
     
     @Override
@@ -55,7 +63,7 @@ public abstract class SteppedSSimApplication extends SimpleApplication implement
     
     @Override
     public SettingsManager getSettingsManager() {
-        throw new UnsupportedOperationException();
+        return settingsManager;
     }
     
     @Override
