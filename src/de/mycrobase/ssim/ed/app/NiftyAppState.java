@@ -73,6 +73,8 @@ public class NiftyAppState extends BasicAppState implements GameModeListener {
     public void cleanup() {
         super.cleanup();
         
+        getApp().removeGameModeListener(this);
+        
         getApp().getGuiViewPort().removeProcessor(niftyDisplay);
         //nifty.exit();
         

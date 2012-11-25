@@ -49,6 +49,8 @@ public class MenuMusicAppState extends BasicAppState implements GameModeListener
     public void cleanup() {
         super.cleanup();
         
+        getApp().removeGameModeListener(this);
+        
         menuMusic.stop();
         getApp().getRootNode().detachChild(menuMusic);
         
