@@ -59,6 +59,8 @@ public class AudioAppState extends BasicAppState implements GameModeListener {
     @Override
     public void cleanup() {
         super.cleanup();
+        
+        getApp().removeGameModeListener(this);
 
         wind.stop();
         rainMedium.stop();

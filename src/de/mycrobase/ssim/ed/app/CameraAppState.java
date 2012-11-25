@@ -55,6 +55,8 @@ public class CameraAppState extends BasicAppState implements GameModeListener {
     public void cleanup() {
         super.cleanup();
         
+        getApp().removeGameModeListener(this);
+        
         flyCam.unregisterInput();
         
         cam = null;
