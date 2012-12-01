@@ -134,8 +134,9 @@ public class OceanAppState extends BasicAppState {
         TempVars vars = TempVars.get();
         
         {
-            float direction = getWeather().getFloat("wind.direction");
-            float strength = getWeather().getFloat("wind.strength");
+            // TODO: disable varying wind parameter, now they are constant
+            float direction = 42; //getWeather().getFloat("wind.direction");
+            float strength = 13; //getWeather().getFloat("wind.strength");
             // windVelo will be: direction into which wind is blowing and magnitude
             // reflects strength of wind
             Vector3f windVelo = vars.vect1.set(
