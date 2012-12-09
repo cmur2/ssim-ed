@@ -73,7 +73,6 @@ public class TerrainAppState extends BasicAppState {
         // is needed to bring the altitude (in m) down to [0,1]
         terrainMat.setFloat("InvMaxAltitude", 1f/de.mycrobase.ssim.ed.pre.TerrainLUTGenerator.MaxAltitude);
         // The altitude distortion factor
-        System.out.println(de.mycrobase.ssim.ed.pre.TerrainLUTGenerator.AltitudeDistortionFactor);
         terrainMat.setFloat("AltitudeDistortionFactor", de.mycrobase.ssim.ed.pre.TerrainLUTGenerator.AltitudeDistortionFactor);
         // Pass some additional parameters describing the atlas properties to
         // the shader that it needs to perform valid texture lookups on the atlas
