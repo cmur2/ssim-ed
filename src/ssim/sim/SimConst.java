@@ -1,7 +1,5 @@
 package ssim.sim;
 
-import java.awt.*;
-
 /**
  *
  * @author Ch. Nicolai

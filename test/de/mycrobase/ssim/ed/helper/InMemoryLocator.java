@@ -62,7 +62,7 @@ public class InMemoryLocator implements AssetLocator {
         
         private String content;
         
-        public InMemoryAssetInfo(AssetManager manager, AssetKey key, String content) {
+        public InMemoryAssetInfo(AssetManager manager, AssetKey<?> key, String content) {
             super(manager, key);
             this.content = content;
         }

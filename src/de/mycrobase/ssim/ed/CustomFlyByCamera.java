@@ -2,7 +2,6 @@ package de.mycrobase.ssim.ed;
 
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
-import com.jme3.input.Joystick;
 import com.jme3.renderer.Camera;
 
 /**

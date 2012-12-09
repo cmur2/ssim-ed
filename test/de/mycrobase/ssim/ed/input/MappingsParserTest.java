@@ -21,8 +21,6 @@ import com.jme3.system.JmeContext.Type;
 import de.mycrobase.ssim.ed.helper.Logging;
 import de.mycrobase.ssim.ed.helper.SteppedSSimApplication;
 import de.mycrobase.ssim.ed.helper.categories.Fast;
-import de.mycrobase.ssim.ed.mission.Mission;
-import de.mycrobase.ssim.ed.mission.MissionParser;
 import de.mycrobase.ssim.ed.util.MapLoader;
 import de.mycrobase.ssim.ed.util.PropertiesLoader;
 import de.mycrobase.ssim.ed.util.XMLLoader;

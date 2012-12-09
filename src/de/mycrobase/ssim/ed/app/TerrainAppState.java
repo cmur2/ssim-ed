@@ -1,7 +1,6 @@
 package de.mycrobase.ssim.ed.app;
 
 import com.jme3.app.Application;
-import com.jme3.app.FlyCamAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetKey;
 import com.jme3.material.Material;
