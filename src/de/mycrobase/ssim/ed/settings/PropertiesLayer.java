@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import chlib.RuntimeIOException;
 import de.mycrobase.ssim.ed.settings.LayeredSettingsManager.Layer;
 
 public class PropertiesLayer implements Layer {
@@ -32,8 +31,9 @@ public class PropertiesLayer implements Layer {
         Properties properties = new Properties();
         try {
             properties.load(stream);
+            stream.close();
         } catch(IOException ex) {
-            throw new RuntimeIOException(ex);
+            throw new RuntimeException(ex);
         }
         return new PropertiesLayer(properties);
     }
