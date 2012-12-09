@@ -4,6 +4,7 @@ MaterialDef TerrainGradient {
         Texture2D TerrainAtlas
         Texture2D TerrainNoise
         Float InvMaxAltitude
+        Float AltitudeDistortionFactor
         Vector3 AtlasParameters
         Vector2 NoiseParameters
         Vector3 FogColor

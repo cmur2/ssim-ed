@@ -7,6 +7,7 @@ uniform sampler2D m_TerrainLUT;
 uniform sampler2D m_TerrainAtlas;
 uniform sampler2D m_TerrainNoise;
 uniform float m_InvMaxAltitude;
+uniform float m_AltitudeDistortionFactor;
 uniform vec3 m_AtlasParameters;
 uniform vec2 m_NoiseParameters;
 
@@ -18,6 +19,14 @@ varying vec4 varLightDir;
 
 varying vec3 varFogCoord;
 
+float altitudeToY(float altitude) {
+    float x = altitude * m_InvMaxAltitude;
+    if(x > 0) {
+        x = pow(x, m_AltitudeDistortionFactor);
+    }
+    return x * 0.5 + 0.5;
+}
+
 void main() {
     // unpacked noise in [-1,+1]
     float noise = texture2D(m_TerrainNoise, fract(varTexCoord*4.0)).r * 2.0 - 1.0;
@@ -27,7 +36,7 @@ void main() {
     terrainTypeCoord += noise * vec2(1.0, varZ) * m_NoiseParameters;
     // convert (slope,altitude) into tex coord
     terrainTypeCoord.x = cos(terrainTypeCoord.x);
-    terrainTypeCoord.y = terrainTypeCoord.y * m_InvMaxAltitude * 0.5 + 0.5;
+    terrainTypeCoord.y = altitudeToY(terrainTypeCoord.y);
     // lookup ID
     int id = int(texture2D(m_TerrainLUT, terrainTypeCoord).r * 256.0);
     // 2d offset in atlas texture

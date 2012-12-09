@@ -13,6 +13,7 @@ import de.mycrobase.ssim.ed.pre.terrain.TerrainType;
 public class TerrainLUTGenerator {
     
     public static final float MaxAltitude = 7000f;
+    public static final float AltitudeDistortionFactor = 1.0f;
     
     private static final int Width = 256;
     private static final int Height = 256;
@@ -26,7 +27,7 @@ public class TerrainLUTGenerator {
         System.out.println("Applying commands...");
         
         final float maxA = MaxAltitude;
-        TerrainLUTBuilder builder = new TerrainLUTBuilder(Width, Height, maxA) {{
+        TerrainLUTBuilder builder = new TerrainLUTBuilder(Width, Height, maxA, AltitudeDistortionFactor) {{
             setTypeRect(TerrainType.Default, 0, 0, Width, Height);
             
             setType(TerrainType.OceanFloor,  0, 90, -maxA,  -100);
