@@ -6,7 +6,7 @@
     </style>
     
     <style id="bgLayerOpaque">
-        <attributes backgroundColor="#444f" />
+        <attributes backgroundColor="#333f" />
     </style>
     
     <style id="single#mission_text">
