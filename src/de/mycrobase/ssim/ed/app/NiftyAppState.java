@@ -11,6 +11,7 @@ import de.mycrobase.ssim.ed.app.screen.BasicScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.CreditsScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.GameScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.IntroScreenAppState;
+import de.mycrobase.ssim.ed.app.screen.LoadingScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.MainScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.OptionsScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.PauseScreenAppState;
@@ -46,7 +47,7 @@ public class NiftyAppState extends BasicAppState implements GameModeListener {
         java.util.logging.Logger.getLogger("de.lessvoid.nifty").setLevel(java.util.logging.Level.WARNING);
         
         String[] files = {
-            "intro", "main", "credits", "options", "single", "game", "pause"
+            "intro", "main", "credits", "options", "single", "loading", "game", "pause"
         };
         BasicScreenAppState[] states = {
             getState(IntroScreenAppState.class),
@@ -54,6 +55,7 @@ public class NiftyAppState extends BasicAppState implements GameModeListener {
             getState(CreditsScreenAppState.class),
             getState(OptionsScreenAppState.class),
             getState(SingleScreenAppState.class),
+            getState(LoadingScreenAppState.class),
             getState(GameScreenAppState.class),
             getState(PauseScreenAppState.class)
         };

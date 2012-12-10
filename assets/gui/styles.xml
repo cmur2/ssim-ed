@@ -5,6 +5,10 @@
         <attributes backgroundColor="#444c" />
     </style>
     
+    <style id="bgLayerOpaque">
+        <attributes backgroundColor="#444f" />
+    </style>
+    
     <style id="single#mission_text">
         <attributes backgroundColor="#666f" font="Interface/Fonts/Default.fnt" textHAlign="left" textVAlign="top" />
         <effect>

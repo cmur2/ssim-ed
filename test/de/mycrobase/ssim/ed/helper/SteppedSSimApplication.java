@@ -101,6 +101,11 @@ public abstract class SteppedSSimApplication extends SimpleApplication implement
     }
     
     @Override
+    public void doGameInitDone() {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
     public void doGamePause() {
         throw new UnsupportedOperationException();
     }

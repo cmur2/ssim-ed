@@ -95,10 +95,9 @@ public class SingleScreenAppState extends BasicScreenAppState implements KeyInpu
         logger.debug("doGame");
         List<MissionListModel> selection = missionList.getSelection();
         if(selection.size() > 0) {
-            // pass info about selected Mission to App
-            Mission m = selection.get(0).getMission();
-            // TODO: need loading screen
-            getApp().doGameInit(m);
+            // pass info about selected Mission to loading screen
+            getState(LoadingScreenAppState.class).setMission(selection.get(0).getMission());
+            getNifty().gotoScreen("loading");
         }
     }
     
