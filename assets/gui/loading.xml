@@ -14,7 +14,7 @@
         <layer id="foreground" childLayout="center">
             <panel width="100%" childLayout="vertical" align="center" valign="center" height="100px">
                 <panel height="50%" childLayout="center">
-                    <panel backgroundColor="#444f" width="50%" height="50%" childLayout="absolute">
+                    <panel backgroundColor="#444f" width="80%" height="50%" childLayout="absolute">
                         <panel id="load_progress" backgroundColor="#888f" x="0" y="0" width="0%" height="100%" />
                     </panel>
                 </panel>
