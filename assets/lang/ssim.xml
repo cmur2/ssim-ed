@@ -56,18 +56,18 @@ Please note that some settings may require a restart to take effect!</message>
         <status>
             <text>
                 <empty></empty>
-                <base></base>
-                <skydome></skydome>
-                <sun></sun>
-                <lighting></lighting>
-                <star></star>
-                <cloud></cloud>
-                <terrain></terrain>
-                <ocean></ocean>
-                <rain></rain>
-                <gui></gui>
-                <audio></audio>
-                <debug></debug>
+                <base>Counting times</base>
+                <skydome>Color sky</skydome>
+                <sun>Ignite sun</sun>
+                <lighting>Cast shadows</lighting>
+                <star>Pin stars</star>
+                <cloud>Agglomerate clouds</cloud>
+                <terrain>Place hills</terrain>
+                <ocean>Fill ocean</ocean>
+                <rain>Collect rain</rain>
+                <gui>Open tools</gui>
+                <audio>Produce sounds</audio>
+                <debug>Enable magic</debug>
             </text>
         </status>
     </loading>

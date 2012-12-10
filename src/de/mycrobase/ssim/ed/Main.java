@@ -272,8 +272,6 @@ public class Main extends SimpleApplication implements SSimApplication {
     public void doGameInit(Mission mission) {
         List<LoadStep> loadSteps = new ArrayList<LoadStep>();
         
-        // TODO: add I18N labels != german
-        
         // AppState base layer:
         // these serve as a common base for the higher AppStates
         loadSteps.add(new LoadStep("base", 3f,
