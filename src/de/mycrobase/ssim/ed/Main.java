@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -17,13 +16,12 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
-import chlib.noise.NoiseUtil;
-
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.system.AppSettings;
 
 import de.altimos.util.logger.JLFBridge;
+import de.altimos.util.noise.NoiseUtil;
 import de.altimos.util.translator.Translator;
 import de.mycrobase.ssim.ed.app.AerialAppState;
 import de.mycrobase.ssim.ed.app.AudioAppState;
@@ -34,6 +32,7 @@ import de.mycrobase.ssim.ed.app.GuiAppState;
 import de.mycrobase.ssim.ed.app.InputMappingAppState;
 import de.mycrobase.ssim.ed.app.LightingAppState;
 import de.mycrobase.ssim.ed.app.LoadingAppState;
+import de.mycrobase.ssim.ed.app.LoadingAppState.LoadStep;
 import de.mycrobase.ssim.ed.app.NiftyAppState;
 import de.mycrobase.ssim.ed.app.OceanAppState;
 import de.mycrobase.ssim.ed.app.RainAppState;
@@ -44,7 +43,6 @@ import de.mycrobase.ssim.ed.app.StarAppState;
 import de.mycrobase.ssim.ed.app.SunAppState;
 import de.mycrobase.ssim.ed.app.TerrainAppState;
 import de.mycrobase.ssim.ed.app.WeatherAppState;
-import de.mycrobase.ssim.ed.app.LoadingAppState.LoadStep;
 import de.mycrobase.ssim.ed.app.screen.CreditsScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.GameScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.IntroScreenAppState;

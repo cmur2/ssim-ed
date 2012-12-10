@@ -11,7 +11,6 @@
     </publications>
     <dependencies defaultconfmapping="*->default,sources">
         <!-- Runtime Dependencies (alphabetical) -->
-        <dependency org="chlib" name="chlib" rev="0.1.7"/>
         <dependency org="com.jme3" name="jMonkeyEngine3" rev="3.0.0-20121125"/>
         <dependency org="commons-cli" name="commons-cli" rev="1.2"/>
         <dependency org="de.altimos" name="ajutil" rev="1.0.4"/>
