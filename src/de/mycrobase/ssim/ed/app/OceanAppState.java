@@ -8,12 +8,15 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.LodControl;
+import com.jme3.water.WaterFilter;
 
 import de.mycrobase.ssim.ed.mesh.OceanSurface;
 import de.mycrobase.ssim.ed.ocean.PhillipsSpectrum;
+import de.mycrobase.ssim.ed.sky.SkyBoxTexture;
 import de.mycrobase.ssim.ed.util.TempVars;
 import de.mycrobase.ssim.ed.weather.Weather;
 
@@ -29,6 +32,7 @@ public class OceanAppState extends BasicAppState {
     private PhillipsSpectrum phillipsSpectrum;
     private Node oceanNode;
     private OceanSurface ocean;
+    private SkyBoxTexture skyBoxTexture;
     
     public OceanAppState() {
         super(UpdateInterval);
@@ -63,7 +67,20 @@ public class OceanAppState extends BasicAppState {
 
         // TODO: improve ocean shader
         Material oceanMat = new Material(getApp().getAssetManager(), "shaders/Ocean.j3md");
-        oceanMat.setColor("Diffuse", new ColorRGBA(0.5f, 0.5f, 1f, 1));
+        oceanMat.setColor("WaterColor", new ColorRGBA(0.0039f, 0.00196f, 0.145f, 1.0f));
+        
+        {
+            double etaratio = 1.0003/1.3333; // ^= firstIndex/secondIndex
+            double r0 = Math.pow((1.0-etaratio) / (1.0+etaratio), 2.0);
+            oceanMat.setFloat("R0", (float) r0);
+        }
+        
+        oceanMat.setFloat("Shininess", 16f);
+        oceanMat.setFloat("ShininessFactor", 0.2f);
+        
+        skyBoxTexture = new SkyBoxTexture(getSkyAppState().getSkyGradient(), getApp().getExecutor());
+        skyBoxTexture.update();
+        oceanMat.setTexture("SkyBox", skyBoxTexture);
         
         final int numGridTilesHalf = NumGridTiles/2;
         for(int ix = -numGridTilesHalf; ix <= +numGridTilesHalf; ix++) {
@@ -75,6 +92,11 @@ public class OceanAppState extends BasicAppState {
         }
         
         getApp().getRootNode().attachChild(oceanNode);
+        
+//        FilterPostProcessor fpp = new FilterPostProcessor(getApp().getAssetManager());
+//        WaterFilter water = new WaterFilter(getApp().getRootNode(), new Vector3f(-1f, -1f, 0f).normalizeLocal());
+//        fpp.addFilter(water);
+//        getApp().getViewPort().addProcessor(fpp);
     }
     
     @Override
@@ -100,6 +122,7 @@ public class OceanAppState extends BasicAppState {
     @Override
     protected void intervalUpdate(float dt) {
         updateOceanParameters();
+        skyBoxTexture.update();
     }
     
     @Override
@@ -136,7 +159,7 @@ public class OceanAppState extends BasicAppState {
         {
             // TODO: disable varying wind parameter, now they are constant
             float direction = 42; //getWeather().getFloat("wind.direction");
-            float strength = 10; //getWeather().getFloat("wind.strength");
+            float strength = 7; //getWeather().getFloat("wind.strength");
             // windVelo will be: direction into which wind is blowing and magnitude
             // reflects strength of wind
             Vector3f windVelo = vars.vect1.set(
@@ -155,5 +178,9 @@ public class OceanAppState extends BasicAppState {
     
     private Weather getWeather() {
         return getState(WeatherAppState.class).getWeather();
+    }
+    
+    private SkyAppState getSkyAppState() {
+        return getState(SkyAppState.class);
     }
 }
