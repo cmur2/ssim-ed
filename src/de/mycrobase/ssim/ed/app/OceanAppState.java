@@ -23,7 +23,7 @@ public class OceanAppState extends BasicAppState {
 
     private static final float GridStep = 400f; // in m
     private static final int GridSize = 64;
-    private static final int NumGridTiles = 1; // should be odd
+    private static final int NumGridTiles = 55; // should be odd
     
     // exists only while AppState is attached
     private PhillipsSpectrum phillipsSpectrum;
@@ -119,7 +119,7 @@ public class OceanAppState extends BasicAppState {
         geom.setLocalScale(1);
         
         LodControl lod = new LodControl();
-        lod.setTrisPerPixel(0.7f);
+        lod.setTrisPerPixel(2f);
         geom.addControl(lod);
         
         return geom;
@@ -136,7 +136,7 @@ public class OceanAppState extends BasicAppState {
         {
             // TODO: disable varying wind parameter, now they are constant
             float direction = 42; //getWeather().getFloat("wind.direction");
-            float strength = 13; //getWeather().getFloat("wind.strength");
+            float strength = 10; //getWeather().getFloat("wind.strength");
             // windVelo will be: direction into which wind is blowing and magnitude
             // reflects strength of wind
             Vector3f windVelo = vars.vect1.set(
