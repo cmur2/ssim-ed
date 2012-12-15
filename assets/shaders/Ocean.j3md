@@ -18,6 +18,7 @@ MaterialDef CloudRender {
             NormalMatrix
             ViewMatrix
             WorldMatrix
+            CameraPosition
         }
     }
     Technique FixedFunc {
