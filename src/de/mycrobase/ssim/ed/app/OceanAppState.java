@@ -14,6 +14,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.control.LodControl;
 import com.jme3.water.WaterFilter;
 
+import de.mycrobase.ssim.ed.mesh.OceanBorder;
 import de.mycrobase.ssim.ed.mesh.OceanSurface;
 import de.mycrobase.ssim.ed.ocean.PhillipsSpectrum;
 import de.mycrobase.ssim.ed.sky.SkyBoxTexture;
@@ -26,7 +27,9 @@ public class OceanAppState extends BasicAppState {
 
     private static final float GridStep = 400f; // in m
     private static final int GridSize = 64;
-    private static final int NumGridTiles = 55; // should be odd
+    private static final int NumGridTiles = 11; // should be odd
+
+    private float maxVisibility;
     
     // exists only while AppState is attached
     private PhillipsSpectrum phillipsSpectrum;
@@ -34,8 +37,9 @@ public class OceanAppState extends BasicAppState {
     private OceanSurface ocean;
     private SkyBoxTexture skyBoxTexture;
     
-    public OceanAppState() {
+    public OceanAppState(float maxVisibility) {
         super(UpdateInterval);
+        this.maxVisibility = maxVisibility;
     }
 
     @Override
@@ -82,6 +86,8 @@ public class OceanAppState extends BasicAppState {
         skyBoxTexture.update();
         oceanMat.setTexture("SkyBox", skyBoxTexture);
         
+        // build geometries
+        
         final int numGridTilesHalf = NumGridTiles/2;
         for(int ix = -numGridTilesHalf; ix <= +numGridTilesHalf; ix++) {
             for(int iz = -numGridTilesHalf; iz <= +numGridTilesHalf; iz++) {
@@ -90,6 +96,8 @@ public class OceanAppState extends BasicAppState {
                 oceanNode.attachChild(buildOceanTile(ocean, oceanMat, offset));
             }
         }
+        
+        oceanNode.attachChild(buildOceanBorder(oceanMat));
         
         getApp().getRootNode().attachChild(oceanNode);
         
@@ -139,11 +147,26 @@ public class OceanAppState extends BasicAppState {
         Geometry geom = new Geometry("OceanSurface"+offset.toString(), ocean);
         geom.setMaterial(mat);
         geom.setLocalTranslation(offset);
-        geom.setLocalScale(1);
         
         LodControl lod = new LodControl();
         lod.setTrisPerPixel(2f);
         geom.addControl(lod);
+        
+        return geom;
+    }
+    
+    private Geometry buildOceanBorder(Material mat) {
+        float size = maxVisibility * 2;
+        float innerSize = NumGridTiles * GridStep;
+        if(innerSize >= size) {
+            throw new IllegalArgumentException("OceanBorder size will be effectively < 0!");
+        }
+        OceanBorder border = new OceanBorder(size, size, innerSize, innerSize);
+        
+        Geometry geom = new Geometry("OceanBorder", border);
+        geom.setMaterial(mat);
+        // translate by a half GridStep since NumGridTiles is odd:
+        geom.setLocalTranslation(GridStep/2, 0f, GridStep/2);
         
         return geom;
     }

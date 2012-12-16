@@ -302,7 +302,7 @@ public class Main extends SimpleApplication implements GameModeListener, SSimApp
         gameAppStates.add(new StarAppState());
         gameAppStates.add(new CloudAppState());
         gameAppStates.add(new TerrainAppState(mission));
-        gameAppStates.add(new OceanAppState());
+        gameAppStates.add(new OceanAppState(MaxVisibility));
         gameAppStates.add(new RainAppState());
         gameAppStates.add(new GuiAppState());
         gameAppStates.add(new AudioAppState());
