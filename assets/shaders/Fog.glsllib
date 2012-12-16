@@ -1,23 +1,34 @@
 // Fog.glsllib
 // This implements standard GL_EXP2 type fog in GLSL.
-// For use in fragment shader only, needs the final color of the
-// normal fragment shader + the fragment position in view coords.
+// In vertex shader it need the vertex position in view coords.
+// In fragment shader it needs the final color of the normal fragment shader.
 
 #ifdef FOG
 
+#ifdef VERT
+varying vec3 varFogCoord;
+
+void setFogCoord(in vec3 viewPosition) {
+	varFogCoord = viewPosition;
+}
+#endif
+
+#ifdef FRAG
 // = 1.0 / ln(2.0)
 const float INV_LN2 = 1.4426950408;
 
 uniform vec3 m_FogColor;
-
 uniform float m_FogDensity;
 
-void applyFoggedColorByFragmentOnly(inout vec4 color, in vec3 fogCoord){
+varying vec3 varFogCoord;
+
+void applyFoggedColorByFragmentOnly(inout vec4 color){
     float density = m_FogDensity;
-    float dist = length(fogCoord.xyz);
+    float dist = length(varFogCoord);
     float fogFactorByFragment = exp2(-density*density * dist*dist * INV_LN2);
     fogFactorByFragment = clamp(fogFactorByFragment, 0.0, 1.0);
    	color.rgb = mix(m_FogColor, color.rgb, fogFactorByFragment);
 }
+#endif
 
 #endif

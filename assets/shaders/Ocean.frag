@@ -1,4 +1,5 @@
 
+#define FRAG
 #import "shaders/Fog.glsllib"
 
 uniform mat4 g_ViewMatrix;
@@ -17,8 +18,6 @@ uniform samplerCube m_SkyBox;
 varying vec3 varNormal; // view coords
 varying vec3 varVertex; // view coords
 varying vec4 varLightDir; // view coords
-
-varying vec3 varFogCoord;
 
 //const float etaratio = 1.0003/1.3333; // ^= firstIndex/secondIndex
 //const float r0 = pow((1.0-etaratio) / (1.0+etaratio), 2.0);
@@ -64,5 +63,5 @@ void main() {
     cFinal = clamp(cFinal + cSpecular * m_ShininessFactor, 0.0, 1.0);
 
     gl_FragColor = cFinal;
-    applyFoggedColorByFragmentOnly(gl_FragColor, varFogCoord);
+    applyFoggedColorByFragmentOnly(gl_FragColor);
 }

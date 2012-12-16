@@ -1,4 +1,7 @@
 
+#define VERT
+#import "shaders/Fog.glsllib"
+
 uniform mat4 g_WorldViewProjectionMatrix;
 uniform mat4 g_WorldViewMatrix;
 uniform mat3 g_NormalMatrix;
@@ -17,8 +20,6 @@ varying vec2 varTexCoord;
 varying float varSlope;
 varying float varZ;
 varying vec4 varLightDir;
-
-varying vec3 varFogCoord;
 
 // JME3 lights in world space
 vec4 lightComputeDir(in vec3 worldPos, in vec4 color, in vec4 position) {
@@ -49,6 +50,5 @@ void main() {
     vec3 vPosition = (g_WorldViewMatrix * pos).xyz;
     varLightDir = lightComputeDir(vPosition, g_LightColor, wvLightPos);
 
-    // fog
-    varFogCoord = vPosition;
+    setFogCoord(vPosition);
 }

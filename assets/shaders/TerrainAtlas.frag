@@ -1,4 +1,5 @@
 
+#define FRAG
 #import "shaders/Fog.glsllib"
 
 uniform vec4 g_LightColor;
@@ -16,8 +17,6 @@ varying vec2 varTexCoord;
 varying float varSlope;
 varying float varZ;
 varying vec4 varLightDir;
-
-varying vec3 varFogCoord;
 
 float altitudeToY(float altitude) {
     float x = altitude * m_InvMaxAltitude;
@@ -65,5 +64,5 @@ void main() {
     // final color calculations
     //--------------------------
     gl_FragColor = material_diffuse * diffuse;
-    applyFoggedColorByFragmentOnly(gl_FragColor, varFogCoord);
+    applyFoggedColorByFragmentOnly(gl_FragColor);
 }
