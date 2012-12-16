@@ -35,7 +35,6 @@ public class OceanAppState extends BasicAppState {
     private PhillipsSpectrum phillipsSpectrum;
     private Node oceanNode;
     private OceanSurface ocean;
-    private SkyBoxTexture skyBoxTexture;
     
     public OceanAppState(float maxVisibility) {
         super(UpdateInterval);
@@ -82,9 +81,7 @@ public class OceanAppState extends BasicAppState {
         oceanMat.setFloat("Shininess", 16f);
         oceanMat.setFloat("ShininessFactor", 0.2f);
         
-        skyBoxTexture = new SkyBoxTexture(getSkyAppState().getSkyGradient(), getApp().getExecutor());
-        skyBoxTexture.update();
-        oceanMat.setTexture("SkyBox", skyBoxTexture);
+        oceanMat.setTexture("SkyBox", getSkyAppState().getSkyBoxTexture());
         
         // build geometries
         
@@ -130,7 +127,6 @@ public class OceanAppState extends BasicAppState {
     @Override
     protected void intervalUpdate(float dt) {
         updateOceanParameters();
-        skyBoxTexture.update();
     }
     
     @Override
