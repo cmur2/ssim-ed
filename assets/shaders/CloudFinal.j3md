@@ -1,4 +1,4 @@
-MaterialDef CloudRender {
+MaterialDef CloudFinal {
     // This is the complete list of user defined uniforms
     // to be used in the shaders
     MaterialParameters {

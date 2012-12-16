@@ -1,4 +1,4 @@
-MaterialDef TerrainGradient {
+MaterialDef TerrainAtlas {
     MaterialParameters {
         Texture2D TerrainLUT
         Texture2D TerrainAtlas
