@@ -51,6 +51,26 @@ Hinweis: Einige Änderungen könnten erst nach einem Neustart wirksam werden!</m
         <return>Zurück</return>
         <game>Spiel starten</game>
     </single>
+    <loading>
+        <loading>Lade...</loading>
+        <status>
+            <text>
+                <empty></empty>
+                <base>Beginne Zeitzählung</base>
+                <skydome>Färbe Himmel</skydome>
+                <sun>Entzünde Sonne</sun>
+                <lighting>Werfe Schatten</lighting>
+                <star>Befestige Sterne</star>
+                <cloud>Balle Wolken</cloud>
+                <terrain>Platziere Berge</terrain>
+                <ocean>Fülle Ozeane</ocean>
+                <rain>Sammle Regen</rain>
+                <gui>Öffne Kontrollen</gui>
+                <audio>Erzeuge Klänge</audio>
+                <debug>Erlaube Magie</debug>
+            </text>
+        </status>
+    </loading>
     <pause>
         <title>Pause</title>
         <continue>Fortsetzen</continue>

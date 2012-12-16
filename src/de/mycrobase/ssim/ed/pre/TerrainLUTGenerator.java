@@ -12,7 +12,8 @@ import de.mycrobase.ssim.ed.pre.terrain.TerrainType;
 
 public class TerrainLUTGenerator {
     
-    public static final float MaxAltitude = 7000f;
+    public static final float MaxAltitude = 5500f;
+    public static final float AltitudeDistortionFactor = 0.2f;
     
     private static final int Width = 256;
     private static final int Height = 256;
@@ -26,18 +27,18 @@ public class TerrainLUTGenerator {
         System.out.println("Applying commands...");
         
         final float maxA = MaxAltitude;
-        TerrainLUTBuilder builder = new TerrainLUTBuilder(Width, Height, maxA) {{
+        TerrainLUTBuilder builder = new TerrainLUTBuilder(Width, Height, maxA, AltitudeDistortionFactor) {{
             setTypeRect(TerrainType.Default, 0, 0, Width, Height);
             
             setType(TerrainType.OceanFloor,  0, 90, -maxA,  -100);
-            setType(TerrainType.LakeFloor,   0, 90,  -100,   -25);
+            setType(TerrainType.LakeFloor,   0, 90,  -100,    -5);
             
-            setType(TerrainType.Shore,       0, 10,   -25,    25);
-            setType(TerrainType.Cliff,      10, 90,   -25,    25);
+            setType(TerrainType.Shore,       0, 10,    -5,     1);
+            setType(TerrainType.Cliff,      10, 90,    -5,     1);
             
-            setType(TerrainType.Plain,       0, 20,    25,  1500);
+            setType(TerrainType.Plain,       0, 20,     1,  1500);
             setType(TerrainType.HighPlain,   0, 20,  1500,  3000);
-            setType(TerrainType.Hill,       20, 90,    25,  3000);
+            setType(TerrainType.Hill,       20, 90,     1,  3000);
             
             setType(TerrainType.MountainTop,    0, 20,  3000,  maxA);
             setType(TerrainType.Mountains,     20, 90,  3000,  5000);

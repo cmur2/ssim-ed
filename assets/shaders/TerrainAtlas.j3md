@@ -1,9 +1,10 @@
-MaterialDef TerrainGradient {
+MaterialDef TerrainAtlas {
     MaterialParameters {
         Texture2D TerrainLUT
         Texture2D TerrainAtlas
         Texture2D TerrainNoise
         Float InvMaxAltitude
+        Float AltitudeDistortionFactor
         Vector3 AtlasParameters
         Vector2 NoiseParameters
         Vector3 FogColor
@@ -23,7 +24,5 @@ MaterialDef TerrainGradient {
         Defines {
             FOG : FogColor
         }
-    }
-    Technique FixedFunc {
     }
 }

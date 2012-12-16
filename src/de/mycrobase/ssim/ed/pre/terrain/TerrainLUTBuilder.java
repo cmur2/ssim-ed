@@ -11,10 +11,12 @@ import de.mycrobase.ssim.ed.pre.TextureMapBuilder;
 public class TerrainLUTBuilder extends TextureMapBuilder {
     
     private float maxAltitude;
+    private float altitudeDistortionFactor;
     
-    public TerrainLUTBuilder(int width, int height, float maxAltitude) {
+    public TerrainLUTBuilder(int width, int height, float maxAltitude, float altitudeDistortionFactor) {
         super(width, height);
         this.maxAltitude = maxAltitude;
+        this.altitudeDistortionFactor = altitudeDistortionFactor;
     }
     
     public void setTypeRect(TerrainType type, int xs, int ys, int xe, int ye) {
@@ -74,7 +76,11 @@ public class TerrainLUTBuilder extends TextureMapBuilder {
     }
     
     private float altitudeToY(float altitude) {
-        return 1f - ((altitude)/maxAltitude*0.5f + 0.5f);
+        float x = altitude/maxAltitude;
+        if(x > 0) {
+            x = (float) Math.pow(x, altitudeDistortionFactor);
+        }
+        return 1f - (x*0.5f + 0.5f);
     }
     
     private int typeToRedValue(TerrainType type) {

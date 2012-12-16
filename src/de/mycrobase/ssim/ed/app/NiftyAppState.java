@@ -11,6 +11,7 @@ import de.mycrobase.ssim.ed.app.screen.BasicScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.CreditsScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.GameScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.IntroScreenAppState;
+import de.mycrobase.ssim.ed.app.screen.LoadingScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.MainScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.OptionsScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.PauseScreenAppState;
@@ -43,14 +44,10 @@ public class NiftyAppState extends BasicAppState implements GameModeListener {
         //}});
         
         // disable verbose Nifty messages *after* Nifty creation
-        // TODO: remove with Nifty newer 1.3.1
         java.util.logging.Logger.getLogger("de.lessvoid.nifty").setLevel(java.util.logging.Level.WARNING);
-        java.util.logging.Logger.getLogger("NiftyInputEventHandlingLog").setLevel(java.util.logging.Level.WARNING);
-        java.util.logging.Logger.getLogger("NiftyEventBusLog").setLevel(java.util.logging.Level.WARNING);
-        java.util.logging.Logger.getLogger("NiftyImageManager").setLevel(java.util.logging.Level.WARNING);
         
         String[] files = {
-            "intro", "main", "credits", "options", "single", "game", "pause"
+            "intro", "main", "credits", "options", "single", "loading", "game", "pause"
         };
         BasicScreenAppState[] states = {
             getState(IntroScreenAppState.class),
@@ -58,6 +55,7 @@ public class NiftyAppState extends BasicAppState implements GameModeListener {
             getState(CreditsScreenAppState.class),
             getState(OptionsScreenAppState.class),
             getState(SingleScreenAppState.class),
+            getState(LoadingScreenAppState.class),
             getState(GameScreenAppState.class),
             getState(PauseScreenAppState.class)
         };
@@ -77,6 +75,8 @@ public class NiftyAppState extends BasicAppState implements GameModeListener {
     public void cleanup() {
         super.cleanup();
         
+        getApp().removeGameModeListener(this);
+        
         getApp().getGuiViewPort().removeProcessor(niftyDisplay);
         //nifty.exit();
         
@@ -86,8 +86,6 @@ public class NiftyAppState extends BasicAppState implements GameModeListener {
     
     @Override
     public void gameModeChanged(GameMode oldMode, GameMode newMode) {
-        // hide Nifty GUI in running mode (but input remains active, see
-        // GameScreenAppState)
         if(newMode == GameMode.Running) {
             if(getApp().getGuiViewPort().getProcessors().contains(niftyDisplay)) {
                 getApp().getGuiViewPort().removeProcessor(niftyDisplay);

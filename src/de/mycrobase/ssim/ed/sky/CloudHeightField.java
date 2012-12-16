@@ -8,7 +8,7 @@ import ssim.util.MathExt;
 
 import com.jme3.math.Vector3f;
 
-import chlib.noise.NoiseUtil;
+import de.altimos.util.noise.NoiseUtil;
 
 public class CloudHeightField {
     

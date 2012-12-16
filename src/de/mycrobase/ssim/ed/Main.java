@@ -16,13 +16,12 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
-import chlib.noise.NoiseUtil;
-
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.system.AppSettings;
 
 import de.altimos.util.logger.JLFBridge;
+import de.altimos.util.noise.NoiseUtil;
 import de.altimos.util.translator.Translator;
 import de.mycrobase.ssim.ed.app.AerialAppState;
 import de.mycrobase.ssim.ed.app.AudioAppState;
@@ -32,10 +31,11 @@ import de.mycrobase.ssim.ed.app.DebugAppState;
 import de.mycrobase.ssim.ed.app.GuiAppState;
 import de.mycrobase.ssim.ed.app.InputMappingAppState;
 import de.mycrobase.ssim.ed.app.LightingAppState;
+import de.mycrobase.ssim.ed.app.LoadingAppState;
+import de.mycrobase.ssim.ed.app.LoadingAppState.LoadStep;
 import de.mycrobase.ssim.ed.app.NiftyAppState;
 import de.mycrobase.ssim.ed.app.OceanAppState;
 import de.mycrobase.ssim.ed.app.RainAppState;
-import de.mycrobase.ssim.ed.app.ShadowAppState;
 import de.mycrobase.ssim.ed.app.SimClockAppState;
 import de.mycrobase.ssim.ed.app.SkyAppState;
 import de.mycrobase.ssim.ed.app.SkyDomeAppState;
@@ -46,6 +46,7 @@ import de.mycrobase.ssim.ed.app.WeatherAppState;
 import de.mycrobase.ssim.ed.app.screen.CreditsScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.GameScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.IntroScreenAppState;
+import de.mycrobase.ssim.ed.app.screen.LoadingScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.MainScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.OptionsScreenAppState;
 import de.mycrobase.ssim.ed.app.screen.PauseScreenAppState;
@@ -61,7 +62,7 @@ import de.mycrobase.ssim.ed.util.XMLLoader;
 import de.mycrobase.ssim.ed.util.lang.TListener;
 import de.mycrobase.ssim.ed.util.lang.XmlTranslation;
 
-public class Main extends SimpleApplication implements GameModeListener, SSimApplication {
+public class Main extends SimpleApplication implements SSimApplication {
     
     private static final Logger logger = Logger.getLogger(Main.class);
     private static final float UpdateInterval = 5f; // in seconds
@@ -138,13 +139,13 @@ public class Main extends SimpleApplication implements GameModeListener, SSimApp
     private List<AppState> gameAppStates = new LinkedList<AppState>();
     
     public Main(SettingsManager settingsManager) {
+        // suppress all default AppStates from SimpleApplication
+        super(new AppState[0]);
         this.settingsManager = settingsManager;
     }
     
     @Override
     public void simpleInitApp() {
-        setDisplayStatView(settingsManager.getBoolean("debug.stats"));
-        
         if(settingsManager.getBoolean("debug.noise.seed")) {
             NoiseUtil.reinitialize(DebugSeed);
         } else {
@@ -181,22 +182,18 @@ public class Main extends SimpleApplication implements GameModeListener, SSimApp
         }
         
         speed = 1f;
-
-        // manual call to avoid code duplication
-        gameModeChanged(null, getCurrentMode());
         
         stateManager.attach(new IntroScreenAppState());
         stateManager.attach(new MainScreenAppState());
         stateManager.attach(new CreditsScreenAppState());
         stateManager.attach(new OptionsScreenAppState());
         stateManager.attach(new SingleScreenAppState());
+        stateManager.attach(new LoadingScreenAppState());
         stateManager.attach(new GameScreenAppState());
         stateManager.attach(new PauseScreenAppState());
         
         stateManager.attach(new NiftyAppState());
         stateManager.attach(new InputMappingAppState());
-        
-        addGameModeListener(this);
     }
     
     @Override
@@ -219,17 +216,13 @@ public class Main extends SimpleApplication implements GameModeListener, SSimApp
     }
 
     @Override
-    public void gameModeChanged(GameMode oldMode, GameMode newMode) {
-        if(newMode == GameMode.Running) {
-            flyCam.setEnabled(true);
-            flyCam.setDragToRotate(false);
-            inputManager.setCursorVisible(false);
+    public void handleError(String errMsg, Throwable t) {
+        if(t != null) {
+            logger.fatal(errMsg, t);
         } else {
-            // disable for nifty
-            flyCam.setEnabled(false);
-            flyCam.setDragToRotate(true);
-            inputManager.setCursorVisible(true);
+            logger.fatal(errMsg);
         }
+        stop();
     }
     
     // public API
@@ -285,33 +278,44 @@ public class Main extends SimpleApplication implements GameModeListener, SSimApp
     }
 
     public void doGameInit(Mission mission) {
+        List<LoadStep> loadSteps = new ArrayList<LoadStep>();
+        
         // AppState base layer:
         // these serve as a common base for the higher AppStates
-        gameAppStates.add(new SimClockAppState(mission));
-        gameAppStates.add(new CameraAppState(MaxVisibility));
-        gameAppStates.add(new WeatherAppState("clear"));
-        gameAppStates.add(new SkyAppState(10000f, mission));
-        gameAppStates.add(new AerialAppState());
+        loadSteps.add(new LoadStep("base", 3f,
+            new SimClockAppState(mission),
+            new CameraAppState(MaxVisibility),
+            new WeatherAppState("clear"),
+            new SkyAppState(10000f, mission),
+            new AerialAppState()
+        ));
         
         // AppState higher layer:
         // these have no dependencies to each other, just to the base layer
-        gameAppStates.add(new SkyDomeAppState());
-        gameAppStates.add(new SunAppState());
-        gameAppStates.add(new LightingAppState());
-        gameAppStates.add(new ShadowAppState());
-        gameAppStates.add(new StarAppState());
-        gameAppStates.add(new CloudAppState());
-        gameAppStates.add(new TerrainAppState(mission));
-        gameAppStates.add(new OceanAppState(MaxVisibility));
-        gameAppStates.add(new RainAppState());
-        gameAppStates.add(new GuiAppState());
-        gameAppStates.add(new AudioAppState());
-        gameAppStates.add(new DebugAppState());
+        loadSteps.add(new LoadStep("skydome", 1f, new SkyDomeAppState()));
+        loadSteps.add(new LoadStep("sun", 1f, new SunAppState()));
+        loadSteps.add(new LoadStep("lighting", 1f, new LightingAppState()));
+        loadSteps.add(new LoadStep("star", 1f, new StarAppState()));
+        loadSteps.add(new LoadStep("cloud", 3f, new CloudAppState()));
+        loadSteps.add(new LoadStep("terrain", 3f, new TerrainAppState(mission)));
+        loadSteps.add(new LoadStep("ocean", 3f, new OceanAppState(MaxVisibility)));
+        loadSteps.add(new LoadStep("rain", 1f, new RainAppState()));
+        loadSteps.add(new LoadStep("gui", 1f, new GuiAppState()));
+        loadSteps.add(new LoadStep("audio", 3f, new AudioAppState()));
+        loadSteps.add(new LoadStep("debug", .5f, new DebugAppState()));
         
-        for(AppState state : gameAppStates) {
-            stateManager.attach(state);
+        for(LoadStep loadStep : loadSteps) {
+            for(AppState state : loadStep.getStates()) {
+                gameAppStates.add(state);
+            }
         }
         
+        // will load the specified AppStates and callback doGameInitDone()
+        stateManager.attach(new LoadingAppState(loadSteps));
+    }
+    
+    @Override
+    public void doGameInitDone() {
         switchGameMode(GameMode.Running);
     }
     

@@ -1,14 +1,14 @@
 package de.mycrobase.ssim.ed.util;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import org.apache.log4j.Logger;
 
-
-import chlib.streams.PrimitiveReader;
-
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetLoader;
+import com.jme3.export.binary.ByteUtils;
 
 import de.mycrobase.ssim.ed.terrain.BinaryMap;
 
@@ -23,9 +23,12 @@ public class MapLoader implements AssetLoader {
     
     @Override
     public Object load(AssetInfo assetInfo) throws IOException {
-        PrimitiveReader reader = new PrimitiveReader(assetInfo.openStream());
+        // use jME ByteUtils to read in the stream at once and wrap it into a buffer
+        ByteBuffer buffer = ByteBuffer.wrap(ByteUtils.getByteContent(assetInfo.openStream()));
+        // map files are little endian
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
         
-        int version = reader.readInt();
+        int version = buffer.getInt();
         logger.info("Identified map version: "+version);
         
         BinaryMap map = null;
@@ -33,18 +36,18 @@ public class MapLoader implements AssetLoader {
             // file header
             StringBuffer name = new StringBuffer(MaxNameLength);
             for(int i = 0; i < MaxNameLength; i++) {
-                name.append(reader.readChar());
+                name.append(buffer.getChar());
             }
-            double weDiff = reader.readDouble()*ScaleXZ;
-            double nsDiff = reader.readDouble()*ScaleXZ;
-            int weNum = reader.readInt();
-            int nsNum = reader.readInt();
+            double weDiff = buffer.getDouble()*ScaleXZ;
+            double nsDiff = buffer.getDouble()*ScaleXZ;
+            int weNum = buffer.getInt();
+            int nsNum = buffer.getInt();
             
             // file body
             float[][] elevs = new float[nsNum][weNum];
             for(int i = 0; i < nsNum; i++) {
                 for(int j = 0; j < weNum; j++) {
-                    elevs[i][j] = (float) (reader.readShort()) * ScaleY;
+                    elevs[i][j] = (float) (buffer.getShort()) * ScaleY;
                 }
             }
             

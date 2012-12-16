@@ -63,6 +63,7 @@ public class GPUCloudProcessor extends CloudProcessor {
         Camera cam = new Camera(getTexSize(), getTexSize());
         
         tempViewPort = new ViewPort("Cloud-Render-ViewPort", cam);
+        //tempViewPort = rm.createPreView("Cloud-Render-ViewPort", cam);
         tempViewPort.setClearFlags(true, true, true);
         tempViewPort.setBackgroundColor(ColorRGBA.Black);
         
@@ -87,9 +88,12 @@ public class GPUCloudProcessor extends CloudProcessor {
         tempMat.setColor("SunLightColor", sunLightColor);
         tempMat.setTexture("HeightField", heightFieldTex);
         quad.setMaterial(tempMat);
+        
+        // first attach to scene, than update our Geometry
+        // (https://code.google.com/p/jmonkeyengine/source/detail?r=9580)
+        tempViewPort.attachScene(quad);
         quad.updateGeometricState();
         
-        tempViewPort.attachScene(quad);
         tempViewPort.setOutputFrameBuffer(fb);
         // --- end ---
         

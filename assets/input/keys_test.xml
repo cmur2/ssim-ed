@@ -8,6 +8,10 @@
     <map button="LEFT" action="TEST_left" />
     <map button="NOT_FOUND" action="TEST_notfound" />
     
+    <map axis="X" negative="false" action="TEST_x" />
+    <map axis="Y" action="TEST_y" />
+    <map axis="NOT_FOUND" negative="false" action="TEST_notfound" />
+    
     <map notfound="NOT_FOUND" action="TEST_notfound" />
     
 </sed:mappings>

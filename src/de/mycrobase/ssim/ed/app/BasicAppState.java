@@ -102,6 +102,10 @@ public class BasicAppState extends AbstractAppState {
         return app;
     }
     
+    protected AppStateManager getStateManager() {
+        return stateManager;
+    }
+    
     protected <T extends AppState> T getState(Class<T> stateClass) {
         return stateManager.getState(stateClass);
     }

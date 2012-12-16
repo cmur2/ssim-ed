@@ -1,7 +1,5 @@
 package de.mycrobase.ssim.ed.app;
 
-import java.util.Arrays;
-
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetKey;
@@ -9,8 +7,8 @@ import com.jme3.material.Material;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.terrain.geomipmap.TerrainGrid;
+import com.jme3.terrain.geomipmap.TerrainGridLodControl;
 import com.jme3.terrain.geomipmap.TerrainGridTileLoader;
-import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.MagFilter;
@@ -33,7 +31,7 @@ public class TerrainAppState extends BasicAppState {
     // exists only while AppState is attached
     private TerrainGrid terrainGrid;
     private Material terrainMat;
-    TerrainLodControl lodControl;
+    TerrainGridLodControl lodControl;
     
     public TerrainAppState(Mission mission) {
         super(UpdateInterval);
@@ -74,6 +72,8 @@ public class TerrainAppState extends BasicAppState {
         // The inverse maximum altitude (same as used in TerrainLUT generation!)
         // is needed to bring the altitude (in m) down to [0,1]
         terrainMat.setFloat("InvMaxAltitude", 1f/de.mycrobase.ssim.ed.pre.TerrainLUTGenerator.MaxAltitude);
+        // The altitude distortion factor
+        terrainMat.setFloat("AltitudeDistortionFactor", de.mycrobase.ssim.ed.pre.TerrainLUTGenerator.AltitudeDistortionFactor);
         // Pass some additional parameters describing the atlas properties to
         // the shader that it needs to perform valid texture lookups on the atlas
         {
@@ -105,11 +105,11 @@ public class TerrainAppState extends BasicAppState {
         terrainGrid.setLocalTranslation(0, 0, 0);
         terrainGrid.setLocalScale(sampleDistance);
         
-        lodControl = new TerrainLodControl(terrainGrid, Arrays.asList(getApp().getCamera()));
+        lodControl = new TerrainGridLodControl(terrainGrid, getApp().getCamera());
         lodControl.setLodCalculator(new DistanceLodCalculator(PatchSize, LODMultiplier));
         terrainGrid.addControl(lodControl);
         
-        terrainGrid.initialize(getApp().getCamera().getLocation());
+        // https://code.google.com/p/jmonkeyengine/source/detail?r=8807&path=/trunk/engine/src/terrain/com/jme3/terrain/geomipmap/TerrainGrid.java
 
         getApp().getRootNode().attachChild(terrainGrid);
     }

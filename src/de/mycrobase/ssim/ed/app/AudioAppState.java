@@ -5,23 +5,20 @@ import ssim.util.MathExt;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.audio.AudioNode;
-import com.jme3.scene.Node;
 
+import de.mycrobase.ssim.ed.GameMode;
+import de.mycrobase.ssim.ed.GameModeListener;
 import de.mycrobase.ssim.ed.weather.Weather;
 import de.mycrobase.ssim.ed.weather.ext.PrecipitationType;
 
-public class AudioAppState extends BasicAppState {
+public class AudioAppState extends BasicAppState implements GameModeListener {
 
     private static final float UpdateInterval = 0.1f; // in seconds
     
     // exists only while AppState is attached
-    private Node envAudio;
     private AudioNode wind;
-    
     private AudioNode rainMedium;
-    private float rainMediumVolume;
     private AudioNode rainHeavy;
-    private float rainHeavyVolume;
     
     public AudioAppState() {
         super(UpdateInterval);
@@ -31,25 +28,18 @@ public class AudioAppState extends BasicAppState {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        envAudio = new Node("EnvAudio");
-        getApp().getRootNode().attachChild(envAudio);
-        
-//        wind = new AudioNode(getApp().getAssetManager(), "audio/wind-01.wav", false);
-//        wind.setLooping(true);
-//        wind.setPositional(false);
-//        envAudio.attachChild(wind);
-//        updateWind();
+        wind = loadEnvSound("audio/wind.ogg");
+        updateWind();
         
         rainMedium = loadEnvSound("audio/rain-medium.ogg");
         rainHeavy = loadEnvSound("audio/rain-heavy.ogg");
-        envAudio.attachChild(rainMedium);
-        envAudio.attachChild(rainHeavy);
         updateRain();
-        rainMedium.play();
-        rainHeavy.play();
+        
+        // manual call to avoid code duplication
+        gameModeChanged(null, getApp().getCurrentMode());
+        
+        getApp().addGameModeListener(this);
     }
-    
-    // TODO: pause active sounds on GameMode.Paused?
     
     @Override
     public void update(float dt) {
@@ -69,17 +59,29 @@ public class AudioAppState extends BasicAppState {
     @Override
     public void cleanup() {
         super.cleanup();
+        
+        getApp().removeGameModeListener(this);
 
-//        wind.stop();
+        wind.stop();
         rainMedium.stop();
         rainHeavy.stop();
       
-        getApp().getRootNode().detachChild(envAudio);
-        
-        envAudio = null;
         wind = null;
         rainMedium = null;
         rainHeavy = null;
+    }
+    
+    @Override
+    public void gameModeChanged(GameMode oldMode, GameMode newMode) {
+        if(newMode == GameMode.Paused) {
+            wind.pause();
+            rainMedium.pause();
+            rainHeavy.pause();
+        } else {
+            wind.play();
+            rainMedium.play();
+            rainHeavy.play();
+        }
     }
 
     private Weather getWeather() {
@@ -91,8 +93,21 @@ public class AudioAppState extends BasicAppState {
     }
     
     private void updateWind() {
-        //wind.setVolume(getWeather().getFloat("wind.strength")/10f);
-        //wind.setVolume(getSoundEffectVolume());
+        float strength = getWeather().getFloat("wind.strength");
+        
+        final float minAudibleStrength = 3f; // below is calm
+        final float maxAudibleStrength = 30f; // near gale and more
+        
+        float windVolume;
+        
+        if(strength < minAudibleStrength) {
+            windVolume = 0f;
+        } else {
+            windVolume = (float) MathExt.interpolateLinear(0f, 1f,
+                (strength-minAudibleStrength) / (maxAudibleStrength-minAudibleStrength));
+        }
+        
+        wind.setVolume(windVolume * getSoundEffectVolume());
     }
     
     private void updateRain() {
@@ -100,8 +115,10 @@ public class AudioAppState extends BasicAppState {
             PrecipitationType.fromId(getWeather().getInt("precipitation.form"));
         float intensity = getWeather().getFloat("precipitation.intensity");
         
+        float rainMediumVolume;
+        float rainHeavyVolume;
+        
         if(curType == PrecipitationType.Rain) {
-            System.out.println(intensity);
             rainMediumVolume = getRainMediumVolume(intensity);
             rainHeavyVolume  = getRainHeavyVolume(intensity);
         } else {
@@ -117,6 +134,8 @@ public class AudioAppState extends BasicAppState {
         AudioNode a = new AudioNode(
             getApp().getAssetManager(), file, false);
         a.setLooping(true);
+        // there is btw no need to attach a non-positional AudioNode to the
+        // scene: http://jmonkeyengine.org/groups/sound/forum/topic/audionodes-without-attaching-to-a-parent-node/
         a.setPositional(false);
         return a;
     }

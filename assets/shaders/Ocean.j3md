@@ -1,4 +1,4 @@
-MaterialDef CloudRender {
+MaterialDef Ocean {
     // This is the complete list of user defined uniforms
     // to be used in the shaders
     MaterialParameters {
@@ -25,7 +25,5 @@ MaterialDef CloudRender {
             WorldMatrix
             CameraPosition
         }
-    }
-    Technique FixedFunc {
     }
 }

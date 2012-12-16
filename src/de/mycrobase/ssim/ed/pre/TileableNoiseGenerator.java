@@ -7,9 +7,10 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import ssim.util.MathExt;
-import chlib.noise.NoiseUtil;
 
 import com.jme3.math.Vector3f;
+
+import de.altimos.util.noise.NoiseUtil;
 
 public class TileableNoiseGenerator {
     

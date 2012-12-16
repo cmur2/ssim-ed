@@ -5,9 +5,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
-import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -29,7 +27,7 @@ public class DebugAppState extends BasicAppState {
     
     public static final String INPUT_MAPPING_SHOW_GRID = "SED_ShowGrid";
     
-    private static final float UpdateInterval = 0.5f; // in seconds
+    private static final float UpdateInterval = 0.1f; // in seconds
     
     private static final float StandardRadius = 50f; // in m
     private static final float GridStep = 100f; // in m

@@ -21,6 +21,4 @@ MaterialDef CloudRender {
             WorldViewProjectionMatrix
         }
     }
-    Technique FixedFunc {
-    }
 }

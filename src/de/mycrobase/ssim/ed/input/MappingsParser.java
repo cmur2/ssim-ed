@@ -8,6 +8,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.input.controls.Trigger;
 
@@ -32,6 +33,8 @@ public class MappingsParser {
                 trigger = getKeyTrigger("KEY_" + map.getAttributeValue("key"));
             } else if(map.getAttribute("button") != null) {
                 trigger = getMouseButtonTrigger("BUTTON_" + map.getAttributeValue("button"));
+            } else if(map.getAttribute("axis") != null && map.getAttribute("negative") != null) {
+                trigger = getMouseAxisTrigger("AXIS_" + map.getAttributeValue("axis"), map.getAttributeValue("negative"));
             }
             
             if(trigger != null) {
@@ -62,6 +65,16 @@ public class MappingsParser {
             return new MouseButtonTrigger(mouseButton);
         } catch(Exception ex) {
             logger.error(String.format("No mouse button code constant found for %s!", button), ex);
+            return null;
+        }
+    }
+    
+    private static MouseAxisTrigger getMouseAxisTrigger(String axis, String negative) {
+        try {
+            int mouseAxis = (Integer) MouseInput.class.getDeclaredField(axis).get(Integer.class);
+            return new MouseAxisTrigger(mouseAxis, Boolean.parseBoolean(negative));
+        } catch(Exception ex) {
+            logger.error(String.format("No mouse axis code constant found for %s!", axis), ex);
             return null;
         }
     }
