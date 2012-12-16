@@ -21,7 +21,7 @@ varying vec3 varFogCoord;
 
 float altitudeToY(float altitude) {
     float x = altitude * m_InvMaxAltitude;
-    if(x > 0) {
+    if(x > 0.0) {
         x = pow(x, m_AltitudeDistortionFactor);
     }
     return x * 0.5 + 0.5;
