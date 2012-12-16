@@ -29,16 +29,14 @@ public class OceanAppState extends BasicAppState {
     private static final int GridSize = 64;
     private static final int NumGridTiles = 11; // should be odd
 
-    private float maxVisibility;
-    
     // exists only while AppState is attached
     private PhillipsSpectrum phillipsSpectrum;
     private Node oceanNode;
+    private Material oceanMat;
     private OceanSurface ocean;
     
-    public OceanAppState(float maxVisibility) {
+    public OceanAppState() {
         super(UpdateInterval);
-        this.maxVisibility = maxVisibility;
     }
 
     @Override
@@ -69,7 +67,7 @@ public class OceanAppState extends BasicAppState {
 //        oceanMat.setBoolean("UseMaterialColors", true);
 
         // TODO: improve ocean shader
-        Material oceanMat = new Material(getApp().getAssetManager(), "shaders/Ocean.j3md");
+        oceanMat = new Material(getApp().getAssetManager(), "shaders/Ocean.j3md");
         oceanMat.setColor("WaterColor", new ColorRGBA(0.0039f, 0.00196f, 0.145f, 1.0f));
         
         {
@@ -80,8 +78,9 @@ public class OceanAppState extends BasicAppState {
         
         oceanMat.setFloat("Shininess", 16f);
         oceanMat.setFloat("ShininessFactor", 0.2f);
-        
         oceanMat.setTexture("SkyBox", getSkyAppState().getSkyBoxTexture());
+        // Pass fog parameters into shader necessary for Fog.glsllib
+        updateFog();
         
         // build geometries
         
@@ -127,6 +126,7 @@ public class OceanAppState extends BasicAppState {
     @Override
     protected void intervalUpdate(float dt) {
         updateOceanParameters();
+        updateFog();
     }
     
     @Override
@@ -152,7 +152,7 @@ public class OceanAppState extends BasicAppState {
     }
     
     private Geometry buildOceanBorder(Material mat) {
-        float size = maxVisibility * 2;
+        float size = getState(CameraAppState.class).getMaxVisibility() * 2;
         float innerSize = NumGridTiles * GridStep;
         if(innerSize >= size) {
             throw new IllegalArgumentException("OceanBorder size will be effectively < 0!");
@@ -193,6 +193,11 @@ public class OceanAppState extends BasicAppState {
         }
         
         vars.release();
+    }
+    
+    private void updateFog() {
+        oceanMat.setVector3("FogColor", getState(AerialAppState.class).getFogColor());
+        oceanMat.setFloat("FogDensity", getState(AerialAppState.class).getFogDensity());
     }
     
     private Weather getWeather() {

@@ -7,6 +7,8 @@ MaterialDef Ocean {
         Float Shininess
         Float ShininessFactor
         TextureCubeMap SkyBox
+        Vector3 FogColor
+        Float FogDensity
     }
     Technique {
         LightMode MultiPass
@@ -24,6 +26,9 @@ MaterialDef Ocean {
             ViewMatrixInverse
             WorldMatrix
             CameraPosition
+        }
+        Defines {
+            FOG : FogColor
         }
     }
 }
