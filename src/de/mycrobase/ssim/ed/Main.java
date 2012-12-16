@@ -215,6 +215,16 @@ public class Main extends SimpleApplication implements SSimApplication {
         executor.shutdown();
     }
 
+    @Override
+    public void handleError(String errMsg, Throwable t) {
+        if(t != null) {
+            logger.fatal(errMsg, t);
+        } else {
+            logger.fatal(errMsg);
+        }
+        stop();
+    }
+    
     // public API
     
     public ScheduledExecutorService getExecutor() {
