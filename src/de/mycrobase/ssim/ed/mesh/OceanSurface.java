@@ -138,6 +138,7 @@ public class OceanSurface extends Mesh {
             }
         }
         
+        // TODO: changing WaveSpectrum should have an effect after init()
         // TODO: allow later change by reinit
         for(int ix = 0; ix < numX; ix++) {
             for(int iy = 0; iy < numY; iy++) {

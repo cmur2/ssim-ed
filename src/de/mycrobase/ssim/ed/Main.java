@@ -288,7 +288,7 @@ public class Main extends SimpleApplication implements SSimApplication {
         loadSteps.add(new LoadStep("star", 1f, new StarAppState()));
         loadSteps.add(new LoadStep("cloud", 3f, new CloudAppState()));
         loadSteps.add(new LoadStep("terrain", 3f, new TerrainAppState(mission)));
-        loadSteps.add(new LoadStep("ocean", 3f, new OceanAppState()));
+        loadSteps.add(new LoadStep("ocean", 3f, new OceanAppState(MaxVisibility)));
         loadSteps.add(new LoadStep("rain", 1f, new RainAppState()));
         loadSteps.add(new LoadStep("gui", 1f, new GuiAppState()));
         loadSteps.add(new LoadStep("audio", 3f, new AudioAppState()));

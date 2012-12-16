@@ -2,7 +2,11 @@ MaterialDef CloudRender {
     // This is the complete list of user defined uniforms
     // to be used in the shaders
     MaterialParameters {
-        Color Diffuse
+        Color WaterColor
+        Float R0
+        Float Shininess
+        Float ShininessFactor
+        TextureCubeMap SkyBox
     }
     Technique {
         LightMode MultiPass
@@ -17,7 +21,9 @@ MaterialDef CloudRender {
             WorldViewMatrix
             NormalMatrix
             ViewMatrix
+            ViewMatrixInverse
             WorldMatrix
+            CameraPosition
         }
     }
 }

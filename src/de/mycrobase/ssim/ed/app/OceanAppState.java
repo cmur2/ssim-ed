@@ -8,12 +8,16 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.LodControl;
+import com.jme3.water.WaterFilter;
 
+import de.mycrobase.ssim.ed.mesh.OceanBorder;
 import de.mycrobase.ssim.ed.mesh.OceanSurface;
 import de.mycrobase.ssim.ed.ocean.PhillipsSpectrum;
+import de.mycrobase.ssim.ed.sky.SkyBoxTexture;
 import de.mycrobase.ssim.ed.util.TempVars;
 import de.mycrobase.ssim.ed.weather.Weather;
 
@@ -23,15 +27,19 @@ public class OceanAppState extends BasicAppState {
 
     private static final float GridStep = 400f; // in m
     private static final int GridSize = 64;
-    private static final int NumGridTiles = 1; // should be odd
+    private static final int NumGridTiles = 11; // should be odd
+
+    private float maxVisibility;
     
     // exists only while AppState is attached
     private PhillipsSpectrum phillipsSpectrum;
     private Node oceanNode;
     private OceanSurface ocean;
+    private SkyBoxTexture skyBoxTexture;
     
-    public OceanAppState() {
+    public OceanAppState(float maxVisibility) {
         super(UpdateInterval);
+        this.maxVisibility = maxVisibility;
     }
 
     @Override
@@ -63,7 +71,22 @@ public class OceanAppState extends BasicAppState {
 
         // TODO: improve ocean shader
         Material oceanMat = new Material(getApp().getAssetManager(), "shaders/Ocean.j3md");
-        oceanMat.setColor("Diffuse", new ColorRGBA(0.5f, 0.5f, 1f, 1));
+        oceanMat.setColor("WaterColor", new ColorRGBA(0.0039f, 0.00196f, 0.145f, 1.0f));
+        
+        {
+            double etaratio = 1.0003/1.3333; // ^= firstIndex/secondIndex
+            double r0 = Math.pow((1.0-etaratio) / (1.0+etaratio), 2.0);
+            oceanMat.setFloat("R0", (float) r0);
+        }
+        
+        oceanMat.setFloat("Shininess", 16f);
+        oceanMat.setFloat("ShininessFactor", 0.2f);
+        
+        skyBoxTexture = new SkyBoxTexture(getSkyAppState().getSkyGradient(), getApp().getExecutor());
+        skyBoxTexture.update();
+        oceanMat.setTexture("SkyBox", skyBoxTexture);
+        
+        // build geometries
         
         final int numGridTilesHalf = NumGridTiles/2;
         for(int ix = -numGridTilesHalf; ix <= +numGridTilesHalf; ix++) {
@@ -74,7 +97,14 @@ public class OceanAppState extends BasicAppState {
             }
         }
         
+        oceanNode.attachChild(buildOceanBorder(oceanMat));
+        
         getApp().getRootNode().attachChild(oceanNode);
+        
+//        FilterPostProcessor fpp = new FilterPostProcessor(getApp().getAssetManager());
+//        WaterFilter water = new WaterFilter(getApp().getRootNode(), new Vector3f(-1f, -1f, 0f).normalizeLocal());
+//        fpp.addFilter(water);
+//        getApp().getViewPort().addProcessor(fpp);
     }
     
     @Override
@@ -100,6 +130,7 @@ public class OceanAppState extends BasicAppState {
     @Override
     protected void intervalUpdate(float dt) {
         updateOceanParameters();
+        skyBoxTexture.update();
     }
     
     @Override
@@ -116,11 +147,26 @@ public class OceanAppState extends BasicAppState {
         Geometry geom = new Geometry("OceanSurface"+offset.toString(), ocean);
         geom.setMaterial(mat);
         geom.setLocalTranslation(offset);
-        geom.setLocalScale(1);
         
         LodControl lod = new LodControl();
-        lod.setTrisPerPixel(0.7f);
+        lod.setTrisPerPixel(2f);
         geom.addControl(lod);
+        
+        return geom;
+    }
+    
+    private Geometry buildOceanBorder(Material mat) {
+        float size = maxVisibility * 2;
+        float innerSize = NumGridTiles * GridStep;
+        if(innerSize >= size) {
+            throw new IllegalArgumentException("OceanBorder size will be effectively < 0!");
+        }
+        OceanBorder border = new OceanBorder(size, size, innerSize, innerSize);
+        
+        Geometry geom = new Geometry("OceanBorder", border);
+        geom.setMaterial(mat);
+        // translate by a half GridStep since NumGridTiles is odd:
+        geom.setLocalTranslation(GridStep/2, 0f, GridStep/2);
         
         return geom;
     }
@@ -134,8 +180,9 @@ public class OceanAppState extends BasicAppState {
         TempVars vars = TempVars.get();
         
         {
-            float direction = getWeather().getFloat("wind.direction");
-            float strength = getWeather().getFloat("wind.strength");
+            // TODO: disable varying wind parameter, now they are constant
+            float direction = 42; //getWeather().getFloat("wind.direction");
+            float strength = 7; //getWeather().getFloat("wind.strength");
             // windVelo will be: direction into which wind is blowing and magnitude
             // reflects strength of wind
             Vector3f windVelo = vars.vect1.set(
@@ -154,5 +201,9 @@ public class OceanAppState extends BasicAppState {
     
     private Weather getWeather() {
         return getState(WeatherAppState.class).getWeather();
+    }
+    
+    private SkyAppState getSkyAppState() {
+        return getState(SkyAppState.class);
     }
 }
