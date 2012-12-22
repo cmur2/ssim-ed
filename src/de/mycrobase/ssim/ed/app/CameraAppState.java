@@ -3,6 +3,7 @@ package de.mycrobase.ssim.ed.app;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.collision.MotionAllowedListener;
 import com.jme3.input.FlyByCamera;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -37,6 +38,15 @@ public class CameraAppState extends BasicAppState implements GameModeListener {
         flyCam = new CustomFlyByCamera(cam);
         flyCam.setMoveSpeed(3e2f);
         flyCam.registerWithInput(getApp().getInputManager());
+        
+        // let the user never go below y=5 plane
+        flyCam.setMotionAllowedListener(new MotionAllowedListener() {
+            @Override
+            public void checkMotionAllowed(Vector3f position, Vector3f velocity) {
+                position.addLocal(velocity);
+                position.y = Math.max(position.y, 5f);
+            }
+        });
         
         cam.setLocation(new Vector3f(0, 450f, 0));
         //cam.setRotation(new Quaternion(new float[] {-90*FastMath.DEG_TO_RAD,0,0}));
