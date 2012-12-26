@@ -25,18 +25,19 @@ public abstract class CloudProcessor implements SceneProcessor {
     private static final int MaxSteps = 30;
     private static final int NumOctaves = 8;
     
-    // state
-    private boolean init = false;
-    private float time = 0;
     private int texSize;
     private float updateInterval; // in seconds
     
+    // state
+    private boolean init = false;
+    private float time;
     private Texture2D cloudTex;
     
     public CloudProcessor(int texSize, float updateInterval) {
         this.texSize = texSize;
         this.updateInterval = updateInterval;
         
+        time = 0;
         cloudTex = new Texture2D(getTexSize(), getTexSize(), Format.RGBA8);
     }
     
@@ -76,6 +77,8 @@ public abstract class CloudProcessor implements SceneProcessor {
 
     @Override
     public void cleanup() {
+        init = false;
+        
         cloudTex = null;
     }
     
