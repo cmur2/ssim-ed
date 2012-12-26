@@ -7,17 +7,19 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.post.FilterPostProcessor;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.LodControl;
-import com.jme3.water.WaterFilter;
+import com.jme3.scene.shape.Quad;
+import com.jme3.water.SimpleWaterProcessor;
 
 import de.mycrobase.ssim.ed.mesh.OceanBorder;
 import de.mycrobase.ssim.ed.mesh.OceanSurface;
 import de.mycrobase.ssim.ed.ocean.PhillipsSpectrum;
-import de.mycrobase.ssim.ed.sky.SkyBoxTexture;
+import de.mycrobase.ssim.ed.ocean.ReflectionProcessor;
 import de.mycrobase.ssim.ed.util.TempVars;
 import de.mycrobase.ssim.ed.weather.Weather;
 
@@ -30,6 +32,7 @@ public class OceanAppState extends BasicAppState {
     private static final int NumGridTiles = 11; // should be odd
 
     // exists only while AppState is attached
+    private ReflectionProcessor reflectionProcessor;
     private PhillipsSpectrum phillipsSpectrum;
     private Node oceanNode;
     private Material oceanMat;
@@ -42,6 +45,25 @@ public class OceanAppState extends BasicAppState {
     @Override
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
+        
+        reflectionProcessor = new ReflectionProcessor(getApp().getRootNode(), 512);
+        getApp().getViewPort().addProcessor(reflectionProcessor);
+        
+        de.mycrobase.ssim.ed.ocean.SimpleWaterProcessor waterProcessor;
+        {
+            waterProcessor = new de.mycrobase.ssim.ed.ocean.SimpleWaterProcessor(getApp().getAssetManager());
+            waterProcessor.setReflectionScene(getApp().getRootNode());
+            waterProcessor.setLightPosition(new Vector3f(1f, 1f, 0f).normalizeLocal());
+//            getApp().getViewPort().addProcessor(waterProcessor);
+            
+//            Quad quad = new Quad(40000,40000);
+//            quad.scaleTextureCoordinates(new Vector2f(6f,6f));
+//            Geometry water=new Geometry("water", quad);
+//            water.setLocalTranslation(-10000, 0, 10000);
+//            water.setLocalRotation(new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X));
+//            water.setMaterial(waterProcessor.getMaterial());
+//            getApp().getRootNode().attachChild(water);
+        }
         
         phillipsSpectrum = new PhillipsSpectrum(true);
         //phillipsSpectrum.setWindVelocity(new Vector3f(0,0,-15));
@@ -79,6 +101,8 @@ public class OceanAppState extends BasicAppState {
         oceanMat.setFloat("Shininess", 16f);
         oceanMat.setFloat("ShininessFactor", 0.2f);
         oceanMat.setTexture("SkyBox", getSkyAppState().getSkyBoxTexture());
+        oceanMat.setTexture("ReflectionMap", reflectionProcessor.getReflectionTexture());
+        //oceanMat.setTexture("ReflectionMap", waterProcessor.getReflectionTexture());
         // Pass fog parameters into shader necessary for Fog.glsllib
         updateFog();
         
@@ -133,9 +157,12 @@ public class OceanAppState extends BasicAppState {
     public void cleanup() {
         super.cleanup();
         
+        getApp().getViewPort().removeProcessor(reflectionProcessor);
         getApp().getRootNode().detachChild(oceanNode);
         
+        reflectionProcessor = null;
         ocean = null;
+        oceanMat = null;
         oceanNode = null;
     }
     
