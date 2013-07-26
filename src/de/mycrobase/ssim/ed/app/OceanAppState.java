@@ -12,6 +12,8 @@ import com.jme3.post.FilterPostProcessor;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.LodControl;
+import com.jme3.texture.Texture;
+import com.jme3.texture.Texture.WrapMode;
 import com.jme3.water.WaterFilter;
 
 import de.mycrobase.ssim.ed.mesh.OceanBorder;
@@ -28,6 +30,7 @@ public class OceanAppState extends BasicAppState {
     private static final float GridStep = 400f; // in m
     private static final int GridSize = 64;
     private static final int NumGridTiles = 11; // should be odd
+    private static final float TileTexCoordScale = 1f;
 
     // exists only while AppState is attached
     private PhillipsSpectrum phillipsSpectrum;
@@ -48,7 +51,8 @@ public class OceanAppState extends BasicAppState {
         
         ocean = new OceanSurface(
             GridSize, GridSize, GridStep, GridStep,
-            phillipsSpectrum, getApp().getExecutor()
+            phillipsSpectrum, getApp().getExecutor(),
+            TileTexCoordScale
         );
         updateOceanParameters();
         ocean.initSim();
@@ -79,6 +83,11 @@ public class OceanAppState extends BasicAppState {
         oceanMat.setFloat("Shininess", 16f);
         oceanMat.setFloat("ShininessFactor", 0.2f);
         oceanMat.setTexture("SkyBox", getSkyAppState().getSkyBoxTexture());
+        {
+            Texture normalMap = getApp().getAssetManager().loadTexture("Common/MatDefs/Water/Textures/water_normalmap.dds");
+            normalMap.setWrap(WrapMode.Repeat);
+            oceanMat.setTexture("NormalMap", normalMap);
+        }
         // Pass fog parameters into shader necessary for Fog.glsllib
         updateFog();
         
@@ -152,7 +161,7 @@ public class OceanAppState extends BasicAppState {
     }
     
     private Geometry buildOceanBorder(Material mat) {
-        float size = getState(CameraAppState.class).getMaxVisibility() * 2;
+        float size = getState(CameraAppState.class).getMaxVisibility() * 1f;
         float innerSize = NumGridTiles * GridStep;
         if(innerSize >= size) {
             throw new IllegalArgumentException("OceanBorder size will be effectively < 0!");
@@ -178,7 +187,7 @@ public class OceanAppState extends BasicAppState {
         {
             // TODO: disable varying wind parameter, now they are constant
             float direction = 42; //getWeather().getFloat("wind.direction");
-            float strength = 7; //getWeather().getFloat("wind.strength");
+            float strength = 0; //getWeather().getFloat("wind.strength");
             // windVelo will be: direction into which wind is blowing and magnitude
             // reflects strength of wind
             Vector3f windVelo = vars.vect1.set(
