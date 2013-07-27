@@ -166,7 +166,9 @@ public class OceanAppState extends BasicAppState {
         if(innerSize >= size) {
             throw new IllegalArgumentException("OceanBorder size will be effectively < 0!");
         }
-        OceanBorder border = new OceanBorder(size, size, innerSize, innerSize);
+        // calculate texCoord resolution, one texCoord unit for one tile because of tilability
+        float texCoordPerMeter = 1.0f / GridStep;
+        OceanBorder border = new OceanBorder(size, size, innerSize, innerSize, texCoordPerMeter, TileTexCoordScale);
         
         Geometry geom = new Geometry("OceanBorder", border);
         geom.setMaterial(mat);

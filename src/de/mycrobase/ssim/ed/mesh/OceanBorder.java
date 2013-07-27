@@ -14,12 +14,17 @@ public class OceanBorder extends Mesh {
     private float sizeZ;
     private float innerSizeX;
     private float innerSizeZ;
+    private float texCoordPerMeter;
+    private float texCoordScale;
     
-    public OceanBorder(float sizeX, float sizeZ, float innerSizeX, float innerSizeZ) {
+    public OceanBorder(float sizeX, float sizeZ, float innerSizeX,
+            float innerSizeZ, float texCoordPerMeter, float texCoordScale) {
         this.sizeX = sizeX;
         this.sizeZ = sizeZ;
         this.innerSizeX = innerSizeX;
         this.innerSizeZ = innerSizeZ;
+        this.texCoordPerMeter = texCoordPerMeter;
+        this.texCoordScale = texCoordScale;
         
         initGeometry();
     }
@@ -29,8 +34,11 @@ public class OceanBorder extends Mesh {
     private void initGeometry() {
         int numVertices = 8;
         
+        // needed for deriving texture coordinates later
+        Vector3f[] positions = new Vector3f[numVertices];
+        
         {
-            Vector3f[] positions = new Vector3f[numVertices];
+            //Vector3f[] positions = new Vector3f[numVertices];
             positions[0] = new Vector3f(-innerSizeX/2, 0, -innerSizeZ/2);
             positions[1] = new Vector3f(+innerSizeX/2, 0, -innerSizeZ/2);
             positions[2] = new Vector3f(+innerSizeX/2, 0, +innerSizeZ/2);
@@ -52,23 +60,16 @@ public class OceanBorder extends Mesh {
         }
         
         {
-            float innerTexCoordWidth = 11f * 1f;
-            float outerTexCoordWidth = innerTexCoordWidth + 2f * 1f;
-            
             Vector2f[] texCoords = new Vector2f[numVertices];
             
-            texCoords[0] = new Vector2f( 1,  1);
-            texCoords[1] = new Vector2f(12,  1);
-            texCoords[2] = new Vector2f(12, 12);
-            texCoords[3] = new Vector2f( 1, 12);
-            
-            texCoords[4] = new Vector2f( 0,  0);
-            texCoords[5] = new Vector2f(13,  0);
-            texCoords[6] = new Vector2f(13, 13);
-            texCoords[7] = new Vector2f( 0, 13);
-            
+            // derive texture coordinates from physical dimensions via texCoordPerMeter
+            // resolution for all vertices
             for(int i = 0; i < texCoords.length; i++) {
-                texCoords[i].multLocal(1f);
+                texCoords[i] = new Vector2f();
+                texCoords[i].x = (positions[i].x + innerSizeX/2) * texCoordPerMeter;
+                texCoords[i].y = (positions[i].z + innerSizeZ/2) * texCoordPerMeter;
+                // apply normal texture coordinate scale
+                texCoords[i].multLocal(texCoordScale);
             }
             
             setBuffer(Type.TexCoord, 2, BufferUtils.createFloatBuffer(texCoords));
