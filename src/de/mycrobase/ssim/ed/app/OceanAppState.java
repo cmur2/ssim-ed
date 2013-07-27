@@ -1,5 +1,7 @@
 package de.mycrobase.ssim.ed.app;
 
+import org.apache.log4j.Logger;
+
 import ssim.util.MathExt;
 
 import com.jme3.app.Application;
@@ -25,6 +27,8 @@ import de.mycrobase.ssim.ed.weather.Weather;
 
 public class OceanAppState extends BasicAppState {
 
+    private static final Logger logger = Logger.getLogger(OceanAppState.class);
+    
     private static final float UpdateInterval = 5f; // in seconds
 
     private static final float GridStep = 400f; // in m
@@ -38,6 +42,8 @@ public class OceanAppState extends BasicAppState {
     private Material oceanMat;
     private OceanSurface ocean;
     
+    private int reflectionTexSize;
+    
     public OceanAppState() {
         super(UpdateInterval);
     }
@@ -46,7 +52,10 @@ public class OceanAppState extends BasicAppState {
     public void initialize(AppStateManager stateManager, Application baseApp) {
         super.initialize(stateManager, baseApp);
         
-        reflectionProcessor = new ReflectionProcessor(getApp().getRootNode(), 512);
+        evalSettings();
+        logger.info(String.format("Reflection map texture size: %d", reflectionTexSize));
+        
+        reflectionProcessor = new ReflectionProcessor(getApp().getRootNode(), reflectionTexSize);
         getApp().getViewPort().addProcessor(reflectionProcessor);
         
         de.mycrobase.ssim.ed.ocean.SimpleWaterProcessor waterProcessor;
@@ -225,6 +234,24 @@ public class OceanAppState extends BasicAppState {
     private void updateFog() {
         oceanMat.setVector3("FogColor", getState(AerialAppState.class).getFogColor());
         oceanMat.setFloat("FogDensity", getState(AerialAppState.class).getFogDensity());
+    }
+
+    private void evalSettings() {
+        int detailLevel = getApp().getSettingsManager().getInteger("engine.detail.level");
+        switch(detailLevel) {
+            case 0: {
+                reflectionTexSize = 256;
+                break;
+            }
+            case 1: {
+                reflectionTexSize = 512;
+                break;
+            }
+            case 2: {
+                reflectionTexSize = 1024;
+                break;
+            }
+        }
     }
     
     private Weather getWeather() {
