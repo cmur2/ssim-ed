@@ -7,6 +7,7 @@ MaterialDef Ocean {
         Float Shininess
         Float ShininessFactor
         TextureCubeMap SkyBox
+        Texture2D ReflectionMap
         Vector3 FogColor
         Float FogDensity
     }

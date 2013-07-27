@@ -36,8 +36,8 @@ public class LightingAppState extends BasicAppState {
     private AmbientLight envLight;
     private DirectionalLightShadowRenderer shadowRenderer;
     
-    private int texSize;
-    private int numSplits;
+    private int shadowTexSize;
+    private int shadowNumSplits;
     
     public LightingAppState() {
         super(UpdateInterval);
@@ -56,11 +56,11 @@ public class LightingAppState extends BasicAppState {
         getApp().getRootNode().addLight(envLight);
         
         evalSettings();
-        logger.info(String.format("Shadow map texture size: %d", texSize));
-        logger.info(String.format("Number of shadow maps: %d", numSplits));
+        logger.info(String.format("Shadow map texture size: %d", shadowTexSize));
+        logger.info(String.format("Number of shadow maps: %d", shadowNumSplits));
         
         shadowRenderer = new DirectionalLightShadowRenderer(
-            getApp().getAssetManager(), texSize, numSplits);
+            getApp().getAssetManager(), shadowTexSize, shadowNumSplits);
         shadowRenderer.setLight(sunLight);
         shadowRenderer.setEdgeFilteringMode(EdgeFilteringMode.Dither);
         updateShadows();
@@ -123,15 +123,15 @@ public class LightingAppState extends BasicAppState {
         int detailLevel = getApp().getSettingsManager().getInteger("engine.detail.level");
         switch(detailLevel) {
             case 0: {
-                texSize = 256; numSplits = 1;
+                shadowTexSize = 256; shadowNumSplits = 1;
                 break;
             }
             case 1: {
-                texSize = 512; numSplits = 2;
+                shadowTexSize = 512; shadowNumSplits = 2;
                 break;
             }
             case 2: {
-                texSize = 1024; numSplits = 3;
+                shadowTexSize = 1024; shadowNumSplits = 3;
                 break;
             }
         }

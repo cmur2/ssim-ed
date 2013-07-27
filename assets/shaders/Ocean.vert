@@ -19,6 +19,7 @@ attribute vec3 inNormal;
 varying vec3 varNormal; // view coords
 varying vec3 varVertex; // view coords
 varying vec4 varLightDir; // view coords
+varying vec4 varFoo; //for projection
 
 // JME3 lights in world space
 vec4 lightComputeDir(in vec3 worldPos, in vec4 color, in vec4 position) {
@@ -49,6 +50,12 @@ void main() {
 
     gl_Position = g_WorldViewProjectionMatrix * mPosition;
     varVertex = (g_WorldViewMatrix * mPosition).xyz;
+
+    vec4 ScreenPos = gl_Position;
+    ScreenPos.x = 0.5 * (ScreenPos.w + ScreenPos.x);
+    ScreenPos.y = 0.5 * (ScreenPos.w + ScreenPos.y);
+    ScreenPos.z = ScreenPos.w;
+    varFoo = ScreenPos;
 
     //-------------------------
     // general to all lighting
