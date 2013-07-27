@@ -45,8 +45,10 @@ float waveFalloff(float dist) {
 void main() {
     varTexCoord = inTexCoord;
 
-    vec3 n = normalize(g_NormalMatrix * vec3(0.0, 1.0, 0.0));
-    vec3 t = normalize(g_NormalMatrix * vec3(1.0, 0.0, 0.0));
+    //vec3 n = normalize(g_NormalMatrix * vec3(0.0, 1.0, 0.0));
+    //vec3 t = normalize(g_NormalMatrix * vec3(1.0, 0.0, 0.0));
+    vec3 n = normalize(g_NormalMatrix * inNormal);
+    vec3 t = normalize(g_NormalMatrix * inTangent);
     vec3 b = cross(n, t);
 
     // this matrix translates from tangent to eye space
