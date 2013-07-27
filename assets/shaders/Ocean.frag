@@ -71,6 +71,5 @@ void main() {
     cFinal = clamp(cFinal + cSpecular * m_ShininessFactor, 0.0, 1.0);
 
     gl_FragColor = cFinal;
-    //gl_FragColor = vec4(varTexCoord/13.0, 0.0, 1.0);
     applyFoggedColorByFragmentOnly(gl_FragColor);
 }

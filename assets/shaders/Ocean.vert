@@ -46,14 +46,15 @@ void main() {
     varTexCoord = inTexCoord;
 
     vec3 n = normalize(g_NormalMatrix * vec3(0.0, 1.0, 0.0));
-    vec3 t = normalize(gl_NormalMatrix * vec3(1.0, 0.0, 0.0));
+    vec3 t = normalize(g_NormalMatrix * vec3(1.0, 0.0, 0.0));
     vec3 b = cross(n, t);
 
     // this matrix translates from tangent to eye space
     // because n and t (and so b) are given in eye space from above
     varTBN = mat3(t,b,n); // column major
 
-    varNormal = n;
+    // unused code path, varNormal only read if bump mapping disabled
+    varNormal = g_NormalMatrix * inNormal;
 
     vec4 mPosition = vec4(inPosition, 1.0);
     vec3 wPosition = (g_WorldMatrix * mPosition).xyz;
