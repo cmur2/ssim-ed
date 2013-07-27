@@ -14,6 +14,9 @@ MaterialDef SkyDome {
         // you need for your shaders
         WorldParameters {
             WorldViewProjectionMatrix
+            ViewMatrix
+            ProjectionMatrix
+            WorldMatrix
         }
     }
 }

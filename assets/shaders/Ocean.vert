@@ -48,8 +48,7 @@ void main() {
     //float dist = waveFalloff(length(vec3(-50.0, 50.0, +50.0) - wPosition));
     mPosition.y *= dist;
 
-    varFoo = g_WorldViewProjectionMatrix * mPosition;
-    gl_Position = varFoo;
+    gl_Position = g_WorldViewProjectionMatrix * mPosition;
     varVertex = (g_WorldViewMatrix * mPosition).xyz;
 
     vec4 ScreenPos = gl_Position;
