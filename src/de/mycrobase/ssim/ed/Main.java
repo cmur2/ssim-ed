@@ -144,6 +144,8 @@ public class Main extends SimpleApplication implements SSimApplication {
         this.settingsManager = settingsManager;
     }
     
+    // TODO: lensflare when using periscope
+    
     @Override
     public void simpleInitApp() {
         if(settingsManager.getBoolean("debug.noise.seed")) {
