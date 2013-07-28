@@ -22,6 +22,5 @@
 	<classpathentry kind="lib" path="libs/nifty-style-black-1.3.2-jar.jar" sourcepath="libs/nifty-style-black-1.3.2-source.jar"/>
 	<classpathentry kind="lib" path="libs/vecmath-1.5.2-jar.jar" sourcepath="libs/vecmath-1.5.2-source.jar"/>
 	<classpathentry kind="lib" path="libs/xpp3-1.1.4c-jar.jar" sourcepath="libs/xpp3-1.1.4c-source.jar"/>
-	<classpathentry kind="lib" path="E:/Java/jME3/jME3_2012-11-25/lib/jME3-testdata.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
