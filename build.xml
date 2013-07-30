@@ -171,7 +171,7 @@
         </cobertura-report>
     </target>
 
-    <target name="pre" depends="pre-terrain-lut,pre-terrain-atlas,pre-terrain-noise" description="Pre-generates assets">
+    <target name="pre" depends="pre-terrain-lut,pre-terrain-atlas,pre-terrain-noise,pre-sine-wave-bump" description="Pre-generates assets">
         <echo>Pre-generation successful!</echo>
     </target>
     
@@ -190,10 +190,18 @@
             <classpath refid="classpath-build"/>
         </java>
     </target>
-    
+
     <target name="pre-terrain-noise" depends="build" description="Generates TerrainNoise.png">
         <java classname="de.mycrobase.ssim.ed.pre.TileableNoiseGenerator" failonerror="true" output="${pregen-log.file}">
             <arg value="assets/textures/TerrainNoise.png"/>
+            <classpath refid="classpath"/>
+            <classpath refid="classpath-build"/>
+        </java>
+    </target>
+
+    <target name="pre-sine-wave-bump" depends="build" description="Generates SineWaveBumpMap.png">
+        <java classname="de.mycrobase.ssim.ed.pre.SineWaveBumpMapGenerator" failonerror="true" output="${pregen-log.file}">
+            <arg value="assets/textures/SineWaveBumpMap.png"/>
             <classpath refid="classpath"/>
             <classpath refid="classpath-build"/>
         </java>
