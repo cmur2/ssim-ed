@@ -84,7 +84,7 @@ public class OceanAppState extends BasicAppState {
         oceanMat.setFloat("ShininessFactor", 0.2f);
         oceanMat.setTexture("SkyBox", getSkyAppState().getSkyBoxTexture());
         {
-            Texture normalMap = getApp().getAssetManager().loadTexture("Common/MatDefs/Water/Textures/water_normalmap.dds");
+            Texture normalMap = getApp().getAssetManager().loadTexture("textures/SineWaveBumpMap.png");
             normalMap.setWrap(WrapMode.Repeat);
             oceanMat.setTexture("NormalMap", normalMap);
         }
@@ -189,7 +189,7 @@ public class OceanAppState extends BasicAppState {
         {
             // TODO: disable varying wind parameter, now they are constant
             float direction = 42; //getWeather().getFloat("wind.direction");
-            float strength = 10; //getWeather().getFloat("wind.strength");
+            float strength = 8; //getWeather().getFloat("wind.strength");
             // windVelo will be: direction into which wind is blowing and magnitude
             // reflects strength of wind
             Vector3f windVelo = vars.vect1.set(
