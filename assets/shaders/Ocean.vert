@@ -13,6 +13,8 @@ uniform vec4 g_LightPosition;
 
 uniform vec3 g_CameraPosition;
 
+uniform vec2 m_TexCoordOffset;
+
 attribute vec3 inPosition;
 attribute vec3 inNormal;
 attribute vec2 inTexCoord;
@@ -43,7 +45,7 @@ float waveFalloff(float dist) {
 }
 
 void main() {
-    varTexCoord = inTexCoord;
+    varTexCoord = inTexCoord + m_TexCoordOffset;
 
     //vec3 n = normalize(g_NormalMatrix * vec3(0.0, 1.0, 0.0));
     //vec3 t = normalize(g_NormalMatrix * vec3(1.0, 0.0, 0.0));

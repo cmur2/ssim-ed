@@ -7,6 +7,7 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.scene.Geometry;
@@ -31,12 +32,14 @@ public class OceanAppState extends BasicAppState {
     private static final int GridSize = 64;
     private static final int NumGridTiles = 11; // should be odd
     private static final float TileTexCoordScale = 16f;
+    private static final Vector2f TexCoordOffsetVelo = new Vector2f(0.05f, 0.1f);
 
     // exists only while AppState is attached
     private PhillipsSpectrum phillipsSpectrum;
     private Node oceanNode;
     private Material oceanMat;
     private OceanSurface ocean;
+    private Vector2f texCoordOffset;
     
     public OceanAppState() {
         super(UpdateInterval);
@@ -69,9 +72,12 @@ public class OceanAppState extends BasicAppState {
 //        oceanMat.setColor("Diffuse", new ColorRGBA(0.5f, 0.5f, 1f, 1));
 //        //oceanMat.setColor("Specular", ColorRGBA.White);
 //        oceanMat.setBoolean("UseMaterialColors", true);
+        
+        texCoordOffset = new Vector2f();
 
         // TODO: improve ocean shader
         oceanMat = new Material(getApp().getAssetManager(), "shaders/Ocean.j3md");
+        oceanMat.setVector2("TexCoordOffset", texCoordOffset);
         oceanMat.setColor("WaterColor", new ColorRGBA(0.0039f, 0.00196f, 0.145f, 1.0f));
         
         {
@@ -129,6 +135,10 @@ public class OceanAppState extends BasicAppState {
         );
         oceanNode.setLocalTranslation(gridLoc);
         
+        // scroll texture coordinate offset
+        texCoordOffset.addLocal(TexCoordOffsetVelo.x * dt, TexCoordOffsetVelo.y * dt);
+        oceanMat.setVector2("TexCoordOffset", texCoordOffset);
+        
         vars.release();
     }
     
@@ -136,6 +146,10 @@ public class OceanAppState extends BasicAppState {
     protected void intervalUpdate(float dt) {
         updateOceanParameters();
         updateFog();
+        
+        // wrap texture coordinate offset periodically
+        texCoordOffset.x = MathExt.frac(texCoordOffset.x);
+        texCoordOffset.y = MathExt.frac(texCoordOffset.y);
     }
     
     @Override
