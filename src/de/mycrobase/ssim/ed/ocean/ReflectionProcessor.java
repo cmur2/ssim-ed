@@ -10,6 +10,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.Spatial.CullHint;
 import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Image.Format;
 import com.jme3.texture.Texture2D;
@@ -20,6 +21,7 @@ public class ReflectionProcessor implements SceneProcessor {
     
     private int texSize;
     private Spatial reflectionScene;
+    private Spatial ignoreScene;
     
     // state
     private boolean init = false;
@@ -119,9 +121,20 @@ public class ReflectionProcessor implements SceneProcessor {
         
         vars.release();
         
+        // disable cull hint
+        CullHint oldCullHint = null;
+        if(ignoreScene != null) {
+            oldCullHint = ignoreScene.getCullHint();
+            ignoreScene.setCullHint(CullHint.Always);
+        }
+        
         rm.renderViewPort(reflectionView, savedTpf);
         rm.getRenderer().setFrameBuffer(vp.getOutputFrameBuffer());
         rm.setCamera(sceneCam, false);
+        
+        if(oldCullHint != null) {
+            ignoreScene.setCullHint(oldCullHint);
+        }
     }
     
     @Override
@@ -149,5 +162,17 @@ public class ReflectionProcessor implements SceneProcessor {
     
     public Texture2D getReflectionTexture() {
         return reflectionTexture;
+    }
+    
+    /**
+     * Can be invoked after ReflectionProcessor creation to set a partial scene
+     * that should be ignore while rendering the reflection (cull hint will be
+     * {@link CullHint#Always}; original cull hint will be preserved). This is
+     * useful for disabling the designated mirror surface.
+     * 
+     * @param ignoreScene a {@link Spatial} to be ignored
+     */
+    public void setIgnoreScene(Spatial ignoreScene) {
+        this.ignoreScene = ignoreScene;
     }
 }

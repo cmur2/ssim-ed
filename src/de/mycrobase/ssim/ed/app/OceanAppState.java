@@ -144,6 +144,9 @@ public class OceanAppState extends BasicAppState {
         
         getApp().getRootNode().attachChild(oceanNode);
         
+        // ignore ocean while rendering reflection map
+        reflectionProcessor.setIgnoreScene(oceanNode);
+        
 //        FilterPostProcessor fpp = new FilterPostProcessor(getApp().getAssetManager());
 //        WaterFilter water = new WaterFilter(getApp().getRootNode(), new Vector3f(-1f, -1f, 0f).normalizeLocal());
 //        fpp.addFilter(water);
