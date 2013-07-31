@@ -15,11 +15,16 @@ uniform float m_Shininess;
 uniform float m_ShininessFactor;
 uniform samplerCube m_SkyBox;
 uniform sampler2D m_ReflectionMap;
+uniform sampler2D m_NormalMap;
 
 varying vec3 varNormal; // view coords
 varying vec3 varVertex; // view coords
 varying vec4 varLightDir; // view coords
 varying vec4 varFoo; //for projection
+varying vec2 varTexCoord;
+
+// this matrix has meaning of "surface-2-object"
+varying mat3 varTBN;
 
 //const float etaratio = 1.0003/1.3333; // ^= firstIndex/secondIndex
 //const float r0 = pow((1.0-etaratio) / (1.0+etaratio), 2.0);
@@ -30,8 +35,11 @@ float Rapprox(float cosTheta) {
 }
 
 void main() {
-
-    vec3 vNormal = normalize(varNormal);
+    // get the normal in tangent space from texture:
+    vec3 vNormal = normalize(texture2D(m_NormalMap, varTexCoord).rgb * 2.0 - 1.0);
+    vNormal = normalize(varTBN * vNormal);
+    //vec3 vNormal = normalize(varNormal);
+    
     vec3 pEye = vec3(0.0, 0.0, 0.0);
     vec3 vView = normalize(varVertex - pEye); // from camera to vertex (view coords)
     vec3 vReflect = reflect(vView, vNormal); // from vertex to sky (view coords)

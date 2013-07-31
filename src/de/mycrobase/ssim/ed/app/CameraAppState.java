@@ -44,11 +44,11 @@ public class CameraAppState extends BasicAppState implements GameModeListener {
             @Override
             public void checkMotionAllowed(Vector3f position, Vector3f velocity) {
                 position.addLocal(velocity);
-                position.y = Math.max(position.y, 5f);
+                //position.y = Math.max(position.y, 5f);
             }
         });
         
-        cam.setLocation(new Vector3f(0, 450f, 0));
+        cam.setLocation(new Vector3f(0, 0.5f, 0));
         //cam.setRotation(new Quaternion(new float[] {-90*FastMath.DEG_TO_RAD,0,0}));
         //cam.lookAtDirection(Vector3f.UNIT_Y, Vector3f.UNIT_Z);
         //cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Z);

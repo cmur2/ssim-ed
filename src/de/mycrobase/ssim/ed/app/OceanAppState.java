@@ -15,6 +15,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.LodControl;
+import com.jme3.texture.Texture;
+import com.jme3.texture.Texture.WrapMode;
 import com.jme3.scene.shape.Quad;
 import com.jme3.water.SimpleWaterProcessor;
 
@@ -34,6 +36,8 @@ public class OceanAppState extends BasicAppState {
     private static final float GridStep = 400f; // in m
     private static final int GridSize = 64;
     private static final int NumGridTiles = 11; // should be odd
+    private static final float TileTexCoordScale = 16f;
+    private static final Vector2f TexCoordOffsetVelo = new Vector2f(0.05f, 0.1f);
 
     // exists only while AppState is attached
     private ReflectionProcessor reflectionProcessor;
@@ -41,6 +45,7 @@ public class OceanAppState extends BasicAppState {
     private Node oceanNode;
     private Material oceanMat;
     private OceanSurface ocean;
+    private Vector2f texCoordOffset;
     
     private int reflectionTexSize;
     
@@ -79,7 +84,8 @@ public class OceanAppState extends BasicAppState {
         
         ocean = new OceanSurface(
             GridSize, GridSize, GridStep, GridStep,
-            phillipsSpectrum, getApp().getExecutor()
+            phillipsSpectrum, getApp().getExecutor(),
+            TileTexCoordScale
         );
         updateOceanParameters();
         ocean.initSim();
@@ -96,9 +102,12 @@ public class OceanAppState extends BasicAppState {
 //        oceanMat.setColor("Diffuse", new ColorRGBA(0.5f, 0.5f, 1f, 1));
 //        //oceanMat.setColor("Specular", ColorRGBA.White);
 //        oceanMat.setBoolean("UseMaterialColors", true);
+        
+        texCoordOffset = new Vector2f();
 
         // TODO: improve ocean shader
         oceanMat = new Material(getApp().getAssetManager(), "shaders/Ocean.j3md");
+        oceanMat.setVector2("TexCoordOffset", texCoordOffset);
         oceanMat.setColor("WaterColor", new ColorRGBA(0.0039f, 0.00196f, 0.145f, 1.0f));
         
         {
@@ -112,6 +121,11 @@ public class OceanAppState extends BasicAppState {
         oceanMat.setTexture("SkyBox", getSkyAppState().getSkyBoxTexture());
         oceanMat.setTexture("ReflectionMap", reflectionProcessor.getReflectionTexture());
         //oceanMat.setTexture("ReflectionMap", waterProcessor.getReflectionTexture());
+        {
+            Texture normalMap = getApp().getAssetManager().loadTexture("textures/SineWaveBumpMap.png");
+            normalMap.setWrap(WrapMode.Repeat);
+            oceanMat.setTexture("NormalMap", normalMap);
+        }
         // Pass fog parameters into shader necessary for Fog.glsllib
         updateFog();
         
@@ -153,6 +167,10 @@ public class OceanAppState extends BasicAppState {
         );
         oceanNode.setLocalTranslation(gridLoc);
         
+        // scroll texture coordinate offset
+        texCoordOffset.addLocal(TexCoordOffsetVelo.x * dt, TexCoordOffsetVelo.y * dt);
+        oceanMat.setVector2("TexCoordOffset", texCoordOffset);
+        
         vars.release();
     }
     
@@ -160,6 +178,10 @@ public class OceanAppState extends BasicAppState {
     protected void intervalUpdate(float dt) {
         updateOceanParameters();
         updateFog();
+        
+        // wrap texture coordinate offset periodically
+        texCoordOffset.x = MathExt.frac(texCoordOffset.x);
+        texCoordOffset.y = MathExt.frac(texCoordOffset.y);
     }
     
     @Override
@@ -193,7 +215,9 @@ public class OceanAppState extends BasicAppState {
         if(innerSize >= size) {
             throw new IllegalArgumentException("OceanBorder size will be effectively < 0!");
         }
-        OceanBorder border = new OceanBorder(size, size, innerSize, innerSize);
+        // calculate texCoord resolution, one texCoord unit for one tile because of tilability
+        float texCoordPerMeter = 1.0f / GridStep;
+        OceanBorder border = new OceanBorder(size, size, innerSize, innerSize, texCoordPerMeter, TileTexCoordScale);
         
         Geometry geom = new Geometry("OceanBorder", border);
         geom.setMaterial(mat);
@@ -214,7 +238,7 @@ public class OceanAppState extends BasicAppState {
         {
             // TODO: disable varying wind parameter, now they are constant
             float direction = 42; //getWeather().getFloat("wind.direction");
-            float strength = 7; //getWeather().getFloat("wind.strength");
+            float strength = 8; //getWeather().getFloat("wind.strength");
             // windVelo will be: direction into which wind is blowing and magnitude
             // reflects strength of wind
             Vector3f windVelo = vars.vect1.set(
