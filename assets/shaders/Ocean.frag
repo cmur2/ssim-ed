@@ -1,4 +1,7 @@
 
+#define FRAG
+#import "shaders/Fog.glsllib"
+
 uniform mat4 g_ViewMatrix;
 uniform mat4 g_ViewMatrixInverse;
 
@@ -11,10 +14,17 @@ uniform float m_R0;
 uniform float m_Shininess;
 uniform float m_ShininessFactor;
 uniform samplerCube m_SkyBox;
+uniform sampler2D m_ReflectionMap;
+uniform sampler2D m_NormalMap;
 
 varying vec3 varNormal; // view coords
 varying vec3 varVertex; // view coords
 varying vec4 varLightDir; // view coords
+varying vec4 varFoo; //for projection
+varying vec2 varTexCoord;
+
+// this matrix has meaning of "surface-2-object"
+varying mat3 varTBN;
 
 //const float etaratio = 1.0003/1.3333; // ^= firstIndex/secondIndex
 //const float r0 = pow((1.0-etaratio) / (1.0+etaratio), 2.0);
@@ -25,8 +35,11 @@ float Rapprox(float cosTheta) {
 }
 
 void main() {
-
-    vec3 vNormal = normalize(varNormal);
+    // get the normal in tangent space from texture:
+    vec3 vNormal = normalize(texture2D(m_NormalMap, varTexCoord).rgb * 2.0 - 1.0);
+    vNormal = normalize(varTBN * vNormal);
+    //vec3 vNormal = normalize(varNormal);
+    
     vec3 pEye = vec3(0.0, 0.0, 0.0);
     vec3 vView = normalize(varVertex - pEye); // from camera to vertex (view coords)
     vec3 vReflect = reflect(vView, vNormal); // from vertex to sky (view coords)
@@ -41,10 +54,19 @@ void main() {
     //vec4 diffuse = vec4(1.0,1.0,1.0,1.0) * max(0.0, dot(vNormal, normalize(varLightDir.xyz))) * varLightDir.w;
 
     // cheap reflection mapping by only using the sky box texture
-    vec4 cSky = textureCube(m_SkyBox, (g_ViewMatrixInverse * vec4(vReflect, 0.0)).xyz);
+    //vec4 cSky = textureCube(m_SkyBox, (g_ViewMatrixInverse * vec4(vReflect, 0.0)).xyz);
+    
+    //vec4 cMirror = vec4(1.0, 0.5, 0.0, 1.0);
+    vec4 projCoord = varFoo / varFoo.w;
+    //projCoord =(projCoord+1.0)*0.5;
+    //projCoord = clamp(projCoord, 0.0, 1.0);
+    
+    vec4 cMirror = vec4(texture2D(m_ReflectionMap, vec2(projCoord.x,1.0-projCoord.y)).rgb, 1.0);
+    //vec4 cMirror = vec4(texture2D(m_ReflectionMap, varFoo.xy / varFoo.w).rgb, 1.0);
+    //vec4 cMirror = vec4(texture2D(m_ReflectionMap, vec2(0.5, 0.5)).rgb, 1.0);
 
     vec4 cRefract = m_WaterColor;
-    vec4 cReflect = cSky;
+    vec4 cReflect = cMirror;
 
     // fresnel mix of refraction/reflection color
     vec4 cFinal = mix(cRefract, cReflect, fresnelReflectance);
@@ -60,4 +82,5 @@ void main() {
     cFinal = clamp(cFinal + cSpecular * m_ShininessFactor, 0.0, 1.0);
 
     gl_FragColor = cFinal;
+    applyFoggedColorByFragmentOnly(gl_FragColor);
 }

@@ -12,6 +12,7 @@ import com.jme3.scene.Spatial.CullHint;
 import de.mycrobase.ssim.ed.FixedOrderComparator;
 import de.mycrobase.ssim.ed.SurfaceCameraControl;
 import de.mycrobase.ssim.ed.mission.Mission;
+import de.mycrobase.ssim.ed.sky.SkyBoxTexture;
 import de.mycrobase.ssim.ed.sky.SkyGradient;
 import de.mycrobase.ssim.ed.sky.Sun;
 
@@ -25,6 +26,7 @@ import de.mycrobase.ssim.ed.sky.Sun;
 public class SkyAppState extends BasicAppState {
     
     private static final float UpdateInterval = 1f; // in seconds
+    private static final int SkyBoxTextureUpdateCounterLimit = 30;
     
     private float hemisphereRadius;
     private Mission mission;
@@ -33,6 +35,8 @@ public class SkyAppState extends BasicAppState {
     private Node skyNode;
     private Sun sun;
     private SkyGradient skyGradient;
+    private int skyBoxTextureUpdateCounter;
+    private SkyBoxTexture skyBoxTexture;
     
     public SkyAppState(float hemisphereRadius, Mission mission) {
         super(UpdateInterval);
@@ -54,6 +58,10 @@ public class SkyAppState extends BasicAppState {
         skyGradient = new SkyGradient(sun);
         updateSky();
         
+        skyBoxTextureUpdateCounter = 0;
+        skyBoxTexture = new SkyBoxTexture(skyGradient, getApp().getExecutor());
+        updateSkyBoxTexture();
+        
         getApp().getViewPort().getQueue().setGeometryComparator(Bucket.Sky, new FixedOrderComparator());
         
         skyNode.addControl(new SurfaceCameraControl(getApp().getCamera()));
@@ -62,6 +70,12 @@ public class SkyAppState extends BasicAppState {
     @Override
     protected void intervalUpdate(float dt) {
         updateSky();
+        
+        if(skyBoxTextureUpdateCounter >= SkyBoxTextureUpdateCounterLimit) {
+            updateSkyBoxTexture();
+            skyBoxTextureUpdateCounter = 0;
+        }
+        skyBoxTextureUpdateCounter++;
     }
     
     @Override
@@ -75,12 +89,17 @@ public class SkyAppState extends BasicAppState {
         skyNode = null;
         sun = null;
         skyGradient = null;
+        skyBoxTexture = null;
     }
     
     private void updateSky() {
         sun.update();
         skyGradient.setTurbidity(getState(WeatherAppState.class).getWeather().getFloat("air.turbidity"));
         skyGradient.update();
+    }
+    
+    private void updateSkyBoxTexture() {
+        skyBoxTexture.update();
     }
     
     // public API
@@ -95,6 +114,10 @@ public class SkyAppState extends BasicAppState {
     
     public SkyGradient getSkyGradient() {
         return skyGradient;
+    }
+    
+    public SkyBoxTexture getSkyBoxTexture() {
+        return skyBoxTexture;
     }
 
     public float getNightThetaMax() {

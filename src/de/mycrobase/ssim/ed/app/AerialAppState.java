@@ -24,10 +24,27 @@ public class AerialAppState extends BasicAppState {
         
         fogColor = new Vector3f();
         fogDensity = 0f;
+        
+        // early update call since dependencies (SkyAppState, WeatherAppState,
+        // CameraAppState) are already loaded and propagation to higher level
+        // AppStates is important:
+        updateFog();
     }
     
     @Override
     protected void intervalUpdate(float dt) {
+        updateFog();
+    }
+    
+    @Override
+    public void cleanup() {
+        super.cleanup();
+        
+        fogColor = null;
+        fogDensity = 0f;
+    }
+    
+    private void updateFog() {
         TempVars vars = TempVars.get();
         // use sky color from south because it's the place where sun influence is biggest
         float[] color = getState(SkyAppState.class).getSkyGradient().getSkyColor(0,0,-1, vars.float1);
@@ -46,14 +63,6 @@ public class AerialAppState extends BasicAppState {
         
         float maxDist = getState(CameraAppState.class).getMaxVisibility();
         fogDensity = getFogDensity(targetFogFactor, maxDist);
-    }
-    
-    @Override
-    public void cleanup() {
-        super.cleanup();
-        
-        fogColor = null;
-        fogDensity = 0f;
     }
     
     /**

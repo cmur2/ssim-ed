@@ -1,4 +1,7 @@
 
+#define VERT
+#import "shaders/Fog.glsllib"
+
 uniform mat4 g_WorldViewProjectionMatrix;
 uniform mat4 g_WorldViewMatrix;
 uniform mat3 g_NormalMatrix;
@@ -10,12 +13,21 @@ uniform vec4 g_LightPosition;
 
 uniform vec3 g_CameraPosition;
 
+uniform vec2 m_TexCoordOffset;
+
 attribute vec3 inPosition;
 attribute vec3 inNormal;
+attribute vec2 inTexCoord;
+attribute vec3 inTangent;
 
 varying vec3 varNormal; // view coords
 varying vec3 varVertex; // view coords
 varying vec4 varLightDir; // view coords
+varying vec4 varFoo; //for projection
+varying vec2 varTexCoord;
+
+// this matrix has meaning of "surface-2-object"
+varying mat3 varTBN;
 
 // JME3 lights in world space
 vec4 lightComputeDir(in vec3 worldPos, in vec4 color, in vec4 position) {
@@ -34,7 +46,20 @@ float waveFalloff(float dist) {
 }
 
 void main() {
-    varNormal = normalize(g_NormalMatrix * inNormal);
+    varTexCoord = inTexCoord + m_TexCoordOffset;
+
+    //vec3 n = normalize(g_NormalMatrix * vec3(0.0, 1.0, 0.0));
+    //vec3 t = normalize(g_NormalMatrix * vec3(1.0, 0.0, 0.0));
+    vec3 n = normalize(g_NormalMatrix * inNormal);
+    vec3 t = normalize(g_NormalMatrix * inTangent);
+    vec3 b = cross(n, t);
+
+    // this matrix translates from tangent to eye space
+    // because n and t (and so b) are given in eye space from above
+    varTBN = mat3(t,b,n); // column major
+
+    // unused code path, varNormal only read if bump mapping disabled
+    varNormal = g_NormalMatrix * inNormal;
 
     vec4 mPosition = vec4(inPosition, 1.0);
     vec3 wPosition = (g_WorldMatrix * mPosition).xyz;
@@ -47,6 +72,12 @@ void main() {
     gl_Position = g_WorldViewProjectionMatrix * mPosition;
     varVertex = (g_WorldViewMatrix * mPosition).xyz;
 
+    vec4 ScreenPos = gl_Position;
+    ScreenPos.x = 0.5 * (ScreenPos.w + ScreenPos.x);
+    ScreenPos.y = 0.5 * (ScreenPos.w + ScreenPos.y);
+    ScreenPos.z = ScreenPos.w;
+    varFoo = ScreenPos;
+
     //-------------------------
     // general to all lighting
     //-------------------------
@@ -55,4 +86,6 @@ void main() {
 
     vec3 vPosition = (g_WorldViewMatrix * mPosition).xyz;
     varLightDir = lightComputeDir(vPosition, g_LightColor, wvLightPos); // from vertex to light (view coords)
+
+    setFogCoord(vPosition);
 }

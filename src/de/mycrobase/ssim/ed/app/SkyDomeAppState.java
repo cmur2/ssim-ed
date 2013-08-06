@@ -22,14 +22,11 @@ import de.mycrobase.ssim.ed.sky.SkyBoxTexture;
 public class SkyDomeAppState extends BasicAppState {
     
     private static final Logger logger = Logger.getLogger(SkyDomeAppState.class);
-    private static final float UpdateInterval = 30f; // in seconds
     
     // exists only while AppState is attached
     private Geometry geom;
-    private SkyBoxTexture skyBoxTexture;
     
     public SkyDomeAppState() {
-        super(UpdateInterval);
     }
     
     @Override
@@ -42,9 +39,7 @@ public class SkyDomeAppState extends BasicAppState {
         //mat.getAdditionalRenderState().setWireframe(true);
         mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
         
-        skyBoxTexture = new SkyBoxTexture(getSkyAppState().getSkyGradient(), getApp().getExecutor());
-        skyBoxTexture.update();
-        mat.setTexture("SkyBox", skyBoxTexture);
+        mat.setTexture("SkyBox", getSkyAppState().getSkyBoxTexture());
         
         geom.setMaterial(mat);
         geom.setUserData(FixedOrderComparator.ORDER_INDEX, 10);
@@ -58,11 +53,6 @@ public class SkyDomeAppState extends BasicAppState {
     }
     
     @Override
-    protected void intervalUpdate(float dt) {
-        skyBoxTexture.update();
-    }
-    
-    @Override
     public void cleanup() {
         super.cleanup();
         
@@ -71,7 +61,6 @@ public class SkyDomeAppState extends BasicAppState {
         }
         
         geom = null;
-        skyBoxTexture = null;
     }
     
     private SkyAppState getSkyAppState() {

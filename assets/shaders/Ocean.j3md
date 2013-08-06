@@ -2,11 +2,16 @@ MaterialDef Ocean {
     // This is the complete list of user defined uniforms
     // to be used in the shaders
     MaterialParameters {
+        Vector2 TexCoordOffset
         Color WaterColor
         Float R0
         Float Shininess
         Float ShininessFactor
         TextureCubeMap SkyBox
+        Texture2D ReflectionMap
+        Texture2D NormalMap
+        Vector3 FogColor
+        Float FogDensity
     }
     Technique {
         LightMode MultiPass
@@ -24,6 +29,9 @@ MaterialDef Ocean {
             ViewMatrixInverse
             WorldMatrix
             CameraPosition
+        }
+        Defines {
+            FOG : FogColor
         }
     }
 }

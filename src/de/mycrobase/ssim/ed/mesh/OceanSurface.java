@@ -40,11 +40,13 @@ public class OceanSurface extends Mesh {
     private float scaleZ;
     private WaveSpectrum waveSpectrum;
     private ScheduledExecutorService executor;
+    private float texCoordScale;
     private Random waveParamRandom;
     private List<FFTUpdater> fftUpdaters;
     
     private FloatBuffer positionBuffer;
     private FloatBuffer normalBuffer;
+    private FloatBuffer tangentBuffer;
     
     // sim data
     private float accTime;
@@ -56,18 +58,22 @@ public class OceanSurface extends Mesh {
     private Vector3f[][] vPositions;
     private Vector3f[][] vNormals;
     private Vector3f[][] fNormals;
+    private Vector3f[][] vTangents;
     private Vector2f[][] c;
     private Vector2f[][] mDeltaX;
     private Vector2f[][] mDeltaY;
     
     private VertexBuffer positionVBO;
     private VertexBuffer normalVBO;
+    private VertexBuffer texCoordVBO;
+    private VertexBuffer tangentVBO;
     
     private float waveHeightScale;
     private float lambda;
     
     public OceanSurface(int numX, int numY, float scaleX, float scaleZ,
-            WaveSpectrum waveSpectrum, ScheduledExecutorService executor) {
+            WaveSpectrum waveSpectrum, ScheduledExecutorService executor,
+            float texCoordScale) {
         this.numX = numX;
         this.numY = numY;
         this.numVertexX = numX+1;
@@ -76,6 +82,7 @@ public class OceanSurface extends Mesh {
         this.scaleZ = scaleZ;
         this.waveSpectrum = waveSpectrum;
         this.executor = executor;
+        this.texCoordScale = texCoordScale;
         
         waveParamRandom = new Random();
         
@@ -105,6 +112,7 @@ public class OceanSurface extends Mesh {
             for(int iy = 0; iy < numVertexY; iy++) {
                 vPositions[ix][iy] = new Vector3f();
                 vNormals[ix][iy] = new Vector3f();
+                vTangents[ix][iy] = new Vector3f();
             }
         }
 
@@ -160,6 +168,8 @@ public class OceanSurface extends Mesh {
         
         updateVertexNormals();
         
+        updateVertexTangets();
+        
         // final step: bring data model into vertex buffers
         updateGridDataVBOs();
     }
@@ -170,10 +180,13 @@ public class OceanSurface extends Mesh {
         // vertex data
         positionBuffer = BufferUtils.createFloatBuffer((numVertexX * numVertexY + 4) * 3);
         normalBuffer = BufferUtils.createFloatBuffer((numVertexX * numVertexY + 4) * 3);
+        FloatBuffer texCoordBuffer = generateVertexTexCoords(); // only one-time, in-memory data
+        tangentBuffer = BufferUtils.createFloatBuffer((numVertexX * numVertexY + 4) * 3);
         
         // CPU only data
         vPositions = new Vector3f[numVertexX][numVertexY];
         vNormals = new Vector3f[numVertexX][numVertexY];
+        vTangents = new Vector3f[numVertexX][numVertexY];
         fHold = new Vector3f[numX][numY];
         mH0 = new Vector2f[numX][numY];
         fNormals = new Vector3f[numX][numY];
@@ -189,7 +202,13 @@ public class OceanSurface extends Mesh {
         normalVBO.setupData(Usage.Stream, 3, Format.Float, normalBuffer);
         setBuffer(normalVBO);
         
-        // TODO: need texcoords
+        texCoordVBO = new VertexBuffer(Type.TexCoord);
+        texCoordVBO.setupData(Usage.Static, 2, Format.Float, texCoordBuffer);
+        setBuffer(texCoordVBO);
+        
+        tangentVBO = new VertexBuffer(Type.Tangent);
+        tangentVBO.setupData(Usage.Stream, 3, Format.Float, tangentBuffer);
+        setBuffer(tangentVBO);
         
         // TODO: TriangleStrip
         setMode(Mode.Triangles);
@@ -368,12 +387,39 @@ public class OceanSurface extends Mesh {
         vNormals[numVertexX-1][numVertexY-1].set(vNormals[0][0]);
     }
     
+    private void updateVertexTangets() {
+        float xStep = scaleX/numX;
+        
+        for(int ix = 0; ix < numX; ix++) {
+            int ixRight = MathExt.wrapByMax(ix+1, numVertexY-2);
+            
+            for(int iy = 0; iy < numY; iy++) {
+                float tax = xStep;
+                float tay = (c[ixRight][iy].x-c[ix][iy].x) * waveHeightScale;
+                float taz = 0;
+                
+                // set and normalize
+                vTangents[ix][iy].set(tax, tay, taz);
+                vTangents[ix][iy].normalizeLocal();
+            }
+        }
+        
+        for(int iy = 0; iy < numVertexY-1; iy++) {
+            vTangents[numVertexX-1][iy].set(vTangents[0][iy]);
+        }
+        for(int ix = 0; ix < numVertexX-1; ix++) {
+            vTangents[ix][numVertexY-1].set(vTangents[ix][0]);
+        }
+        vTangents[numVertexX-1][numVertexY-1].set(vTangents[0][0]);
+    }
+    
     private void updateGridDataVBOs() {
         // apply the indexing scheme given by #getIndexFor(int ix, int iy)
         for(int ix = 0; ix < numVertexX; ix++) {
             for(int iy = 0; iy < numVertexY; iy++) {
                 put(positionBuffer, vPositions[ix][iy]);
                 put(normalBuffer, vNormals[ix][iy]);
+                put(tangentBuffer, vTangents[ix][iy]);
             }
         }
         
@@ -386,12 +432,72 @@ public class OceanSurface extends Mesh {
         put(normalBuffer, Vector3f.UNIT_Y);
         put(normalBuffer, Vector3f.UNIT_Y);
         put(normalBuffer, Vector3f.UNIT_Y);
+        put(tangentBuffer, Vector3f.UNIT_X);
+        put(tangentBuffer, Vector3f.UNIT_X);
+        put(tangentBuffer, Vector3f.UNIT_X);
+        put(tangentBuffer, Vector3f.UNIT_X);
         
         positionBuffer.rewind();
         normalBuffer.rewind();
+        tangentBuffer.rewind();
         
         positionVBO.updateData(positionBuffer);
         normalVBO.updateData(normalBuffer);
+        tangentVBO.updateData(tangentBuffer);
+    }
+    
+    private FloatBuffer generateVertexTexCoords() {
+        FloatBuffer texCoordBuffer = BufferUtils.createFloatBuffer((numVertexX * numVertexY + 4) * 2);
+        
+        // generate all texture coordinate data in memory, it's static
+        Vector2f[][] vTexCoords = new Vector2f[numVertexX][numVertexY];
+        
+        for(int ix = 0; ix < numVertexX; ix++) {
+            for(int iy = 0; iy < numVertexY; iy++) {
+                vTexCoords[ix][iy] = new Vector2f();
+            }
+        }
+        
+        vTexCoords[0][0].set(0f, 0f);
+        for(int iy = 0; iy < numY; iy++) {
+            vTexCoords[0][iy].x = 0f;
+            vTexCoords[0][iy].y = texCoordScale*(float)iy/numY; // v
+        }
+        vTexCoords[0][numY].set(0f, texCoordScale);
+        
+        for(int ix = 1; ix < numX; ix++) {
+            float u = texCoordScale*(float)ix/numX; // u;
+            vTexCoords[ix][0].set(u, 0f);
+            for(int iy = 0; iy < numY; iy++) {
+                vTexCoords[ix][iy].x = u;
+                vTexCoords[ix][iy].y = texCoordScale*(float)iy/numY; // v
+            }
+            vTexCoords[ix][numY].set(u, texCoordScale);
+        }
+        
+        vTexCoords[numX][0].set(texCoordScale, 0f);
+        for(int iy = 0; iy < numY; iy++) {
+            vTexCoords[numX][iy].x = texCoordScale;
+            vTexCoords[numX][iy].y = texCoordScale*(float)iy/numY; // v
+        }
+        vTexCoords[numX][numY].set(texCoordScale, texCoordScale);
+        
+        // apply the indexing scheme given by #getIndexFor(int ix, int iy)
+        for(int ix = 0; ix < numVertexX; ix++) {
+            for(int iy = 0; iy < numVertexY; iy++) {
+                put(texCoordBuffer, vTexCoords[ix][iy]);
+            }
+        }
+        
+        // add vertices for index2Buffer
+        put(texCoordBuffer, new Vector2f(0, 0));
+        put(texCoordBuffer, new Vector2f(0, texCoordScale));
+        put(texCoordBuffer, new Vector2f(texCoordScale, 0));
+        put(texCoordBuffer, new Vector2f(texCoordScale, texCoordScale));
+        
+        texCoordBuffer.rewind();
+        
+        return texCoordBuffer;
     }
     
     private void reinitWave(int ix, int iy) {
@@ -408,11 +514,16 @@ public class OceanSurface extends Mesh {
     private int getIndexFor(int ix, int iy) {
         return ix * numVertexY + iy;
     }
-    
+
     private static void put(FloatBuffer buffer, Vector3f v) {
         buffer.put(v.x);
         buffer.put(v.y);
         buffer.put(v.z);
+    }
+
+    private static void put(FloatBuffer buffer, Vector2f v) {
+        buffer.put(v.x);
+        buffer.put(v.y);
     }
     
     private class FFTUpdater implements Callable<Void> {
