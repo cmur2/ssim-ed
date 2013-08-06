@@ -130,13 +130,14 @@ public class OceanAppState extends BasicAppState {
         updateFog();
         
         // build geometries
-        
         final int numGridTilesHalf = NumGridTiles/2;
-        for(int ix = -numGridTilesHalf; ix <= +numGridTilesHalf; ix++) {
-            for(int iz = -numGridTilesHalf; iz <= +numGridTilesHalf; iz++) {
-                Vector3f offset = new Vector3f(ix,0,iz);
-                offset.multLocal(GridStep);
-                oceanNode.attachChild(buildOceanTile(ocean, oceanMat, offset));
+        if(numGridTilesHalf > 0) {
+            for(int ix = -numGridTilesHalf; ix <= +numGridTilesHalf; ix++) {
+                for(int iz = -numGridTilesHalf; iz <= +numGridTilesHalf; iz++) {
+                    Vector3f offset = new Vector3f(ix,0,iz);
+                    offset.multLocal(GridStep);
+                    oceanNode.attachChild(buildOceanTile(ocean, oceanMat, offset));
+                }
             }
         }
         
