@@ -63,22 +63,6 @@ public class OceanAppState extends BasicAppState {
         reflectionProcessor = new ReflectionProcessor(getApp().getRootNode(), reflectionTexSize);
         //getApp().getViewPort().addProcessor(reflectionProcessor);
         
-        de.mycrobase.ssim.ed.ocean.SimpleWaterProcessor waterProcessor;
-        {
-            waterProcessor = new de.mycrobase.ssim.ed.ocean.SimpleWaterProcessor(getApp().getAssetManager());
-            waterProcessor.setReflectionScene(getApp().getRootNode());
-            waterProcessor.setLightPosition(new Vector3f(1f, 1f, 0f).normalizeLocal());
-//            getApp().getViewPort().addProcessor(waterProcessor);
-            
-//            Quad quad = new Quad(40000,40000);
-//            quad.scaleTextureCoordinates(new Vector2f(6f,6f));
-//            Geometry water=new Geometry("water", quad);
-//            water.setLocalTranslation(-10000, 0, 10000);
-//            water.setLocalRotation(new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X));
-//            water.setMaterial(waterProcessor.getMaterial());
-//            getApp().getRootNode().attachChild(water);
-        }
-        
         phillipsSpectrum = new PhillipsSpectrum(true);
         //phillipsSpectrum.setWindVelocity(new Vector3f(0,0,-15));
         
@@ -120,7 +104,6 @@ public class OceanAppState extends BasicAppState {
         oceanMat.setFloat("ShininessFactor", 0.2f);
         oceanMat.setTexture("SkyBox", getSkyAppState().getSkyBoxTexture());
         oceanMat.setTexture("ReflectionMap", reflectionProcessor.getReflectionTexture());
-        //oceanMat.setTexture("ReflectionMap", waterProcessor.getReflectionTexture());
         {
             Texture normalMap = getApp().getAssetManager().loadTexture("textures/SineWaveBumpMap.png");
             normalMap.setWrap(WrapMode.Repeat);
