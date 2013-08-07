@@ -61,7 +61,7 @@ public class OceanAppState extends BasicAppState {
         logger.info(String.format("Reflection map texture size: %d", reflectionTexSize));
         
         reflectionProcessor = new ReflectionProcessor(getApp().getRootNode(), reflectionTexSize);
-        getApp().getViewPort().addProcessor(reflectionProcessor);
+        //getApp().getViewPort().addProcessor(reflectionProcessor);
         
         de.mycrobase.ssim.ed.ocean.SimpleWaterProcessor waterProcessor;
         {

@@ -54,19 +54,19 @@ void main() {
     //vec4 diffuse = vec4(1.0,1.0,1.0,1.0) * max(0.0, dot(vNormal, normalize(varLightDir.xyz))) * varLightDir.w;
 
     // cheap reflection mapping by only using the sky box texture
-    //vec4 cSky = textureCube(m_SkyBox, (g_ViewMatrixInverse * vec4(vReflect, 0.0)).xyz);
+    vec4 cSky = textureCube(m_SkyBox, (g_ViewMatrixInverse * vec4(vReflect, 0.0)).xyz);
     
     //vec4 cMirror = vec4(1.0, 0.5, 0.0, 1.0);
-    vec4 projCoord = varFoo / varFoo.w;
+    ///vec4 projCoord = varFoo / varFoo.w;
     //projCoord =(projCoord+1.0)*0.5;
     //projCoord = clamp(projCoord, 0.0, 1.0);
     
-    vec4 cMirror = vec4(texture2D(m_ReflectionMap, vec2(projCoord.x,1.0-projCoord.y)).rgb, 1.0);
+    ///vec4 cMirror = vec4(texture2D(m_ReflectionMap, vec2(projCoord.x,1.0-projCoord.y)).rgb, 1.0);
     //vec4 cMirror = vec4(texture2D(m_ReflectionMap, varFoo.xy / varFoo.w).rgb, 1.0);
     //vec4 cMirror = vec4(texture2D(m_ReflectionMap, vec2(0.5, 0.5)).rgb, 1.0);
 
     vec4 cRefract = m_WaterColor;
-    vec4 cReflect = cMirror;
+    vec4 cReflect = cSky;
 
     // fresnel mix of refraction/reflection color
     vec4 cFinal = mix(cRefract, cReflect, fresnelReflectance);
