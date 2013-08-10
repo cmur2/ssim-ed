@@ -1,4 +1,3 @@
-syntax: glob
 bin
 dist
 instrumented
@@ -9,5 +8,4 @@ reports
 *.dylib
 *.log
 .DS_Store
-authors.txt
 cobertura.ser
