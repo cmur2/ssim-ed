@@ -8,10 +8,34 @@
     <description>Builds the SSim Environment Demo.</description>
     
     <target name="default" depends="dist" description="Builds the whole project"/>
-    <target name="jenkins-default" depends="ivy-report,build,test-fast,dist" description="Default target for Jenkins"/>
-    <target name="jenkins-slow" depends="coverage" description="Target for slow operations for Jenkins"/>
+    <target name="jenkins-default" depends="install-ivy,ivy-report,build,test-fast,dist" description="Default target for Jenkins"/>
+    <target name="jenkins-slow" depends="install-ivy,coverage" description="Target for slow operations for Jenkins"/>
+
+    <!--
+        Target to be run separately from the others to get a local copy
+        of Ivy (which will be used from -load-ivy with priority over
+        $HOME/.ant/lib).
+    -->
+    <target name="install-ivy" description="Installs a local copy of Ivy into the current project">
+        <property name="ivy.install.version" value="2.3.0"/>
+        
+        <get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+            dest="ivy.jar"
+            usetimestamp="true"/>
+    </target>
+
+    <target name="-check-ivy" unless="ivy.found">
+        <available file="ivy.jar" property="ivy.found"/>
+    </target>
     
-    <target name="init">
+    <target name="-load-ivy" depends="-check-ivy" if="${ivy.found}">
+        <echo>Using local Ivy</echo>
+        <taskdef resource="org/apache/ivy/ant/antlib.xml"
+            uri="antlib:org.apache.ivy.ant"
+            classpath="ivy.jar"/>
+    </target>
+    
+    <target name="init" depends="-load-ivy">
         <property name="build.dir" value="bin"/>
         <property name="reports.dir" value="reports"/>
         <property name="dist.dir" value="dist"/>
